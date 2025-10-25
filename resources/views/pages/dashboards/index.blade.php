@@ -1,94 +1,49 @@
 <x-default-layout>
-
-    @section('title')
-        Dashboard
-    @endsection
+    @section('title', 'Dashboard Utama')
 
     @section('breadcrumbs')
         {{ Breadcrumbs::render('dashboard') }}
     @endsection
 
-    <!--begin::Row-->
-    <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
-        <!--begin::Col-->
-        <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-md-5 mb-xl-10">
-            @include('partials/widgets/cards/_widget-20')
-
-            @include('partials/widgets/cards/_widget-7')
+    <!-- ============================= -->
+    <!-- TOP SUMMARY CARDS -->
+    <!-- ============================= -->
+    <div class="row g-5 mb-5">
+        <div class="col-md-3 col-sm-6">
+            @include('partials.dashboard.cards._total-tiket')
         </div>
-        <!--end::Col-->
-        <!--begin::Col-->
-        <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-md-5 mb-xl-10">
-            @include('partials/widgets/cards/_widget-17')
-
-            @include('partials/widgets/lists/_widget-26')
+        <div class="col-md-3 col-sm-6">
+            @include('partials.dashboard.cards._pembatalan-sertifikat')
         </div>
-        <!--end::Col-->
-        <!--begin::Col-->
-        <div class="col-xxl-6">
-            @include('partials/widgets/engage/_widget-10')
+        <div class="col-md-3 col-sm-6">
+            @include('partials.dashboard.cards._kasus-sengketa')
         </div>
-        <!--end::Col-->
+        <div class="col-md-3 col-sm-6">
+            @include('partials.dashboard.cards._tingkat-penyelesaian')
+        </div>
     </div>
-    <!--end::Row-->
 
-    <!--begin::Row-->
-    <div class="row gx-5 gx-xl-10">
-        <!--begin::Col-->
-        <div class="col-xxl-6 mb-5 mb-xl-10">
-            @include('partials/widgets/charts/_widget-8')
-        </div>
-        <!--end::Col-->
-        <!--begin::Col-->
-        <div class="col-xl-6 mb-5 mb-xl-10">
-            @include('partials/widgets/tables/_widget-16')
-        </div>
-        <!--end::Col-->
-    </div>
-    <!--end::Row-->
-
-    <!--begin::Row-->
-    <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
-        <!--begin::Col-->
-        <div class="col-xxl-6">
-            @include('partials/widgets/cards/_widget-18')
-        </div>
-        <!--end::Col-->
-        <!--begin::Col-->
-        <div class="col-xl-6">
-            @include('partials/widgets/charts/_widget-36')
-        </div>
-        <!--end::Col-->
-    </div>
-    <!--end::Row-->
-
-    <!--begin::Row-->
-    <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
-        <!--begin::Col-->
-        <div class="col-xl-4">
-            @include('partials/widgets/charts/_widget-35')
-        </div>
-        <!--end::Col-->
-        <!--begin::Col-->
+    <!-- ============================= -->
+    <!-- CHARTS ROW -->
+    <!-- ============================= -->
+    <div class="row g-5 mb-5">
         <div class="col-xl-8">
-            @include('partials/widgets/tables/_widget-14')
+            @include('partials.dashboard.charts._tren-tiket-bulanan')
         </div>
-        <!--end::Col-->
-    </div>
-    <!--end::Row-->
-
-    <!--begin::Row-->
-    <div class="row gx-5 gx-xl-10">
-        <!--begin::Col-->
         <div class="col-xl-4">
-            @include('partials/widgets/charts/_widget-31')
+            @include('partials.dashboard.charts._jenis-sengketa')
         </div>
-        <!--end::Col-->
-        <!--begin::Col-->
-        <div class="col-xl-8">
-            @include('partials/widgets/charts/_widget-24')
-        </div>
-        <!--end::Col-->
     </div>
-    <!--end::Row-->
+
+    <!-- ============================= -->
+    <!-- TABLE + REGIONAL DISTRIBUTION -->
+    <!-- ============================= -->
+    <div class="row g-5 mb-5">
+        <div class="col-xl-8">
+            @include('partials.dashboard.tables._tiket-terbaru')
+        </div>
+        <div class="col-xl-4">
+            @include('partials.dashboard.cards._distribusi-regional')
+        </div>
+    </div>
 </x-default-layout>
