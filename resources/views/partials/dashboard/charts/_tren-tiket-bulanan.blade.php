@@ -1,7 +1,8 @@
 <div class="card shadow-sm border-0">
     <div class="card-header">
-        <h6 class="fw-bold mb-0">Tren Tiket Bulanan</h6>
-        <small class="text-muted">Perbandingan tiket masuk dan selesai</small>
+        <div class="card-title">
+            <h2>Tren Tiket Bulanan</h2>
+        </div>
     </div>
     <div class="card-body">
         <div id="chartTrenTiket"></div>

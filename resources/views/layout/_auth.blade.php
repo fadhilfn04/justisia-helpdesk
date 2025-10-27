@@ -20,7 +20,7 @@
                 </div>
                 <!--end::Form-->
 
-                <!--begin::Footer-->
+                {{-- <!--begin::Footer-->
                 <div class="d-flex flex-center flex-wrap px-5">
                     <!--begin::Links-->
                     <div class="d-flex fw-semibold text-primary fs-base">
@@ -32,7 +32,7 @@
                     </div>
                     <!--end::Links-->
                 </div>
-                <!--end::Footer-->
+                <!--end::Footer--> --}}
             </div>
             <!--end::Body-->
 

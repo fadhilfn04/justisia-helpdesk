@@ -8,6 +8,84 @@
         {{ Breadcrumbs::render('user-management.users.index') }}
     @endsection
 
+    <div class="card mb-5">
+        <div class="card-body">
+
+            <!-- Statistik Atas -->
+            <div class="row mb-8">
+                <div class="col-md-3">
+                    <div class="bg-light rounded-3 p-6 text-center h-100">
+                        <div class="fs-2hx fw-bold text-gray-800">5</div>
+                        <div class="fs-6 text-gray-600 mt-2">Total Pengguna</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="bg-light rounded-3 p-6 text-center h-100">
+                        <div class="fs-2hx fw-bold text-success">3</div>
+                        <div class="fs-6 text-gray-600 mt-2">Aktif</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="bg-light rounded-3 p-6 text-center h-100">
+                        <div class="fs-2hx fw-bold text-gray-700">1</div>
+                        <div class="fs-6 text-gray-600 mt-2">Tidak Aktif</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="bg-light rounded-3 p-6 text-center h-100">
+                        <div class="fs-2hx fw-bold text-danger">1</div>
+                        <div class="fs-6 text-gray-600 mt-2">Ditangguhkan</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistik Role -->
+            <div class="row mb-8">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center bg-light rounded-3 p-6 h-100">
+                        <div class="symbol symbol-40px me-4">
+                            <div class="symbol-label bg-danger bg-opacity-10">
+                                <i class="ki-outline ki-shield-tick text-danger fs-2"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="fs-2 fw-bold text-gray-800">1</div>
+                            <div class="fs-6 text-gray-600">Administrator</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center bg-light rounded-3 p-6 h-100">
+                        <div class="symbol symbol-40px me-4">
+                            <div class="symbol-label bg-primary bg-opacity-10">
+                                <i class="ki-outline ki-user text-primary fs-2"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="fs-2 fw-bold text-gray-800">1</div>
+                            <div class="fs-6 text-gray-600">Supervisor</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center bg-light rounded-3 p-6 h-100">
+                        <div class="symbol symbol-40px me-4">
+                            <div class="symbol-label bg-success bg-opacity-10">
+                                <i class="ki-outline ki-people text-success fs-2"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="fs-2 fw-bold text-gray-800">3</div>
+                            <div class="fs-6 text-gray-600">Operator</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card">
         <!--begin::Card header-->
         <div class="card-header border-0 pt-6">

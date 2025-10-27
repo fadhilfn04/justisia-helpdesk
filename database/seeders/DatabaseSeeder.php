@@ -19,6 +19,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UsersSeeder::class,
             RolesPermissionsSeeder::class,
+            TicketSeeder::class,
+            TicketMessageSeeder::class,
+            TicketStatusLogSeeder::class,
+            FeedbackSurveySeeder::class,
         ]);
 
         \App\Models\User::factory(20)->create();
