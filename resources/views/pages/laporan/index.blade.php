@@ -180,6 +180,14 @@
 
                     @include('partials.dashboard.charts._tren-sla')
                 </div>
+
+                <div class="tab-pane fade" id="tab_regional" role="tabpanel">
+                    @include('partials.dashboard.charts._kinerja-regional')
+                </div>
+
+                <div class="tab-pane fade" id="tab_tren" role="tabpanel">
+                    @include('partials.dashboard.charts._tren-tiket-harian')
+                </div>
             </div>
 
         </div>

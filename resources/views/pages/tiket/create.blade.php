@@ -21,7 +21,7 @@
                 </div>
 
                 <!-- Form -->
-                <form action="{{ route('ticket.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('tiket.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row g-7">
 

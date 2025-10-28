@@ -6,18 +6,26 @@ use App\Models\Ticket;
 use App\Models\TicketCategory;
 use Illuminate\Http\Request;
 
-class TicketController extends Controller
+class PembatalanSertifikatController extends Controller
 {
     public function index()
     {
-        $ticket = Ticket::all();
-        return view('pages.ticket.index', compact('ticket'));
+        return view('pages.pembatalan-sertifikat.index');
     }
 
     public function create()
     {
-        $categories = TicketCategory::all();
-        return view('pages.ticket.create', compact('categories'));
+        return view('pages.pembatalan-sertifikat.create');
+    }
+
+    public function cacat_administrasi()
+    {
+        return view('pages.pembatalan-sertifikat.cacat_administrasi');
+    }
+
+    public function putusan_pengadilan()
+    {
+        return view('pages.pembatalan-sertifikat.putusan_pengadilan');
     }
 
     public function store(Request $request)
@@ -47,18 +55,14 @@ class TicketController extends Controller
         return redirect()->route('helpdesk.index')->with('success', 'Tiket berhasil dibuat!');
     }
 
-    public function edit(Ticket $ticket)
-    {
-    }
+    public function edit(Ticket $ticket) {}
 
-    public function update(Request $request, Ticket $ticket)
-    {
-    }
+    public function update(Request $request, Ticket $ticket) {}
 
     // public function destroy(Ticket $ticket)
     // {
     //     $ticket->delete();
-    //     return redirect()->route('ticket.index')->with('success', 'Data tiket berhasil dihapus.');
+    //     return redirect()->route('tiket.index')->with('success', 'Data tiket berhasil dihapus.');
     // }
 
     // public function import(Request $request)
@@ -76,4 +80,3 @@ class TicketController extends Controller
     //     }
     // }
 }
-

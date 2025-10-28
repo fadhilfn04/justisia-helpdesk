@@ -74,7 +74,7 @@
                     Export
                 </button>
 
-                <a href="{{ route('ticket.create') }}" class="btn btn-dark">
+                <a href="{{ route('tiket.create') }}" class="btn btn-dark">
                     {!! getIcon('plus', 'fs-4 me-2') !!}
                     Buat Tiket
                 </a>

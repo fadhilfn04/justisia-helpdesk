@@ -19,8 +19,8 @@ class UsersDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->rawColumns(['user', 'last_login_at'])
-            ->editColumn('user', function (User $user) {
+            ->rawColumns(['pengguna', 'last_login_at'])
+            ->editColumn('pengguna', function (User $user) {
                 return view('pages/apps.user-management.users.columns._user', compact('user'));
             })
             ->editColumn('role', function (User $user) {
@@ -69,7 +69,7 @@ class UsersDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('user')->addClass('d-flex align-items-center')->name('name'),
+            Column::make('pengguna')->addClass('d-flex align-items-center')->name('name'),
             Column::make('role')->searchable(false),
             Column::make('last_login_at')->title('Last Login'),
             Column::make('created_at')->title('Joined Date')->addClass('text-nowrap'),
