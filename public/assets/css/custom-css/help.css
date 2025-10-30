@@ -20,13 +20,6 @@
     font-size: 1.03rem !important;
 }
 
-.accordion-button:not(.collapsed) {
-  background-color: transparent !important;
-  box-shadow: none !important;
-  color: #000 !important;
-}
-
-
 .input-soft-shadow {
     border: none;
     box-shadow:
@@ -60,14 +53,5 @@
   text-decoration: underline;
   text-decoration-color: #000;
   text-decoration-thickness: 1px;
-}
-
-.badge-bg-warning {
-    background-color: rgba(255, 193, 7, 0.2);
-}
-
-.badge-bg-chocolate {
-    background-color: rgba(210, 105, 30, 0.2);
-    color: rgba(210, 105, 30, 1);
 }
 
