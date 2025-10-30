@@ -1,7 +1,7 @@
 <div class="card shadow-sm border-0">
     <div class="card-header">
         <div class="card-title">
-            <h2>Tiket Terbaru</h2>
+            <h2>Monitoring SLA</h2>
         </div>
     </div>
     <div class="card-body">
@@ -12,22 +12,22 @@
                         [
                             'id' => 'TKT-23001',
                             'judul' => 'Sengketa batas tanah di Jakarta Selatan',
-                            'status' => 'Terbuka',
-                            'badge' => 'bg-success',
+                            'status' => 'Peringatan',
+                            'badge' => 'bg-warning',
                             'waktu' => '2 jam lalu'
                         ],
                         [
                             'id' => 'TKT-23002',
                             'judul' => 'Konflik kepemilikan tanah di Bandung',
-                            'status' => 'Terbuka',
-                            'badge' => 'bg-success',
+                            'status' => 'Terlambat',
+                            'badge' => 'bg-danger',
                             'waktu' => '5 jam lalu'
                         ],
                         [
                             'id' => 'TKT-23003',
                             'judul' => 'Permohonan pembatalan sertifikat ganda',
-                            'status' => 'Proses',
-                            'badge' => 'bg-warning text-dark',
+                            'status' => 'Normal',
+                            'badge' => 'bg-success',
                             'waktu' => '1 hari lalu'
                         ],
                         [

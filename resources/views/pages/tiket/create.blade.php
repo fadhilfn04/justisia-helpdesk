@@ -8,8 +8,8 @@
         {{ Breadcrumbs::render('helpdesk.create') }}
     @endsection --}}
 
-    <div class="card">
-        <div class="card-body py-5 px-10">
+    {{-- <div class="card">
+        <div class="card-body py-5 px-10"> --}}
             <div class="d-flex flex-column gap-7">
 
                 <!-- Header -->
@@ -114,6 +114,14 @@
                                 </div>
                             </div>
 
+                            <div class="d-flex flex-column gap-3">
+                                <button type="submit" value="1" class="btn btn-dark w-100 py-3">
+                                    Buat Tiket
+                                </button>
+                                <button type="submit" name="simpan_draft" class="btn btn-light w-100 py-3">
+                                    Simpan Draft
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Data Pelapor -->
@@ -159,19 +167,10 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Tombol -->
-                        <div class="col-lg-12 d-flex justify-content-end gap-3">
-                            <button type="submit" name="save_draft" value="1" class="btn btn-light">
-                                Simpan Draft
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                Buat Tiket
-                            </button>
-                        </div>
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
+        {{-- </div>
+    </div> --}}
 
 </x-default-layout>

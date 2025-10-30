@@ -10,9 +10,62 @@
             $stats = [
                 ['label' => 'Total', 'count' => 5, 'color' => 'text-gray-800'],
                 ['label' => 'Menunggu', 'count' => 1, 'color' => 'text-primary'],
-                ['label' => 'Review', 'count' => 1, 'color' => 'text-warning'],
+                ['label' => 'Proses', 'count' => 1, 'color' => 'text-warning'],
                 ['label' => 'Disetujui', 'count' => 1, 'color' => 'text-info'],
-                ['label' => 'Ditolak', 'count' => 1, 'color' => 'text-danger'],
+                ['label' => 'Selesai', 'count' => 1, 'color' => 'text-danger'],
+            ];
+
+            $pembatalanList = [
+                [
+                    'id_pembatalan' => 'PB-001',
+                    'no_sertifikat' => 'SRT-2024-00123',
+                    'pemilik' => 'Ahmad Fadillah',
+                    'lokasi' => 'Jakarta Selatan',
+                    'jenis' => 'Tanah',
+                    'status' => 'Proses',
+                    'penanggung_jawab' => 'Rina Kartika',
+                    'target_selesai' => '2025-11-05',
+                ],
+                [
+                    'id_pembatalan' => 'PB-002',
+                    'no_sertifikat' => 'SRT-2024-00456',
+                    'pemilik' => 'Satria Nugraha',
+                    'lokasi' => 'Bandung',
+                    'jenis' => 'Bangunan',
+                    'status' => 'Selesai',
+                    'penanggung_jawab' => 'Andi Wijaya',
+                    'target_selesai' => '2025-10-15',
+                ],
+                [
+                    'id_pembatalan' => 'PB-003',
+                    'no_sertifikat' => 'SRT-2024-00789',
+                    'pemilik' => 'Dewi Lestari',
+                    'lokasi' => 'Surabaya',
+                    'jenis' => 'Tanah & Bangunan',
+                    'status' => 'Ditolak',
+                    'penanggung_jawab' => 'Rudi Hartono',
+                    'target_selesai' => '2025-09-28',
+                ],
+                [
+                    'id_pembatalan' => 'PB-004',
+                    'no_sertifikat' => 'SRT-2024-00234',
+                    'pemilik' => 'Lina Marlina',
+                    'lokasi' => 'Medan',
+                    'jenis' => 'Tanah',
+                    'status' => 'Menunggu',
+                    'penanggung_jawab' => 'Fajar Prasetyo',
+                    'target_selesai' => '2025-11-10',
+                ],
+                [
+                    'id_pembatalan' => 'PB-005',
+                    'no_sertifikat' => 'SRT-2024-00678',
+                    'pemilik' => 'Rizky Amelia',
+                    'lokasi' => 'Yogyakarta',
+                    'jenis' => 'Bangunan',
+                    'status' => 'Selesai',
+                    'penanggung_jawab' => 'Andi Wijaya',
+                    'target_selesai' => '2025-08-30',
+                ],
             ];
         @endphp
 
@@ -71,7 +124,7 @@
     <div class="card border-0 shadow-sm">
         <div class="card-header border-0 pt-6 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
             <div>
-                <h3 class="fw-bold mb-1">Daftar Pembatalan Sertifikat (5)</h3>
+                <h3 class="fw-bold mb-1">Daftar Pembatalan Sertifikat ({{ count($pembatalanList) }})</h3>
                 <div class="text-muted">Kelola proses pembatalan sertifikat berdasarkan cacat administrasi dan putusan pengadilan</div>
             </div>
             <button class="btn btn-sm btn-light mt-3 mt-sm-0">
@@ -97,6 +150,37 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach ($pembatalanList as $item)
+                            <tr>
+                                <td>{{ $item['id_pembatalan'] }}</td>
+                                <td>{{ $item['no_sertifikat'] }}</td>
+                                <td>{{ $item['pemilik'] }}</td>
+                                <td>{{ $item['lokasi'] }}</td>
+                                <td>{{ $item['jenis'] }}</td>
+                                <td>
+                                    @switch($item['status'])
+                                        @case('Selesai')
+                                            <span class="badge bg-success">Selesai</span>
+                                            @break
+                                        @case('Proses')
+                                            <span class="badge bg-warning">Proses</span>
+                                            @break
+                                        @case('Menunggu')
+                                            <span class="badge bg-primary">Menunggu</span>
+                                            @break
+                                        @default
+                                            <span class="badge bg-danger">Ditolak</span>
+                                    @endswitch
+                                </td>
+                                <td>{{ $item['penanggung_jawab'] }}</td>
+                                <td>{{ \Carbon\Carbon::parse($item['target_selesai'])->format('d M Y') }}</td>
+                                <td class="text-end">
+                                    <a href="#" class="btn btn-sm btn-light-primary">
+                                        {!! getIcon('eye', 'fs-4 me-1') !!} Detail
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -106,6 +190,7 @@
 
     @push('scripts')
         <script>
+            console.log('Halaman daftar pembatalan siap digunakan.');
         </script>
     @endpush
 

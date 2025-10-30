@@ -12,6 +12,6 @@
     data-kt-swapper-mode="{default: 'append', lg: 'prepend'}"
     data-kt-swapper-parent="{default: '#kt_app_body', lg: '#kt_app_header_wrapper'}"
 >
-    <h1 class="fs-3 fw-bold text-dark m-0">Justisia - Sistem Sengketa, Konflik, dan Perkara</h1>
+    <h1 class="fs-3 fw-bold text-white m-0">Justisia - Sistem Sengketa, Konflik, dan Perkara</h1>
 </div>
 <!--end::Menu wrapper-->

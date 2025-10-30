@@ -3,8 +3,8 @@
 <div class="app-sidebar-logo px-6" id="kt_app_sidebar_logo">
 	<!--begin::Logo image-->
 	<a href="{{ route('dashboard') }}">
-		{{-- <img alt="Logo" src="{{ image('logos/atrbpn.png') }}" class="h-40px app-sidebar-logo-default" />
-		<img alt="Logo" src="{{ image('logos/atrbpn.png') }}" class="h-35px app-sidebar-logo-minimize" /> --}}
+		<img alt="Logo" src="{{ image('logos/atrbpn-logo.png') }}" class="h-200px app-sidebar-logo-default" />
+		<img alt="Logo" src="{{ image('logos/atrbpn.png') }}" class="h-35px app-sidebar-logo-minimize" />
 	</a>
 	<!--end::Logo image-->
 	<!--begin::Sidebar toggle-->

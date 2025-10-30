@@ -107,7 +107,7 @@
             <!--begin::Search-->
             <div class="flex-grow-1 position-relative">
                 {!! getIcon('magnifier', 'fs-3 position-absolute ms-5 top-50 translate-middle-y text-gray-500') !!}
-                <input type="text" data-kt-user-table-filter="search" class="form-control form-control-solid ps-13" placeholder="Cari nama, email, atau departemen..." id="mySearchInput"/>
+                <input type="text" data-kt-user-table-filter="search" class="form-control form-control-solid ps-13" placeholder="Cari nama..." id="mySearchInput"/>
             </div>
             <!--end::Search-->
 
@@ -141,7 +141,7 @@
             <!--end::Filters-->
 
             <!--begin::Buttons-->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_user">
+            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#kt_modal_add_user">
                 {!! getIcon('plus', 'fs-2', '', 'i') !!}
                 Tambah Pengguna
             </button>

@@ -50407,7 +50407,7 @@ body,
   }
 }
 [data-kt-app-layout=dark-sidebar] .app-sidebar {
-  background-color: #0D0E12;
+  background-color: #ffc107;
   border-right: 0;
 }
 [data-kt-app-layout=dark-sidebar] .app-sidebar .scroll-y,
@@ -50456,10 +50456,10 @@ body,
   color: #636674 !important;
 }
 [data-kt-app-layout=dark-sidebar] .app-sidebar .menu .menu-item .menu-link {
-  color: #9A9CAE;
+  color: #232630;
 }
 [data-kt-app-layout=dark-sidebar] .app-sidebar .menu .menu-item .menu-link .menu-title {
-  color: #9A9CAE;
+  color: #232630;
 }
 [data-kt-app-layout=dark-sidebar] .app-sidebar .menu .menu-item .menu-link .menu-icon,
 [data-kt-app-layout=dark-sidebar] .app-sidebar .menu .menu-item .menu-link .menu-icon .svg-icon,
@@ -50590,7 +50590,7 @@ body,
 }
 [data-kt-app-layout=dark-sidebar] .app-sidebar .menu .menu-item .menu-link.active {
   transition: color 0.2s ease;
-  background-color: #1C1C21;
+  background-color: #05339C;
   color: #F5F5F5;
 }
 [data-kt-app-layout=dark-sidebar] .app-sidebar .menu .menu-item .menu-link.active .menu-title {
