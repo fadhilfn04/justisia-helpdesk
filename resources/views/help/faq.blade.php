@@ -4,7 +4,7 @@
 <div class="container">
     <div class="mx-auto" style="max-width: 900px;">
         <!-- Card FAQ Header -->
-        <div class="card border">
+        <div class="card bg-light border border-gray-300">
             <div class="card-body">
                 <div class="text-center">
                     <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
@@ -32,7 +32,7 @@
         </div>
 
         <!-- Card Konten FAQ Helpdesk -->
-        <div class="card border mt-5" data-category="helpdesk">
+        <div class="card bg-light border border-gray-300 mt-5" data-category="helpdesk">
             <div class="card-body">
                 <div class="d-flex align-items-center mb-3">
                     <div class="d-flex align-items-center gap-3">
@@ -41,16 +41,16 @@
                         </div>
                         <h3 class="fw-bold text-dark mb-0">Helpdesk</h3>
                     </div>
-                    <span class="badge fs-7 px-3 py-1 mx-3" style="border: 1px solid rgba(108, 117, 125, 0.4);">
+                    <span class="badge bg-light fs-7 px-3 py-1 mx-3" style="border: 1px solid rgba(108, 117, 125, 0.4);">
                         3 FAQ
                     </span>
                 </div>
 
                 <div class="accordion mt-12" id="faqAccordionHelpdesk">
                     <!-- FAQ 1 -->
-                    <div class="accordion-item" style="border: none; border-bottom: 1px solid #dee2e6;">
+                    <div class="accordion-item bg-light" style="border: none; border-bottom: 1px solid #dee2e6;">
                         <h2 class="accordion-header" id="headingHelpdeskOne">
-                            <button class="accordion-button collapsed fw-semibold text-dark px-0 py-4"
+                            <button class="accordion-button collapsed fw-semibold text-dark bg-light px-0 py-4"
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseHelpdeskOne"
@@ -69,9 +69,9 @@
                     </div>
 
                     <!-- FAQ 2 -->
-                    <div class="accordion-item mt-3" style="border: none; border-bottom: 1px solid #dee2e6;">
+                    <div class="accordion-item bg-light mt-3" style="border: none; border-bottom: 1px solid #dee2e6;">
                         <h2 class="accordion-header" id="headingHelpdeskTwo">
-                            <button class="accordion-button collapsed fw-semibold text-dark px-0 py-4"
+                            <button class="accordion-button collapsed fw-semibold text-dark bg-light px-0 py-4"
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseHelpdeskTwo"
@@ -90,9 +90,9 @@
                     </div>
 
                     <!-- FAQ 3 -->
-                    <div class="accordion-item mt-3" style="border: none;">
+                    <div class="accordion-item bg-light mt-3" style="border: none;">
                         <h2 class="accordion-header" id="headingHelpdeskThree">
-                            <button class="accordion-button collapsed fw-semibold text-dark px-0 py-4"
+                            <button class="accordion-button collapsed fw-semibold text-dark bg-light px-0 py-4"
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseHelpdeskThree"
@@ -114,7 +114,7 @@
         </div>
 
         <!-- CARD: Pembatalan Sertifikasi -->
-        <div class="card border mt-5" data-category="cancel">
+        <div class="card bg-light border border-gray-300 mt-5" data-category="cancel">
             <div class="card-body">
                 <div class="d-flex align-items-center mb-3">
                     <div class="d-flex align-items-center gap-3">
@@ -123,16 +123,16 @@
                         </div>
                         <h3 class="fw-bold text-dark mb-0">Pembatalan Sertifikasi</h3>
                     </div>
-                    <span class="badge fs-7 px-3 py-1 mx-3" style="border: 1px solid rgba(108, 117, 125, 0.4);">
+                    <span class="badge bg-light fs-7 px-3 py-1 mx-3" style="border: 1px solid rgba(108, 117, 125, 0.4);">
                         2 FAQ
                     </span>
                 </div>
 
                 <div class="accordion mt-12" id="faqAccordionCancel">
                 <!-- FAQ 1 -->
-                    <div class="accordion-item" style="border: none; border-bottom: 1px solid #dee2e6;">
+                    <div class="accordion-item bg-light" style="border: none; border-bottom: 1px solid #dee2e6;">
                         <h2 class="accordion-header" id="headingCancelOne">
-                            <button class="accordion-button collapsed fw-semibold text-dark px-0 py-4"
+                            <button class="accordion-button collapsed fw-semibold text-dark bg-light px-0 py-4"
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseCancelOne"
@@ -151,9 +151,9 @@
                     </div>
 
                     <!-- FAQ 2 -->
-                    <div class="accordion-item mt-3" style="border: none;">
+                    <div class="accordion-item bg-light mt-3" style="border: none;">
                         <h2 class="accordion-header" id="headingCancelTwo">
-                            <button class="accordion-button collapsed fw-semibold text-dark px-0 py-4"
+                            <button class="accordion-button collapsed fw-semibold text-dark bg-light px-0 py-4"
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseCancelTwo"
@@ -175,7 +175,7 @@
         </div>
 
         <!-- CARD: Sengketa Konflik -->
-        <div class="card border mt-5" data-category="sengketa">
+        <div class="card bg-light border border-gray-300 mt-5" data-category="sengketa">
             <div class="card-body">
                 <div class="d-flex align-items-center mb-3">
                     <div class="d-flex align-items-center gap-3">
@@ -184,16 +184,16 @@
                         </div>
                         <h3 class="fw-bold text-dark mb-0">Sengketa Konflik</h3>
                     </div>
-                    <span class="badge fs-7 px-3 py-1 mx-3" style="border: 1px solid rgba(108, 117, 125, 0.4);">
+                    <span class="badge bg-light fs-7 px-3 py-1 mx-3" style="border: 1px solid rgba(108, 117, 125, 0.4);">
                         2 FAQ
                     </span>
                 </div>
 
                 <div class="accordion mt-12" id="faqAccordionCancelSengketa">
                 <!-- FAQ 1 -->
-                    <div class="accordion-item" style="border: none; border-bottom: 1px solid #dee2e6;">
+                    <div class="accordion-item bg-light" style="border: none; border-bottom: 1px solid #dee2e6;">
                         <h2 class="accordion-header" id="headingCancelOneSengketa">
-                            <button class="accordion-button collapsed fw-semibold text-dark px-0 py-4"
+                            <button class="accordion-button collapsed fw-semibold text-dark bg-light px-0 py-4"
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseCancelOneSengketa"
@@ -212,9 +212,9 @@
                     </div>
 
                     <!-- FAQ 2 -->
-                    <div class="accordion-item mt-3" style="border: none;">
+                    <div class="accordion-item bg-light mt-3" style="border: none;">
                         <h2 class="accordion-header" id="headingCancelTwoSengketa">
-                            <button class="accordion-button collapsed fw-semibold text-dark px-0 py-4"
+                            <button class="accordion-button collapsed fw-semibold text-dark bg-light px-0 py-4"
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseCancelTwoSengketa"
@@ -236,7 +236,7 @@
         </div>
 
         <!-- CARD: Laporan & Statistik -->
-        <div class="card border mt-5" data-category="laporan">
+        <div class="card bg-light border border-gray-300 mt-5" data-category="laporan">
             <div class="card-body">
                 <div class="d-flex align-items-center mb-3">
                     <div class="d-flex align-items-center gap-3">
@@ -245,16 +245,16 @@
                         </div>
                         <h3 class="fw-bold text-dark mb-0">Laporan & Statistik</h3>
                     </div>
-                    <span class="badge fs-7 px-3 py-1 mx-3" style="border: 1px solid rgba(108, 117, 125, 0.4);">
+                    <span class="badge bg-light fs-7 px-3 py-1 mx-3" style="border: 1px solid rgba(108, 117, 125, 0.4);">
                         2 FAQ
                     </span>
                 </div>
 
                 <div class="accordion mt-12" id="faqAccordionCancelLaporan">
                 <!-- FAQ 1 -->
-                    <div class="accordion-item" style="border: none; border-bottom: 1px solid #dee2e6;">
+                    <div class="accordion-item bg-light" style="border: none; border-bottom: 1px solid #dee2e6;">
                         <h2 class="accordion-header" id="headingCancelOneLaporan">
-                            <button class="accordion-button collapsed fw-semibold text-dark px-0 py-4"
+                            <button class="accordion-button collapsed fw-semibold text-dark bg-light px-0 py-4"
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseCancelOneLaporan"
@@ -273,9 +273,9 @@
                     </div>
 
                     <!-- FAQ 2 -->
-                    <div class="accordion-item mt-3" style="border: none;">
+                    <div class="accordion-item bg-light mt-3" style="border: none;">
                         <h2 class="accordion-header" id="headingCancelTwoLaporan">
-                            <button class="accordion-button collapsed fw-semibold text-dark px-0 py-4"
+                            <button class="accordion-button collapsed fw-semibold text-dark bg-light px-0 py-4"
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseCancelTwoLaporan"
@@ -297,7 +297,7 @@
         </div>
 
         <!-- CARD: Manajemen User -->
-        <div class="card border mt-5" data-category="manajemen">
+        <div class="card bg-light border border-gray-300 mt-5" data-category="manajemen">
             <div class="card-body">
                 <div class="d-flex align-items-center mb-3">
                     <div class="d-flex align-items-center gap-3">
@@ -306,16 +306,16 @@
                         </div>
                         <h3 class="fw-bold text-dark mb-0">Manajemen User</h3>
                     </div>
-                    <span class="badge fs-7 px-3 py-1 mx-3" style="border: 1px solid rgba(108, 117, 125, 0.4);">
+                    <span class="badge bg-light fs-7 px-3 py-1 mx-3" style="border: 1px solid rgba(108, 117, 125, 0.4);">
                         2 FAQ
                     </span>
                 </div>
 
                 <div class="accordion mt-12" id="faqAccordionCancelManajemen">
                 <!-- FAQ 1 -->
-                    <div class="accordion-item" style="border: none; border-bottom: 1px solid #dee2e6;">
+                    <div class="accordion-item bg-light" style="border: none; border-bottom: 1px solid #dee2e6;">
                         <h2 class="accordion-header" id="headingCancelOneManajemen">
-                            <button class="accordion-button collapsed fw-semibold text-dark px-0 py-4"
+                            <button class="accordion-button collapsed fw-semibold text-dark bg-light px-0 py-4"
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseCancelOneManajemen"
@@ -334,9 +334,9 @@
                     </div>
 
                     <!-- FAQ 2 -->
-                    <div class="accordion-item mt-3" style="border: none;">
+                    <div class="accordion-item bg-light mt-3" style="border: none;">
                         <h2 class="accordion-header" id="headingCancelTwoManajemen">
-                            <button class="accordion-button collapsed fw-semibold text-dark px-0 py-4"
+                            <button class="accordion-button collapsed fw-semibold text-dark bg-light px-0 py-4"
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseCancelTwoManajemen"
