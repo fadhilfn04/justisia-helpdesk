@@ -74,7 +74,7 @@
                     Export
                 </button>
 
-                <a href="{{ route('tiket.create') }}" class="btn btn-dark">
+                <a href="{{ route('tiket.create') }}" class="btn btn-primary">
                     {!! getIcon('plus', 'fs-4 me-2') !!}
                     Buat Tiket
                 </a>
@@ -115,6 +115,126 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr>
+                            <td>#TCK-001</td>
+                            <td>Login gagal pada aplikasi Justisia</td>
+                            <td>
+                                <span class="badge badge-light-danger d-inline-flex align-items-center">
+                                    {!! getIcon('cross-circle', 'fs-4 me-2 text-danger') !!} Open
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-light-danger d-inline-flex align-items-center">
+                                    {!! getIcon('warning-2', 'fs-4 me-2 text-danger') !!} High
+                                </span>
+                            </td>
+                            <td>Fadhil Ferdian</td>
+                            <td>Rizky Pratama</td>
+                            <td>Jakarta</td>
+                            <td>2 Hari</td>
+                            <td>Belum direspon</td>
+                            <td class="text-end">
+                                <a href="#" class="btn btn-sm btn-light btn-active-light-primary">
+                                    {!! getIcon('eye', 'fs-4 me-1') !!} Detail
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#TCK-002</td>
+                            <td>Kesalahan data wilayah pada laporan</td>
+                            <td>
+                                <span class="badge badge-light-warning d-inline-flex align-items-center">
+                                    {!! getIcon('time', 'fs-4 me-2 text-warning') !!} In Progress
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-light-warning d-inline-flex align-items-center">
+                                    {!! getIcon('alert', 'fs-4 me-2 text-warning') !!} Medium
+                                </span>
+                            </td>
+                            <td>Andini Putri</td>
+                            <td>Yusuf Ahmad</td>
+                            <td>Bandung</td>
+                            <td>3 Hari</td>
+                            <td>Sedang ditangani</td>
+                            <td class="text-end">
+                                <a href="#" class="btn btn-sm btn-light btn-active-light-primary">
+                                    {!! getIcon('eye', 'fs-4 me-1') !!} Detail
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#TCK-003</td>
+                            <td>Tidak bisa unggah file dokumen</td>
+                            <td>
+                                <span class="badge badge-light-success d-inline-flex align-items-center">
+                                    {!! getIcon('check-circle', 'fs-4 me-2 text-success') !!} Closed
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-light-info d-inline-flex align-items-center">
+                                    {!! getIcon('chevron-down', 'fs-4 me-2 text-info') !!} Low
+                                </span>
+                            </td>
+                            <td>Rina Kurnia</td>
+                            <td>Bagas Firmansyah</td>
+                            <td>Surabaya</td>
+                            <td>1 Hari</td>
+                            <td>Sudah diselesaikan</td>
+                            <td class="text-end">
+                                <a href="#" class="btn btn-sm btn-light btn-active-light-primary">
+                                    {!! getIcon('eye', 'fs-4 me-1') !!} Detail
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#TCK-004</td>
+                            <td>Notifikasi email tidak terkirim</td>
+                            <td>
+                                <span class="badge badge-light-primary d-inline-flex align-items-center">
+                                    {!! getIcon('pending', 'fs-4 me-2 text-primary') !!} Pending
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-light-warning d-inline-flex align-items-center">
+                                    {!! getIcon('alert', 'fs-4 me-2 text-warning') !!} Medium
+                                </span>
+                            </td>
+                            <td>Aditya Rahman</td>
+                            <td>Siti Aisyah</td>
+                            <td>Medan</td>
+                            <td>4 Hari</td>
+                            <td>Menunggu respon</td>
+                            <td class="text-end">
+                                <a href="#" class="btn btn-sm btn-light btn-active-light-primary">
+                                    {!! getIcon('eye', 'fs-4 me-1') !!} Detail
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#TCK-005</td>
+                            <td>Kesalahan tampilan pada dashboard</td>
+                            <td>
+                                <span class="badge badge-light-warning d-inline-flex align-items-center">
+                                    {!! getIcon('time', 'fs-4 me-2 text-warning') !!} In Progress
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-light-success d-inline-flex align-items-center">
+                                    {!! getIcon('chevron-down', 'fs-4 me-2 text-success') !!} Low
+                                </span>
+                            </td>
+                            <td>Nurul Fajri</td>
+                            <td>Dimas Saputra</td>
+                            <td>Makassar</td>
+                            <td>5 Hari</td>
+                            <td>Sedang diperbaiki</td>
+                            <td class="text-end">
+                                <a href="#" class="btn btn-sm btn-light btn-active-light-primary">
+                                    {!! getIcon('eye', 'fs-4 me-1') !!} Detail
+                                </a>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

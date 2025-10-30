@@ -99,9 +99,9 @@
 						</a>
 						<!--end:Menu link-->
 					</div>
-				<!--end:Menu item-->
+					<!--end:Menu item-->
 					<!--begin:Menu item-->
-					<div class="menu-item">
+					{{-- <div class="menu-item">
 						<!--begin:Menu link-->
 						<a class="menu-link {{ request()->routeIs('pembatalan-sertifikat.putusan_pengadilan') ? 'active' : '' }}" href="{{ route('pembatalan-sertifikat.putusan_pengadilan') }}">
 							<span class="menu-bullet">
@@ -110,58 +110,7 @@
 							<span class="menu-title">Putusan Pengadilan</span>
 						</a>
 						<!--end:Menu link-->
-					</div>
-					<!--end:Menu item-->
-				</div>
-				<!--end:Menu sub-->
-			</div>
-			<!--end:Menu item-->
-			<!--begin:Menu item-->
-			<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('tiket.*') ? 'here show' : '' }}">
-				<!--begin:Menu link-->
-				<span class="menu-link">
-					<span class="menu-icon">{!! getIcon('abstract-28', 'fs-2') !!}</span>
-					<span class="menu-title">Sengketa & Konflik</span>
-					<span class="menu-arrow"></span>
-				</span>
-				<!--end:Menu link-->
-				<!--begin:Menu sub-->
-				<div class="menu-sub menu-sub-accordion">
-					<!--begin:Menu item-->
-					<div class="menu-item">
-						<!--begin:Menu link-->
-						<a class="menu-link {{ request()->routeIs('tiket.index') ? 'active' : '' }}" href="{{ route('tiket.index') }}">
-							<span class="menu-bullet">
-								<span class="bullet bullet-dot"></span>
-							</span>
-							<span class="menu-title">Daftar Kasus</span>
-						</a>
-						<!--end:Menu link-->
-					</div>
-					<!--end:Menu item-->
-					<!--begin:Menu item-->
-					<div class="menu-item">
-						<!--begin:Menu link-->
-						<a class="menu-link {{ request()->routeIs('tiket.*') ? 'active' : '' }}" href="{{ route('tiket.index') }}">
-							<span class="menu-bullet">
-								<span class="bullet bullet-dot"></span>
-							</span>
-							<span class="menu-title">Peta Sengketa</span>
-						</a>
-						<!--end:Menu link-->
-					</div>
-				<!--end:Menu item-->
-					<!--begin:Menu item-->
-					<div class="menu-item">
-						<!--begin:Menu link-->
-						<a class="menu-link {{ request()->routeIs('tiket.create') ? 'active' : '' }}" href="{{ route('tiket.create') }}">
-							<span class="menu-bullet">
-								<span class="bullet bullet-dot"></span>
-							</span>
-							<span class="menu-title">Timeline Kasus</span>
-						</a>
-						<!--end:Menu link-->
-					</div>
+					</div> --}}
 					<!--end:Menu item-->
 				</div>
 				<!--end:Menu sub-->
@@ -229,17 +178,17 @@
 			</div>
 			<!--end:Menu item-->
 			<!--begin:Menu item-->
-			<div class="menu-item">
+			{{-- <div class="menu-item">
 				<!--begin:Menu link-->
 				<a class="menu-link {{ request()->routeIs('laporan.*') ? 'active' : '' }}" href="{{ route('laporan.index') }}">
 					<span class="menu-icon">{!! getIcon('rocket', 'fs-2') !!}</span>
 					<span class="menu-title">Pengaturan</span>
 				</a>
 				<!--end:Menu link-->
-			</div>
+			</div> --}}
 			<!--end:Menu item-->
 			<!--begin:Menu item-->
-			<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('tiket.*') ? 'here show' : '' }}">
+			{{-- <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('tiket.*') ? 'here show' : '' }}">
 				<!--begin:Menu link-->
 				<span class="menu-link">
 					<span class="menu-icon">{!! getIcon('abstract-28', 'fs-2') !!}</span>
@@ -287,7 +236,7 @@
 					<!--end:Menu item-->
 				</div>
 				<!--end:Menu sub-->
-			</div>
+			</div> --}}
 			<!--end:Menu item-->
 		</div>
 		<!--end::Menu-->

@@ -9,7 +9,7 @@
         <div class="text-center mb-11">
             <!--begin::Logo-->
             <div class="mb-5">
-                <img alt="Logo" src="{{ image('logos/justisia-logo.svg') }}" class="h-60px" />
+                <img alt="Logo" src="{{ image('logos/atrbpn.png') }}" class="h-60px" />
             </div>
             <!--end::Logo-->
 
@@ -57,12 +57,12 @@
         <!--end::Submit button-->
 
         <!--begin::Sign up-->
-        <div class="text-gray-500 text-center fw-semibold fs-6">
+        {{-- <div class="text-gray-500 text-center fw-semibold fs-6">
             Belum memiliki akun?
             <a href="{{ route('register') }}" class="link-primary">
                 Daftar Sekarang
             </a>
-        </div>
+        </div> --}}
         <!--end::Sign up-->
     </form>
     <!--end::Form-->

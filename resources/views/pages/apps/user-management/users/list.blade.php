@@ -13,7 +13,7 @@
         <div class="col-md-3">
             <div class="card shadow-sm text-center h-100">
                 <div class="card-body">
-                    <div class="fs-2hx fw-bold text-gray-800">5</div>
+                    <div class="fs-2hx fw-bold text-gray-800">{{ $totalUsers }}</div>
                     <div class="fs-6 text-gray-600 mt-2">Total Pengguna</div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                             </div>
                         </div>
                         <div>
-                            <div class="fs-2 fw-bold text-gray-800">1</div>
+                            <div class="fs-2 fw-bold text-gray-800">{{ $totalAdmin }}</div>
                             <div class="fs-6 text-gray-600">Administrator</div>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                             </div>
                         </div>
                         <div>
-                            <div class="fs-2 fw-bold text-gray-800">1</div>
+                            <div class="fs-2 fw-bold text-gray-800">{{ $totalSupervisor }}</div>
                             <div class="fs-6 text-gray-600">Supervisor</div>
                         </div>
                     </div>
@@ -92,7 +92,7 @@
                             </div>
                         </div>
                         <div>
-                            <div class="fs-2 fw-bold text-gray-800">3</div>
+                            <div class="fs-2 fw-bold text-gray-800">{{ $totalOperator }}</div>
                             <div class="fs-6 text-gray-600">Operator</div>
                         </div>
                     </div>

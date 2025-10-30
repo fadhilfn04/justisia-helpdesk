@@ -14,7 +14,24 @@ class UserManagementController extends Controller
      */
     public function index(UsersDataTable $dataTable)
     {
-        return $dataTable->render('pages/apps.user-management.users.list');
+        $totalUsers = User::count();
+        // $totalAktif = User::where('status', 'aktif')->count();
+        // $totalTidakAktif = User::where('status', 'tidak_aktif')->count();
+        // $totalDitangguhkan = User::where('status', 'ditangguhkan')->count();
+
+        $totalAdmin = User::query()->role('Administrator')->count();
+        $totalSupervisor = User::query()->role('Supervisor')->count();
+        $totalOperator = User::query()->role('Operator')->count();
+
+        return $dataTable->render('pages/apps.user-management.users.list', compact(
+            'totalUsers',
+            // 'totalAktif',
+            // 'totalTidakAktif',
+            // 'totalDitangguhkan',
+            'totalAdmin',
+            'totalSupervisor',
+            'totalOperator',
+        ));
     }
 
     /**

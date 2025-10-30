@@ -37,7 +37,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/putusan-pengadilan', [PembatalanSertifikatController::class, 'putusan_pengadilan'])->name('pembatalan-sertifikat.putusan_pengadilan');
     });
 
-    Route::resource('sengketa-konflik', SengketaKonflikController::class);
     Route::resource('laporan', LaporanController::class);
     Route::resource('settings', SettingsController::class);
     Route::resource('faq', FaqController::class);

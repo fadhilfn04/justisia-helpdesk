@@ -5,9 +5,6 @@
         {{ Breadcrumbs::render('dashboard') }}
     @endsection
 
-    <!-- ============================= -->
-    <!-- TOP SUMMARY CARDS -->
-    <!-- ============================= -->
     <div class="row g-5 mb-5">
         <div class="col-md-3 col-sm-6">
             @include('partials.dashboard.cards._total-tiket')
@@ -23,9 +20,6 @@
         </div>
     </div>
 
-    <!-- ============================= -->
-    <!-- CHARTS ROW -->
-    <!-- ============================= -->
     <div class="row g-5 mb-5">
         <div class="col-xl-8">
             @include('partials.dashboard.charts._tren-tiket-bulanan')
@@ -35,9 +29,6 @@
         </div>
     </div>
 
-    <!-- ============================= -->
-    <!-- TABLE + REGIONAL DISTRIBUTION -->
-    <!-- ============================= -->
     <div class="row g-5 mb-5">
         <div class="col-xl-8">
             @include('partials.dashboard.tables._tiket-terbaru')
@@ -53,8 +44,7 @@
             <p class="text-muted mb-4">Akses fitur utama dengan cepat</p>
 
             <div class="row g-3">
-                <!-- Buat Tiket Baru -->
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md col-sm-6">
                     <a href="{{ route('tiket.create') }}" class="text-decoration-none">
                         <div class="quick-action-card text-center p-4 rounded-3 border bg-white h-100">
                             <div class="fs-1 mb-2 text-primary">
@@ -65,8 +55,7 @@
                     </a>
                 </div>
 
-                <!-- Pembatalan Sertifikat -->
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md col-sm-6">
                     <a href="{{ route('pembatalan-sertifikat.index') }}" class="text-decoration-none">
                         <div class="quick-action-card text-center p-4 rounded-3 border bg-white h-100">
                             <div class="fs-1 mb-2 text-danger">
@@ -77,20 +66,7 @@
                     </a>
                 </div>
 
-                <!-- Daftar Sengketa -->
-                <div class="col-md-3 col-sm-6">
-                    <a href="{{ route('sengketa-konflik.index') }}" class="text-decoration-none">
-                        <div class="quick-action-card text-center p-4 rounded-3 border bg-white h-100">
-                            <div class="fs-1 mb-2 text-warning">
-                                <i class="bi bi-people"></i>
-                            </div>
-                            <div class="fw-semibold text-dark">Daftar Sengketa</div>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- Manajemen User -->
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md col-sm-6">
                     <a href="{{ route('user-management.users.index') }}" class="text-decoration-none">
                         <div class="quick-action-card text-center p-4 rounded-3 border bg-white h-100">
                             <div class="fs-1 mb-2 text-success">
