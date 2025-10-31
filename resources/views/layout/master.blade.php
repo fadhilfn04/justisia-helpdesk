@@ -13,6 +13,7 @@
     <meta property="og:type" content="article"/>
     <meta property="og:title" content=""/>
     <link rel="canonical" href="{{ url()->current() }}"/>
+    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome/font-awesome.css') }}">
 
     {!! includeFavicon() !!}
 
@@ -67,6 +68,13 @@
     {!! sprintf('<script src="%s"></script>', asset($path)) !!}
 @endforeach
 <!--end::Custom Javascript-->
+{{-- data lucide icon --}}
+<script src="{{ asset('assets/js/lucide/lucide.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    lucide.createIcons();
+});
+</script>
 @stack('scripts')
 <!--end::Javascript-->
 

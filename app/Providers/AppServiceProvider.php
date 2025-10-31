@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Core\KTBootstrap;
+use Carbon\Carbon;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
         Builder::defaultStringLength(191);
 
         KTBootstrap::init();
+        Carbon::setLocale('id');
     }
 }

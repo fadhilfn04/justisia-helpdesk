@@ -55,3 +55,12 @@
   text-decoration-thickness: 1px;
 }
 
+.badge-bg-warning {
+    background-color: rgba(255, 193, 7, 0.2);
+}
+
+.badge-bg-chocolate {
+    background-color: rgba(210, 105, 30, 0.2);
+    color: rgba(210, 105, 30, 1);
+}
+

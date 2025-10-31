@@ -16,7 +16,7 @@
                     </div>
                     <div class="d-flex align-items-center position-relative w-100">
                         {!! getIcon('magnifier','fs-3 position-absolute ms-5') !!}
-                        <input type="text" class="form-control form-control-solid ps-13" placeholder="Cari pertanyaan atau topik..." id="faqSearchInput"/>
+                        <input type="text" class="form-control input-soft-shadow bg-light ps-13" placeholder="Cari pertanyaan atau topik..." id="faqSearchInput"/>
                     </div>
                 </div>
             </div>

@@ -6,8 +6,9 @@
     <div class="d-flex flex-column flex-root app-root" id="kt_app_root">
         <!--begin::Wrapper-->
         <div class="d-flex flex-column flex-lg-row flex-column-fluid">
+            
             <!--begin::Body-->
-            <div class="d-flex flex-column flex-lg-row-fluid w-lg-50 p-10 order-2 order-lg-1">
+            <div class="d-flex flex-column flex-lg-row-fluid w-lg-50 p-10 order-2 order-lg-1 bg-body">
                 <!--begin::Form-->
                 <div class="d-flex flex-center flex-column flex-lg-row-fluid">
                     <!--begin::Wrapper-->
@@ -21,55 +22,47 @@
                 <!--end::Form-->
 
                 <!--begin::Footer-->
-                <div class="d-flex flex-center flex-wrap px-5">
-                    <!--begin::Links-->
-                    <div class="d-flex fw-semibold text-primary fs-base">
-                        <a href="#" class="px-5" target="_blank">Terms</a>
-
-                        <a href="#" class="px-5" target="_blank">Plans</a>
-
-                        <a href="#" class="px-5" target="_blank">Contact Us</a>
+                {{-- <div class="d-flex flex-center flex-wrap px-5 mt-auto">
+                    <div class="d-flex fw-semibold text-gray-500 fs-base">
+                        <a href="#" class="px-3 text-hover-primary">Kebijakan Privasi</a>
+                        <a href="#" class="px-3 text-hover-primary">Syarat & Ketentuan</a>
+                        <a href="#" class="px-3 text-hover-primary">Kontak Kami</a>
                     </div>
-                    <!--end::Links-->
-                </div>
+                </div> --}}
                 <!--end::Footer-->
             </div>
             <!--end::Body-->
 
             <!--begin::Aside-->
-            <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2" style="background-image: url({{ image('misc/auth-bg.png') }})">
+            <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2"
+                style="background-image: url({{ image('misc/atrbpn_landing.jpg') }})">
                 <!--begin::Content-->
-                <div class="d-flex flex-column flex-center py-7 py-lg-15 px-5 px-md-15 w-100">
+                {{-- <div class="d-flex flex-column flex-center py-10 py-lg-20 px-5 px-md-15 w-100 bg-overlay bg-opacity-50">
+                    
                     <!--begin::Logo-->
                     <a href="{{ route('dashboard') }}" class="mb-12">
-                        <img alt="Logo" src="{{ image('logos/custom-1.png') }}" class="h-60px h-lg-75px"/>
+                        <img alt="Logo" src="{{ image('logos/atrbpn.png') }}" class="h-200px h-lg-220px"/>
                     </a>
                     <!--end::Logo-->
 
-                    <!--begin::Image-->
-                    <img class="d-none d-lg-block mx-auto w-275px w-md-50 w-xl-500px mb-10 mb-lg-20" src="{{ image('misc/auth-screens.png') }}" alt=""/>
-                    <!--end::Image-->
-
                     <!--begin::Title-->
-                    <h1 class="d-none d-lg-block text-white fs-2qx fw-bolder text-center mb-7">
-                        Fast, Efficient and Productive
+                    <h1 class="d-none d-lg-block text-white fs-2qx fw-bold text-center mb-7">
+                        Justisia
                     </h1>
                     <!--end::Title-->
 
-                    <!--begin::Text-->
-                    <div class="d-none d-lg-block text-white fs-base text-center">
-                        In this kind of post, <a href="#" class="opacity-75-hover text-warning fw-bold me-1">the blogger</a>
-
-                        introduces a person they’ve interviewed <br/> and provides some background information about
-
-                        <a href="#" class="opacity-75-hover text-warning fw-bold me-1">the interviewee</a>
-                        and their <br/> work following this is a transcript of the interview.
+                    <!--begin::Subtitle-->
+                    <div class="d-none d-lg-block text-white fs-base text-center fw-semibold lh-lg">
+                        Sistem Informasi <br/>
+                        <span class="fw-bold text-warning">Sengketa, Konflik, dan Perkara</span><br/>
+                        untuk mendukung penegakan keadilan yang transparan dan akuntabel.
                     </div>
-                    <!--end::Text-->
-                </div>
+                    <!--end::Subtitle-->
+                </div> --}}
                 <!--end::Content-->
             </div>
             <!--end::Aside-->
+
         </div>
         <!--end::Wrapper-->
     </div>

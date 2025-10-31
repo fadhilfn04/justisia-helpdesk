@@ -1,7 +1,8 @@
-<div class="card shadow-sm border-0">
+<div class="card shadow-sm border-0 h-100">
     <div class="card-header">
-        <h6 class="fw-bold mb-0">Jenis Sengketa</h6>
-        <small class="text-muted">Distribusi berdasarkan kategori</small>
+        <div class="card-title">
+            <h2>Jenis Sengketa</h2>
+        </div>
     </div>
     <div class="card-body">
         <div id="chartJenisSengketa"></div>

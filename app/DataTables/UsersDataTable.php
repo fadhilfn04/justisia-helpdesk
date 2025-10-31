@@ -19,25 +19,47 @@ class UsersDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->rawColumns(['user', 'last_login_at'])
-            ->editColumn('user', function (User $user) {
+            ->rawColumns(['pengguna', 'kontak', 'status', 'last_login_at', 'aksi'])
+            ->editColumn('pengguna', function (User $user) {
                 return view('pages/apps.user-management.users.columns._user', compact('user'));
             })
             ->editColumn('role', function (User $user) {
-                return ucwords($user->roles->first()?->name);
+                return ucwords($user->roles->first()?->name ?? '-');
+            })
+            ->addColumn('kontak', function (User $user) {
+                return $user->phone
+                    ? "<div class='text-gray-700'>{$user->phone}</div><div class='text-muted fs-7'>{$user->email}</div>"
+                    : "<div class='text-muted'>{$user->email}</div>";
+            })
+            ->addColumn('departemen', function () {
+                $departemen = ['TI', 'Hukum', 'Pelayanan', 'Kepegawaian', 'Umum'];
+                return $departemen[array_rand($departemen)];
+            })
+            ->addColumn('wilayah', function () {
+                $wilayah = ['Jakarta Selatan', 'Bandung', 'Makassar', 'Surabaya', 'Medan'];
+                return $wilayah[array_rand($wilayah)];
+            })
+            ->addColumn('status', function (User $user) {
+                $status = $user->status ?? 'aktif';
+                $badgeClass = match ($status) {
+                    'aktif' => 'badge-light-success',
+                    'tidak_aktif' => 'badge-light-warning',
+                    'ditangguhkan' => 'badge-light-danger',
+                    default => 'badge-light-secondary',
+                };
+                return "<div class='badge {$badgeClass} fw-bold text-capitalize'>{$status}</div>";
+            })
+            ->addColumn('tiket_ditangani', function () {
+                return rand(0, 20);
             })
             ->editColumn('last_login_at', function (User $user) {
                 return sprintf('<div class="badge badge-light fw-bold">%s</div>', $user->last_login_at ? $user->last_login_at->diffForHumans() : $user->updated_at->diffForHumans());
             })
-            ->editColumn('created_at', function (User $user) {
-                return $user->created_at->format('d M Y, h:i a');
-            })
-            ->addColumn('action', function (User $user) {
+            ->addColumn('aksi', function (User $user) {
                 return view('pages/apps.user-management.users.columns._actions', compact('user'));
             })
             ->setRowId('id');
     }
-
 
     /**
      * Get the query source of dataTable.
@@ -56,10 +78,10 @@ class UsersDataTable extends DataTable
             ->setTableId('users-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->dom('rt' . "<'row'<'col-sm-12'tr>><'d-flex justify-content-between'<'col-sm-12 col-md-5'i><'d-flex justify-content-between'p>>",)
+            ->dom('rt' . "<'row'<'col-sm-12'tr>><'d-flex justify-content-between'<'col-sm-12 col-md-5'i><'d-flex justify-content-between'p>>")
             ->addTableClass('table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer text-gray-600 fw-semibold')
             ->setTableHeadClass('text-start text-muted fw-bold fs-7 text-uppercase gs-0')
-            ->orderBy(2)
+            ->orderBy(0)
             ->drawCallback("function() {" . file_get_contents(resource_path('views/pages/apps/user-management/users/columns/_draw-scripts.js')) . "}");
     }
 
@@ -69,11 +91,16 @@ class UsersDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('user')->addClass('d-flex align-items-center')->name('name'),
+            Column::make('pengguna')->addClass('d-flex align-items-center')->name('name')->title('Pengguna'),
             Column::make('role')->searchable(false),
-            Column::make('last_login_at')->title('Last Login'),
-            Column::make('created_at')->title('Joined Date')->addClass('text-nowrap'),
-            Column::computed('action')
+            Column::make('kontak')->title('Kontak')->orderable(false),
+            Column::make('departemen')->orderable(false),
+            Column::make('wilayah')->orderable(false),
+            Column::make('status')->orderable(false)->searchable(false),
+            Column::make('tiket_ditangani')->title('Tiket Ditangani')->searchable(false),
+            Column::make('last_login_at')->title('Terakhir Login')->searchable(false),
+            Column::computed('aksi')
+                ->title('Aksi')
                 ->addClass('text-end text-nowrap')
                 ->exportable(false)
                 ->printable(false)

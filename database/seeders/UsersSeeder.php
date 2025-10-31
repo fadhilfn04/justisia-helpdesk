@@ -21,6 +21,7 @@ class UsersSeeder extends Seeder
             'email'             => 'demo@demo.com',
             'password'          => Hash::make('demo'),
             'email_verified_at' => now(),
+            'status'            => 'aktif',
         ]);
 
         $demoUser2 = User::create([
@@ -28,6 +29,7 @@ class UsersSeeder extends Seeder
             'email'             => 'admin@demo.com',
             'password'          => Hash::make('demo'),
             'email_verified_at' => now(),
+            'status'            => 'aktif',
         ]);
     }
 }

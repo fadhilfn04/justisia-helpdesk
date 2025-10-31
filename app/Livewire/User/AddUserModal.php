@@ -42,11 +42,9 @@ class AddUserModal extends Component
         $roles = Role::all();
 
         $roles_description = [
-            'administrator' => 'Best for business owners and company administrators',
-            'developer' => 'Best for developers or people primarily using the API',
-            'analyst' => 'Best for people who need full access to analytics data, but don\'t need to update business settings',
-            'support' => 'Best for employees who regularly refund payments and respond to disputes',
-            'trial' => 'Best for people who need to preview content data, but don\'t need to make any updates',
+            'administrator' => 'Cocok untuk pengelola sistem atau pihak yang memiliki akses penuh terhadap seluruh fitur dan pengaturan.',
+            'supervisor' => 'Cocok untuk pengawas yang memantau aktivitas pengguna dan memverifikasi hasil pekerjaan.',
+            'operator' => 'Cocok untuk pengguna yang menjalankan tugas operasional harian sesuai dengan tanggung jawabnya.',
         ];
 
         foreach ($roles as $i => $role) {
