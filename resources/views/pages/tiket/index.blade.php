@@ -8,20 +8,29 @@
     <div class="row g-5 mb-7">
         @php
             $stats = [
-                ['label' => 'Semua Tiket', 'count' => 5, 'color' => 'text-gray-800'],
-                ['label' => 'Terbuka', 'count' => 1, 'color' => 'text-primary'],
-                ['label' => 'Proses', 'count' => 1, 'color' => 'text-warning'],
-                ['label' => 'Menunggu', 'count' => 1, 'color' => 'text-info'],
-                ['label' => 'Selesai', 'count' => 1, 'color' => 'text-success'],
-                ['label' => 'Terlambat', 'count' => 1, 'color' => 'text-danger'],
+                'Semua Tiket' => $ticket->count(),
+                'Terbuka'     => $ticket->where('status', 'Terbuka')->count(),
+                'Proses'      => $ticket->where('status', 'Proses')->count(),
+                'Menunggu'    => $ticket->where('status', 'Menunggu')->count(),
+                'Selesai'     => $ticket->where('status', 'Selesai')->count(),
+                'Terlambat'   => $ticket->where('status', 'Terlambat')->count(),
+            ];
+
+            $colors = [
+                'Semua Tiket' => 'text-gray-800',
+                'Terbuka'     => 'text-primary',
+                'Proses'      => 'text-warning',
+                'Menunggu'    => 'text-info',
+                'Selesai'     => 'text-success',
+                'Terlambat'   => 'text-danger',
             ];
         @endphp
 
-        @foreach ($stats as $stat)
+        @foreach ($stats as $label => $count)
             <div class="col-md-2">
                 <div class="card border-0 shadow-sm py-6 text-center hover-elevate-up">
-                    <div class="fs-2 fw-bold {{ $stat['color'] }}">{{ $stat['count'] }}</div>
-                    <div class="text-muted">{{ $stat['label'] }}</div>
+                    <div class="fs-2 fw-bold {{ $colors[$label] }}">{{ $count }}</div>
+                    <div class="text-muted">{{ $label }}</div>
                 </div>
             </div>
         @endforeach
@@ -58,11 +67,9 @@
 
                 <select class="form-select form-select-solid w-auto">
                     <option>Semua Wilayah</option>
-                    <option>Jakarta Selatan</option>
-                    <option>Bandung</option>
-                    <option>Surabaya</option>
-                    <option>Medan</option>
-                    <option>Makassar</option>
+                    @foreach($ticket->pluck('wilayah')->unique() as $wilayah)
+                        <option>{{ $wilayah }}</option>
+                    @endforeach
                 </select>
             </div>
             <!--end::Filters-->
@@ -88,10 +95,10 @@
     <div class="card border-0 shadow-sm">
         <div class="card-header border-0 pt-6 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
             <div>
-                <h3 class="fw-bold mb-1">Daftar Tiket (5)</h3>
+                <h3 class="fw-bold mb-1">Daftar Tiket ({{ $ticket->count() }})</h3>
                 <div class="text-muted">Kelola dan pantau semua tiket helpdesk</div>
             </div>
-            <button class="btn btn-sm btn-light mt-3 mt-sm-0">
+            <button class="btn btn-sm btn-light mt-3 mt-sm-0" onclick="location.reload()">
                 {!! getIcon('arrows-circle', 'fs-5 me-2') !!}
                 Refresh
             </button>
@@ -99,7 +106,7 @@
 
         <div class="card-body py-4">
             <div class="table-responsive">
-                <table class="table align-middle table-row-dashed fs-6 gy-4">
+                <table id="tableTicket" class="table align-middle table-row-dashed fs-6 gy-4">
                     <thead>
                         <tr class="text-start text-gray-500 fw-bold text-uppercase gs-0">
                             <th>ID Tiket</th>
@@ -115,126 +122,55 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>#TCK-001</td>
-                            <td>Login gagal pada aplikasi Justisia</td>
-                            <td>
-                                <span class="badge badge-light-danger d-inline-flex align-items-center">
-                                    {!! getIcon('cross-circle', 'fs-4 me-2 text-danger') !!} Open
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge badge-light-danger d-inline-flex align-items-center">
-                                    {!! getIcon('warning-2', 'fs-4 me-2 text-danger') !!} High
-                                </span>
-                            </td>
-                            <td>Fadhil Ferdian</td>
-                            <td>Rizky Pratama</td>
-                            <td>Jakarta</td>
-                            <td>2 Hari</td>
-                            <td>Belum direspon</td>
-                            <td class="text-end">
-                                <a href="#" class="btn btn-sm btn-light btn-active-light-primary">
-                                    {!! getIcon('eye', 'fs-4 me-1') !!} Detail
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#TCK-002</td>
-                            <td>Kesalahan data wilayah pada laporan</td>
-                            <td>
-                                <span class="badge badge-light-warning d-inline-flex align-items-center">
-                                    {!! getIcon('time', 'fs-4 me-2 text-warning') !!} In Progress
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge badge-light-warning d-inline-flex align-items-center">
-                                    {!! getIcon('alert', 'fs-4 me-2 text-warning') !!} Medium
-                                </span>
-                            </td>
-                            <td>Andini Putri</td>
-                            <td>Yusuf Ahmad</td>
-                            <td>Bandung</td>
-                            <td>3 Hari</td>
-                            <td>Sedang ditangani</td>
-                            <td class="text-end">
-                                <a href="#" class="btn btn-sm btn-light btn-active-light-primary">
-                                    {!! getIcon('eye', 'fs-4 me-1') !!} Detail
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#TCK-003</td>
-                            <td>Tidak bisa unggah file dokumen</td>
-                            <td>
-                                <span class="badge badge-light-success d-inline-flex align-items-center">
-                                    {!! getIcon('check-circle', 'fs-4 me-2 text-success') !!} Closed
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge badge-light-info d-inline-flex align-items-center">
-                                    {!! getIcon('chevron-down', 'fs-4 me-2 text-info') !!} Low
-                                </span>
-                            </td>
-                            <td>Rina Kurnia</td>
-                            <td>Bagas Firmansyah</td>
-                            <td>Surabaya</td>
-                            <td>1 Hari</td>
-                            <td>Sudah diselesaikan</td>
-                            <td class="text-end">
-                                <a href="#" class="btn btn-sm btn-light btn-active-light-primary">
-                                    {!! getIcon('eye', 'fs-4 me-1') !!} Detail
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#TCK-004</td>
-                            <td>Notifikasi email tidak terkirim</td>
-                            <td>
-                                <span class="badge badge-light-primary d-inline-flex align-items-center">
-                                    {!! getIcon('pending', 'fs-4 me-2 text-primary') !!} Pending
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge badge-light-warning d-inline-flex align-items-center">
-                                    {!! getIcon('alert', 'fs-4 me-2 text-warning') !!} Medium
-                                </span>
-                            </td>
-                            <td>Aditya Rahman</td>
-                            <td>Siti Aisyah</td>
-                            <td>Medan</td>
-                            <td>4 Hari</td>
-                            <td>Menunggu respon</td>
-                            <td class="text-end">
-                                <a href="#" class="btn btn-sm btn-light btn-active-light-primary">
-                                    {!! getIcon('eye', 'fs-4 me-1') !!} Detail
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#TCK-005</td>
-                            <td>Kesalahan tampilan pada dashboard</td>
-                            <td>
-                                <span class="badge badge-light-warning d-inline-flex align-items-center">
-                                    {!! getIcon('time', 'fs-4 me-2 text-warning') !!} In Progress
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge badge-light-success d-inline-flex align-items-center">
-                                    {!! getIcon('chevron-down', 'fs-4 me-2 text-success') !!} Low
-                                </span>
-                            </td>
-                            <td>Nurul Fajri</td>
-                            <td>Dimas Saputra</td>
-                            <td>Makassar</td>
-                            <td>5 Hari</td>
-                            <td>Sedang diperbaiki</td>
-                            <td class="text-end">
-                                <a href="#" class="btn btn-sm btn-light btn-active-light-primary">
-                                    {!! getIcon('eye', 'fs-4 me-1') !!} Detail
-                                </a>
-                            </td>
-                        </tr>
+                        @forelse($ticket as $t)
+                            <tr>
+                                <td>#TCK-{{ str_pad($t->id, 3, '0', STR_PAD_LEFT) }}</td>
+                                <td>{{ $t->title }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {{ match($t->status) {
+                                            'open' => 'badge-light-danger',
+                                            'in_progress'  => 'badge-light-warning',
+                                            'closed'=> 'badge-light-info',
+                                            default => 'badge-light-primary',
+                                            }
+                                        }} d-inline-flex align-items-center">
+                                        {!! getIcon(match($t->status) {
+                                            'open' => 'cross-circle',
+                                            'in_progress' => 'time',
+                                            'closed'=> 'check-circle',
+                                            default => 'info',
+                                        }, 'fs-4 me-2 text-gray-700') !!}
+                                        {{ $t->status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-light-{{ strtolower($t->priority) }} d-inline-flex align-items-center">
+                                        {!! getIcon(match($t->priority) {
+                                            'Tinggi' => 'warning-2',
+                                            'Sedang' => 'alert',
+                                            'Rendah' => 'chevron-down',
+                                            default => 'info',
+                                        }, 'fs-4 me-2 text-gray-700') !!}
+                                        {{ $t->priority }}
+                                    </span>
+                                </td>
+                                <td>{{ $t->reporter }}</td>
+                                <td>{{ $t->assignee }}</td>
+                                <td>{{ $t->wilayah }}</td>
+                                <td>{{ $t->sla }}</td>
+                                <td>{{ $t->response }}</td>
+                                <td class="text-end">
+                                    <a href="{{ route('tiket.show', $t->id) }}" class="btn btn-sm btn-light btn-active-light-primary">
+                                        {!! getIcon('eye', 'fs-4 me-1') !!} Detail
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="10" class="text-center text-muted py-10">Tidak ada tiket</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -243,8 +179,11 @@
     <!--end::Table-->
 
     @push('scripts')
-        <script>
-        </script>
+    <script>
+    $(document).ready(function() {
+        var table = $('#tableTicket').DataTable({});
+    });
+    </script>
     @endpush
 
 </x-default-layout>

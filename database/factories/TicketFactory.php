@@ -2,29 +2,22 @@
 
 namespace Database\Factories;
 
-use App\Models\Ticket;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
 use App\Models\TicketCategory;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TicketFactory extends Factory
 {
-    protected $model = Ticket::class;
-
     public function definition(): array
     {
-        $status = ['open', 'in_progress', 'resolved', 'closed'];
-        $priority = ['rendah', 'sedang', 'tinggi'];
-
         return [
-            'user_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
-            'category_id' => TicketCategory::inRandomOrder()->first()?->id ?? TicketCategory::factory(),
-            'assigned_to' => User::inRandomOrder()->first()?->id ?? null,
-            'title' => $this->faker->sentence(rand(3, 6)), // contoh: "Masalah login akun pengguna"
-            'description' => $this->faker->paragraph(3, true),
-            'status' => $this->faker->randomElement($status),
-            'priority' => $this->faker->randomElement($priority),
-            'created_at' => now(),
+            'user_id' => User::inRandomOrder()->first()->id ?? 1,
+            'category_id' => TicketCategory::inRandomOrder()->first()->id ?? 1,
+            'assigned_to' => User::where('role_id', 2)->inRandomOrder()->first()->id ?? null,
+            'title' => $this->faker->sentence(),
+            'description' => $this->faker->paragraph(),
+            'status' => $this->faker->randomElement(['open', 'in_progress', 'closed']),
+            'priority' => $this->faker->randomElement(['low', 'medium', 'high']),
         ];
     }
 }

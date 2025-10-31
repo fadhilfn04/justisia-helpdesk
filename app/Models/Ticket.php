@@ -10,22 +10,17 @@ class Ticket extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'category_id',
-        'assigned_to',
-        'title',
-        'description',
-        'status',
-        'priority'
+        'user_id', 'category_id', 'assigned_to',
+        'title', 'description', 'status', 'priority'
     ];
 
-    // Relationships
+    // === Relationships ===
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function assignee()
+    public function assignedTo()
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
@@ -45,7 +40,7 @@ class Ticket extends Model
         return $this->hasMany(TicketStatusLog::class);
     }
 
-    public function timeline()
+    public function timelines()
     {
         return $this->hasMany(TicketTimeline::class);
     }

@@ -6,7 +6,7 @@ use App\Models\Ticket;
 use App\Models\TicketCategory;
 use Illuminate\Http\Request;
 
-class HelpdeskController extends Controller
+class TiketController extends Controller
 {
     public function index()
     {

@@ -3,12 +3,12 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Ticket;
+use App\Models\Notification;
 
-class TicketSeeder extends Seeder
+class NotificationSeeder extends Seeder
 {
     public function run(): void
     {
-        Ticket::factory(50)->create();
+        Notification::factory(10)->create();
     }
 }

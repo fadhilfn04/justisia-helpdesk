@@ -2,34 +2,24 @@
 
 namespace Database\Factories;
 
-use App\Models\FeedbackSurvey;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Models\MasterSurvey;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FeedbackSurveyFactory extends Factory
 {
-    protected $model = FeedbackSurvey::class;
-
     public function definition(): array
     {
-        $ratings = [
-            1 => 'Sangat tidak puas',
-            2 => 'Tidak puas',
-            3 => 'Cukup puas',
-            4 => 'Puas',
-            5 => 'Sangat puas'
-        ];
-
-        $rating = $this->faker->numberBetween(1, 5);
-
         return [
-            'ticket_id' => Ticket::inRandomOrder()->first()?->id ?? Ticket::factory(),
-            'user_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
-            'rating' => $rating,
-            'comment' => "Saya merasa {$ratings[$rating]} dengan layanan yang diberikan.",
-            'sent_via' => $this->faker->randomElement(['email', 'whatsapp', 'in-app']),
+            'ticket_id' => Ticket::factory(),
+            'user_id' => User::factory(),
+            'survey_id' => $this->faker->optional()->randomElement(MasterSurvey::pluck('id')->toArray() ?: [null]),
+            'nilai' => $this->faker->numberBetween(1, 5),
+            'comment' => $this->faker->optional()->sentence(8),
+            'sent_via' => $this->faker->randomElement(['email', 'sms', 'whatsapp', 'web']),
             'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }
