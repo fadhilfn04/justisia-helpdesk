@@ -8,8 +8,9 @@ use App\Http\Controllers\PembatalanSertifikatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SengketaKonflikController;
 use App\Http\Controllers\FaqController;
-use App\Http\Controllers\HelpdeskController;
+use App\Http\Controllers\TiketController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,12 +30,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [DashboardController::class, 'index']);
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('tiket', HelpdeskController::class);
+    Route::resource('tiket', TiketController::class);
 
     Route::prefix('pembatalan-sertifikat')->group(function () {
         Route::get('/index', [PembatalanSertifikatController::class, 'index'])->name('pembatalan-sertifikat.index');
         Route::get('/cacat-administrasi', [PembatalanSertifikatController::class, 'cacat_administrasi'])->name('pembatalan-sertifikat.cacat_administrasi');
         Route::get('/putusan-pengadilan', [PembatalanSertifikatController::class, 'putusan_pengadilan'])->name('pembatalan-sertifikat.putusan_pengadilan');
+    });
+
+    Route::prefix('notifications')->group(function () {
+        Route::get('/partial', [NotificationController::class, 'partial'])->name('notifications.partial');
+        Route::post('/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
+        Route::post('/{id}/mark-read', [NotificationController::class, 'markRead'])->name('notifications.markRead');
+        Route::delete('/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     });
 
     Route::resource('laporan', LaporanController::class);

@@ -24,16 +24,40 @@
                 <div class="tab-pane fade show active" id="tab_overview" role="tabpanel">
                     <div class="row g-5 mb-5">
                         <div class="col-md-3 col-sm-6">
-                            @include('partials.dashboard.cards._total-tiket')
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-2">Total Tiket Aktif</h6>
+                                    <h3 class="fw-bold text-success mb-1">{{ $totalTickets }}</h3>
+                                    <small class="text-muted">+12% dari bulan lalu</small>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-3 col-sm-6">
-                            @include('partials.dashboard.cards._pembatalan-sertifikat')
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-2">Pembatalan Sertifikat</h6>
+                                    <h3 class="fw-bold text-danger mb-1">89</h3>
+                                    <small class="text-muted">+5% dari bulan lalu</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">                            
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-2">Kasus Sengketa</h6>
+                                    <h3 class="fw-bold text-warning mb-1">456</h3>
+                                    <small class="text-muted">+8% dari bulan lalu</small>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-3 col-sm-6">
-                            @include('partials.dashboard.cards._kasus-sengketa')
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            @include('partials.dashboard.cards._tingkat-penyelesaian')
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-2">Tingkat Penyelesaian</h6>
+                                    <h3 class="fw-bold text-primary mb-1">{{ $resolutionRate }} %</h3>
+                                    <small class="text-muted">+2.1% dari bulan lalu</small>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

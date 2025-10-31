@@ -11,6 +11,7 @@ class TicketCategory extends Model
 
     protected $fillable = ['name', 'description'];
 
+    // === Relationships ===
     public function tickets()
     {
         return $this->hasMany(Ticket::class, 'category_id');
@@ -19,5 +20,10 @@ class TicketCategory extends Model
     public function faqs()
     {
         return $this->hasMany(Faq::class, 'category_id');
+    }
+
+    public function masterSla()
+    {
+        return $this->hasOne(MasterSla::class, 'category_id');
     }
 }

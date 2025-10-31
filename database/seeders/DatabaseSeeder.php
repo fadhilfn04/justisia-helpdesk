@@ -2,36 +2,34 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
-use App\Models\Address;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
         $this->call([
+            RoleSeeder::class,
             UsersSeeder::class,
-            RolesPermissionsSeeder::class,
+            TicketCategorySeeder::class,
+            FaqSeeder::class,
+            MasterSlaSeeder::class,
+            MasterSurveySeeder::class,
             TicketSeeder::class,
             TicketMessageSeeder::class,
             TicketStatusLogSeeder::class,
+            TicketTimelineSeeder::class,
             FeedbackSurveySeeder::class,
+            NotificationSeeder::class,
         ]);
 
-        \App\Models\User::factory(20)->create();
+        \App\Models\User::factory(10)->create();
+        \App\Models\Ticket::factory(15)
+            ->has(\App\Models\TicketStatusLog::factory()->count(2), 'statusLogs')
+            ->has(\App\Models\TicketTimeline::factory()->count(3), 'timelines')
+            ->has(\App\Models\FeedbackSurvey::factory()->count(1), 'feedbackSurveys')
+            ->create();
 
-        Address::factory(20)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        \App\Models\Notification::factory(20)->create();
     }
 }

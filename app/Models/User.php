@@ -5,67 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
-    use HasRoles;
+    use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'last_login_at',
-        'last_login_ip',
-        'profile_photo_path',
+        'name', 'email', 'password', 'role_id', 'phone'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password'];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'last_login_at' => 'datetime',
-    ];
-
-    public function getProfilePhotoUrlAttribute()
-    {
-        if ($this->profile_photo_path) {
-            return asset('storage/' . $this->profile_photo_path);
-        }
-
-        return $this->profile_photo_path;
-    }
-
-    public function addresses()
-    {
-        return $this->hasMany(Address::class);
-    }
-
-    public function getDefaultAddressAttribute()
-    {
-        return $this->addresses?->first();
-    }
-
+    // === Relationships ===
     public function role()
     {
         return $this->belongsTo(Role::class);
@@ -73,7 +24,7 @@ class User extends Authenticatable
 
     public function tickets()
     {
-        return $this->hasMany(Ticket::class);
+        return $this->hasMany(Ticket::class, 'user_id');
     }
 
     public function assignedTickets()
@@ -81,9 +32,24 @@ class User extends Authenticatable
         return $this->hasMany(Ticket::class, 'assigned_to');
     }
 
-    public function notifications()
+    public function categoryAgents()
     {
-        return $this->hasMany(Notification::class);
+        return $this->hasMany(CategoryAgent::class);
+    }
+
+    public function ticketMessages()
+    {
+        return $this->hasMany(TicketMessage::class, 'sender_id');
+    }
+
+    public function ticketStatusLogs()
+    {
+        return $this->hasMany(TicketStatusLog::class, 'changed_by');
+    }
+
+    public function ticketTimeline()
+    {
+        return $this->hasMany(TicketTimeline::class, 'actor_id');
     }
 
     public function feedbackSurveys()
@@ -91,8 +57,8 @@ class User extends Authenticatable
         return $this->hasMany(FeedbackSurvey::class);
     }
 
-    public function messages()
+    public function notifications()
     {
-        return $this->hasMany(TicketMessage::class, 'sender_id');
+        return $this->hasMany(Notification::class);
     }
 }

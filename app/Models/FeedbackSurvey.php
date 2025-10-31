@@ -10,7 +10,8 @@ class FeedbackSurvey extends Model
     use HasFactory;
 
     protected $fillable = [
-        'ticket_id', 'user_id', 'rating', 'comment', 'sent_via'
+        'ticket_id', 'user_id', 'survey_id',
+        'nilai', 'comment', 'sent_via'
     ];
 
     public function ticket()
@@ -21,5 +22,10 @@ class FeedbackSurvey extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function survey()
+    {
+        return $this->belongsTo(MasterSurvey::class, 'survey_id');
     }
 }

@@ -8,10 +8,46 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
+            $table->string('phone')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('category_agents', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('category');
+            $table->timestamps();
+        });
+
         Schema::create('ticket_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('master_sla', function (Blueprint $table) {
+            $table->id();
+            $table->string('prioritas');
+            $table->foreignId('category_id')->constrained('ticket_categories')->onDelete('cascade');
+            $table->timestamps();
+        });
+
+        Schema::create('master_survey', function (Blueprint $table) {
+            $table->id();
+            $table->string('pertanyaan');
             $table->timestamps();
         });
 
@@ -47,7 +83,6 @@ return new class extends Migration
         Schema::create('ticket_status_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');
-            $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('changed_by')->constrained('users')->onDelete('cascade');
             $table->string('old_status')->nullable();
             $table->string('new_status');
@@ -55,7 +90,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('ticket_timeline', function (Blueprint $table) {
+        Schema::create('ticket_timelines', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');
             $table->foreignId('actor_id')->constrained('users')->onDelete('cascade');
@@ -68,7 +103,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->integer('rating')->nullable();
+            $table->foreignId('survey_id')->nullable()->constrained('master_survey')->onDelete('set null');
+            $table->integer('nilai')->nullable();
             $table->text('comment')->nullable();
             $table->string('sent_via')->nullable();
             $table->timestamps();
@@ -94,6 +130,11 @@ return new class extends Migration
         Schema::dropIfExists('ticket_messages');
         Schema::dropIfExists('tickets');
         Schema::dropIfExists('faqs');
+        Schema::dropIfExists('master_survey');
+        Schema::dropIfExists('master_sla');
         Schema::dropIfExists('ticket_categories');
+        Schema::dropIfExists('category_agents');
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('roles');
     }
 };

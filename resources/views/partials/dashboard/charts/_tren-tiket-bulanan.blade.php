@@ -11,6 +11,8 @@
 
 @push('scripts')
 <script>
+    const monthlyTrends = @json($monthlyTrends);
+
     const optionsTren = {
         chart: {
             type: 'line',
@@ -20,15 +22,15 @@
         series: [
             {
                 name: 'Tiket Masuk',
-                data: [120, 140, 150, 160, 170, 180]
+                data: monthlyTrends.masuk
             },
             {
                 name: 'Tiket Selesai',
-                data: [100, 120, 130, 150, 160, 175]
+                data: monthlyTrends.selesai
             }
         ],
         xaxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun']
+            categories: monthlyTrends.categories
         },
         stroke: {
             curve: 'smooth',
