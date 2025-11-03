@@ -42,7 +42,7 @@
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select text-dark">
+                            <select class="form-select bg-light input-soft-shadow text-dark">
                                 <option selected>Semua Status</option>
                                 <option value="terbuka">Terbuka</option>
                                 <option value="proses">Proses</option>
@@ -52,7 +52,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select text-dark">
+                            <select class="form-select bg-light input-soft-shadow text-dark">
                                 <option selected>Semua Prioritas</option>
                                 <option value="tinggi">Tinggi</option>
                                 <option value="sedang">Sedang</option>
@@ -60,7 +60,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select text-dark">
+                            <select class="form-select bg-light input-soft-shadow text-dark">
                                 <option selected>Semua Wilayah</option>
                                 <option value="jakarta_selatan">Jakarta Selatan</option>
                                 <option value="bandung">Bandung</option>
