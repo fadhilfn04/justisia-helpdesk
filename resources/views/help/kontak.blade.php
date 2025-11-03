@@ -17,7 +17,7 @@
             <!-- 🧭 Kiri: Kontak dan Form -->
             <div class="col-lg-8">
                 <!-- 1️⃣ Saluran Kontak Resmi -->
-                <div class="card mb-5 bg-light border border-gray-300">
+                <div class="card mb-5 border">
                     <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">
                         <h5 class="card-title p-0 d-flex align-items-center">
                             <i data-lucide="phone" class="mx-2" style="width: 1.5rem;"></i>
@@ -27,7 +27,7 @@
                     </div>
                     <div class="card-body">
                         <!-- Email -->
-                        <div class="p-5 mb-3 rounded border border-gray-300 bg-light card-hover">
+                        <div class="p-5 mb-3 rounded border border-gray-300 card-hover">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="p-2 bg-white rounded text-primary">
                                     <i data-lucide="mail" style="width: 1.5rem;"></i>
@@ -51,7 +51,7 @@
                         </div>
 
                         <!-- Call Center -->
-                        <div class="p-5 mb-3 rounded border border-gray-300 bg-light card-hover">
+                        <div class="p-5 mb-3 rounded border border-gray-300 card-hover">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="p-2 bg-white rounded text-success">
                                     <i data-lucide="phone" style="width: 1.5rem;"></i>
@@ -75,7 +75,7 @@
                         </div>
 
                         <!-- Kantor -->
-                        <div class="p-5 mb-3 rounded border border-gray-300 bg-light card-hover">
+                        <div class="p-5 mb-3 rounded border border-gray-300 card-hover">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="p-2 bg-white rounded text-danger">
                                     <i data-lucide="building-2" style="width: 1.5rem;"></i>
@@ -99,7 +99,7 @@
                         </div>
 
                         <!-- Helpdesk -->
-                        <div class="p-5 rounded border border-gray-300 bg-light card-hover">
+                        <div class="p-5 rounded border border-gray-300 card-hover">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="p-2 bg-white rounded text-primary">
                                     <i data-lucide="message-square" style="width: 1.5rem;"></i>
@@ -125,7 +125,7 @@
                 </div>
 
                 <!-- 2️⃣ Formulir Kontak Cepat -->
-                <div class="card bg-light border border-gray-300">
+                <div class="card border">
                     <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">
                         <h5 class="card-title p-0 d-flex align-items-center">
                             <i data-lucide="send" class="mx-2" style="width: 1.5rem;"></i>
@@ -138,21 +138,21 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Nama Lengkap *</label>
-                                    <input type="text" class="form-control bg-light input-soft-shadow text-dark input-soft-shadow" placeholder="Masukkan nama lengkap" required>
+                                    <input type="text" class="form-control text-dark" placeholder="Masukkan nama lengkap" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Email *</label>
-                                    <input type="email" class="form-control bg-light input-soft-shadow text-dark" placeholder="nama@email.com" required>
+                                    <input type="email" class="form-control text-dark" placeholder="nama@email.com" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Nomor Telepon</label>
-                                    <input type="text" class="form-control bg-light input-soft-shadow text-dark" placeholder="08xxxxxxxxxx">
+                                    <input type="text" class="form-control text-dark" placeholder="08xxxxxxxxxx">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Kategori *</label>
-                                    <select class="form-select bg-light input-soft-shadow" required>
+                                    <select class="form-select" required>
                                         <option>Pilih kategori</option>
                                         <option>Sengketa Pertanahan</option>
                                         <option>Pembatalan Sertifikat</option>
@@ -165,11 +165,11 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Subjek *</label>
-                                <input type="text" class="form-control bg-light input-soft-shadow text-dark" placeholder="Ringkasan singkat masalah Anda" required>
+                                <input type="text" class="form-control text-dark" placeholder="Ringkasan singkat masalah Anda" required>
                             </div>
                             <div class="mb-4">
                                 <label class="form-label">Pesan *</label>
-                                <textarea class="form-control bg-light input-soft-shadow text-dark" rows="2" placeholder="Jelaskan masalah atau pertanyaan Anda secara detail..." required></textarea>
+                                <textarea class="form-control text-dark" rows="2" placeholder="Jelaskan masalah atau pertanyaan Anda secara detail..." required></textarea>
                             </div>
                             <button type="submit" class="btn btn-dark text-white w-100 py-2 fs-6-5">
                                 <i data-lucide="send" class="me-4" style="width: 1.3rem;"></i> Kirim Pesan
@@ -182,7 +182,7 @@
             <!-- 🧱 Kanan: Info, FAQ, Sosmed, Darurat -->
             <div class="col-lg-4">
                 <!-- Informasi Kantor -->
-                <div class="card mb-4 bg-light border border-gray-300">
+                <div class="card mb-4">
                     <div class="card-header border-0">
                         <h1 class="card-title" style="font-size: 1.4rem; font-weight: 600;">
                             <i data-lucide="building-2" class="me-2" style="width: 1.5rem;"></i>
@@ -221,7 +221,7 @@
                 </div>
 
                 <!-- FAQ -->
-                <div class="card mb-4 bg-light border border-gray-300">
+                <div class="card mb-4 border">
                     <div class="card-header border-0">
                         <h1 class="card-title" style="font-size: 1.4rem; font-weight: 600;"><i data-lucide="file-text" class="me-2" style="width: 1.5rem;"></i> FAQ Singkat</h1>
                     </div>
@@ -250,7 +250,7 @@
                 </div>
 
                 <!-- Media Sosial -->
-                <div class="card mb-4 bg-light border border-gray-300">
+                <div class="card mb-4 border">
                     <div class="card-header border-0">
                         <h1 class="card-title mb-1" style="font-size: 1.4rem; font-weight: 600;"><i data-lucide="globe" class="me-2" style="width: 1.5rem;"></i> Media Sosial</h1>
                     </div>
@@ -288,7 +288,7 @@
                 </div>
 
                 <!-- Kontak Darurat -->
-                <div class="card bg-light border border-gray-300">
+                <div class="card border">
                     <div class="card-header border-0">
                         <h1 class="card-title mb-1" style="font-size: 1.4rem; font-weight: 600;"><i data-lucide="circle-alert" class="me-2" style="width: 1.5rem;"></i> Kontak Darurat</h1>
                     </div>

@@ -20,6 +20,13 @@
     font-size: 1.03rem !important;
 }
 
+.accordion-button:not(.collapsed) {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  color: #000 !important;
+}
+
+
 .input-soft-shadow {
     border: none;
     box-shadow:

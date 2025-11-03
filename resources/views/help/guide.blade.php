@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-lg-6">
                         {{-- Thumbnail 1 --}}
-                        <div class="card bg-light border border-gray-300 overflow-hidden">
+                        <div class="card border overflow-hidden">
                             <div class="position-relative" style="height: 220px; overflow: hidden;">
                                 <img src="{{ asset('assets/media/images-guide/land-dispute-guide.jpg') }}"
                                     class="w-100 h-100 object-fit-cover"
@@ -75,7 +75,7 @@
 
                     <div class="col-lg-6">
                         {{-- Thumbnail 2 --}}
-                        <div class="card bg-light border border-gray-300 overflow-hidden">
+                        <div class="card border overflow-hidden">
                             <div class="position-relative" style="height: 220px; overflow: hidden;">
                                 <img src="{{ asset('assets/media/images-guide/documentation-guide.jpg') }}"
                                     class="w-100 h-100 object-fit-cover"
@@ -128,7 +128,7 @@
         </div>
         <div class="row g-5 mt-7">
             <div class="col-lg-12">
-                <div class="card bg-light border border-gray-300">
+                <div class="card border">
                     <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">
                         <h6 class="card-title p-0 d-flex align-items-center">
                             <i data-lucide="book-open" class="me-5 text-primary" style="width: 1.5rem;"></i>
@@ -230,7 +230,7 @@
 
         <div class="row g-5 mt-7">
             <div class="col-lg-12">
-                <div class="card bg-light border border-gray-300">
+                <div class="card border">
                     <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">
                         <h6 class="card-title p-0 d-flex align-items-center">
                             <i data-lucide="file-text" class="me-5 text-success" style="width: 1.5rem;"></i>
@@ -332,7 +332,7 @@
 
         <div class="row g-5 mt-7">
             <div class="col-lg-12">
-                <div class="card bg-light border border-gray-300">
+                <div class="card border">
                     <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">
                         <h6 class="card-title p-0 d-flex align-items-center">
                             <i data-lucide="image" class="me-5" style="color: #ea580c; width: 1.5rem;"></i>
@@ -434,16 +434,16 @@
 
         <div class="row g-5 mt-7">
             <div class="col-lg-12">
-                <div class="card bg-light border border-gray-300 mb-5">
+                <div class="card border mb-5">
                     <div class="card-body py-3 mb-5">
                         <form>
-                            <div class="border rounded-3 p-10 text-center bg-light" style="cursor: pointer;">
+                            <div class="border rounded-3 p-10 text-center border-0" style="cursor: pointer;">
                                 <i data-lucide="download" class="mb-3" width="55" height="55"></i>
                                 <h3>Unduh Panduan PDF</h3>
                                 <p class="mb-2 fs-7">Dapatkan panduan lengkap dalam format PDF untuk dibaca offline</p>
 
                                 <div class="d-flex justify-content-center mt-8">
-                                    <button for="fileUpload" class="btn btn-sm btn-hover-primary border bg-dark border-dark text-white fs-6 d-flex align-items-center gap-2">
+                                    <button for="fileUpload" class="btn btn-sm border bg-dark border-dark text-white fs-6 d-flex align-items-center gap-2">
                                         <i data-lucide="download" width="20" height="20"></i>
                                         <span>Unduh Panduan Lengkap</span>
                                     </button>
