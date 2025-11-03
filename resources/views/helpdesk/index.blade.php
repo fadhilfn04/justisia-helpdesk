@@ -43,17 +43,30 @@
                         </div>
                         <div class="col-md-2">
                             <select class="form-select bg-light input-soft-shadow text-dark">
-                                <option>Semua Status</option>
+                                <option selected>Semua Status</option>
+                                <option value="terbuka">Terbuka</option>
+                                <option value="proses">Proses</option>
+                                <option value="menunggu">Menungggu</option>
+                                <option value="selesai">Selesai</option>
+                                <option value="terlambat">Terlambat</option>
                             </select>
                         </div>
                         <div class="col-md-2">
                             <select class="form-select bg-light input-soft-shadow text-dark">
-                                <option>Semua Prioritas</option>
+                                <option selected>Semua Prioritas</option>
+                                <option value="tinggi">Tinggi</option>
+                                <option value="sedang">Sedang</option>
+                                <option value="rendah">Rendah</option>
                             </select>
                         </div>
                         <div class="col-md-2">
                             <select class="form-select bg-light input-soft-shadow text-dark">
-                                <option>Semua Wilayah</option>
+                                <option selected>Semua Wilayah</option>
+                                <option value="jakarta_selatan">Jakarta Selatan</option>
+                                <option value="bandung">Bandung</option>
+                                <option value="surabaya">Surabaya</option>
+                                <option value="medan">Medan</option>
+                                <option value="makassar">Makassar</option>
                             </select>
                         </div>
                         <div class="col-md-4 d-flex gap-4 justify-content-end">
