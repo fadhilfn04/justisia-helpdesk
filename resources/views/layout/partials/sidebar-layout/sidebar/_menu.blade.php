@@ -8,7 +8,7 @@
 			<div class="menu-item">
 				<!--begin:Menu link-->
 				<a class="menu-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-					<span class="menu-icon">{!! getIcon('rocket', 'fs-2') !!}</span>
+					<i data-lucide="layout-dashboard" class="menu-icon" width="18" height="18"></i>
 					<span class="menu-title">Dashboard</span>
 				</a>
 				<!--end:Menu link-->
@@ -18,7 +18,7 @@
 			<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('tiket.*') ? 'here show' : '' }}">
 				<!--begin:Menu link-->
 				<span class="menu-link">
-					<span class="menu-icon">{!! getIcon('abstract-28', 'fs-2') !!}</span>
+					<i data-lucide="ticket" class="menu-icon" width="18" height="18"></i>
 					<span class="menu-title">Helpdesk</span>
 					<span class="menu-arrow"></span>
 				</span>
@@ -69,7 +69,7 @@
 			<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('pembatalan-sertifikat.*') ? 'here show' : '' }}">
 				<!--begin:Menu link-->
 				<span class="menu-link">
-					<span class="menu-icon">{!! getIcon('abstract-28', 'fs-2') !!}</span>
+					<i data-lucide="file-x" class="menu-icon" width="18" height="18"></i>
 					<span class="menu-title">Pembatalan Sertifikat</span>
 					<span class="menu-arrow"></span>
 				</span>
@@ -120,7 +120,7 @@
 			<div class="menu-item">
 				<!--begin:Menu link-->
 				<a class="menu-link {{ request()->routeIs('laporan.*') ? 'active' : '' }}" href="{{ route('laporan.index') }}">
-					<span class="menu-icon">{!! getIcon('rocket', 'fs-2') !!}</span>
+					<i data-lucide="chart-column" class="menu-icon" width="18" height="18"></i>
 					<span class="menu-title">Laporan</span>
 				</a>
 				<!--end:Menu link-->
@@ -130,7 +130,7 @@
 			<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('user-management.*') ? 'here show' : '' }}">
 				<!--begin:Menu link-->
 				<span class="menu-link">
-					<span class="menu-icon">{!! getIcon('abstract-28', 'fs-2') !!}</span>
+					<i data-lucide="users" class="menu-icon" width="18" height="18"></i>
 					<span class="menu-title">Manajemen Pengguna</span>
 					<span class="menu-arrow"></span>
 				</span>
@@ -179,7 +179,7 @@
 			<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('help.*') ? 'here show' : '' }}">
 				<!--begin:Menu link-->
 				<span class="menu-link">
-					<span class="menu-icon">{!! getIcon('abstract-28', 'fs-2') !!}</span>
+					<i data-lucide="message-circle" class="menu-icon" width="18" height="18"></i>
 					<span class="menu-title">Bantuan & FAQ</span>
 					<span class="menu-arrow"></span>
 				</span>
@@ -189,7 +189,7 @@
 					<!--begin:Menu item-->
 					<div class="menu-item">
 						<!--begin:Menu link-->
-						<a class="menu-link {{ request()->routeIs('help.index.*') ? 'active' : '' }}" href="{{ route('help.index') }}">
+						<a class="menu-link {{ request()->routeIs('help.index') ? 'active' : '' }}" href="{{ route('help.index') }}">
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>
@@ -201,7 +201,7 @@
 					<!--begin:Menu item-->
 					<div class="menu-item">
 						<!--begin:Menu link-->
-						<a class="menu-link {{ request()->routeIs('help.guide.*') ? 'active' : '' }}" href="{{ route('help.guide') }}">
+						<a class="menu-link {{ request()->routeIs('help.guide') ? 'active' : '' }}" href="{{ route('help.guide') }}">
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>
@@ -213,7 +213,7 @@
 					<!--begin:Menu item-->
 					<div class="menu-item">
 						<!--begin:Menu link-->
-						<a class="menu-link {{ request()->routeIs('help-kontak.*') ? 'active' : '' }}" href="{{ route('help.kontak') }}">
+						<a class="menu-link {{ request()->routeIs('help-kontak') ? 'active' : '' }}" href="{{ route('help.kontak') }}">
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>

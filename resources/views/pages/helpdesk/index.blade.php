@@ -21,7 +21,7 @@
 
                     @foreach ($statuses as $status)
                         <div class="col-md-2 col-6">
-                            <div class="card h-100 card-index-helpdesk rounded border border-gray-300 bg-light p-12 text-center"
+                            <div class="card h-100 card-index-helpdesk rounded border p-12 text-center"
                             data-status="{{ strtolower($status['label']) }}">
                                 <div class="fw-bold fs-1 {{ $status['color'] }}">{{ $status['count'] }}</div>
                                 <div class="fs-7 small">{{ $status['label'] }}</div>
@@ -33,16 +33,16 @@
 
             {{-- Filter & Action --}}
             <div class="col-12">
-                <div class="py-10 px-5 rounded border border-gray-300 bg-light">
+                <div class="py-10 px-5 rounded bg-white border">
                     <div class="row g-3 align-items-center">
                         <div class="col-md-2">
                             <div class="position-relative">
                                 {!! getIcon('magnifier', 'fs-5 position-absolute top-50 start-0 translate-middle-y ms-3 text-dark') !!}
-                                <input type="text" class="form-control ps-12 bg-light input-soft-shadow" placeholder="Cari tiket, ID, atau pelapor...">
+                                <input type="text" class="form-control ps-12" placeholder="Cari tiket, ID, atau pelapor...">
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select bg-light input-soft-shadow text-dark">
+                            <select class="form-select text-dark">
                                 <option selected>Semua Status</option>
                                 <option value="terbuka">Terbuka</option>
                                 <option value="proses">Proses</option>
@@ -52,7 +52,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select bg-light input-soft-shadow text-dark">
+                            <select class="form-select text-dark">
                                 <option selected>Semua Prioritas</option>
                                 <option value="tinggi">Tinggi</option>
                                 <option value="sedang">Sedang</option>
@@ -60,7 +60,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select bg-light input-soft-shadow text-dark">
+                            <select class="form-select text-dark">
                                 <option selected>Semua Wilayah</option>
                                 <option value="jakarta_selatan">Jakarta Selatan</option>
                                 <option value="bandung">Bandung</option>
@@ -85,14 +85,14 @@
 
             {{-- Daftar Tiket --}}
             <div class="col-12">
-                <div class="p-10 rounded border border-gray-300 bg-light">
+                <div class="p-10 rounded border bg-white">
                     <div class="mb-5">
                         <h4 class="fw-bold mb-1">Daftar Tiket (5)</h4>
                         <p class="text-muted mb-0 fs-7">Kelola dan pantau semua tiket helpdesk</p>
                     </div>
 
                     <div class="table-responsive">
-                        <table id="tabel-tiket" class="table bg-light table-border-bottom-only fs-6-5" style="min-width: 1335px;">
+                        <table id="tabel-tiket" class="table bg-white table-border-bottom-only fs-6-5" style="min-width: 1335px;">
                             <thead class="fw-semibold">
                                 <tr>
                                     <th style="width: 12%;">ID Tiket</th>
@@ -118,7 +118,7 @@
 
 <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width: 650px;">
-    <div class="modal-content bg-light">
+    <div class="modal-content">
         <div class="modal-header d-flex flex-column align-items-start border-0">
             <div class="d-flex align-items-center mb-1">
                 <i data-lucide="arrow-down-to-line" class="me-2" style="width: 1.5rem;"></i>
@@ -165,7 +165,7 @@
             <div class="row g-3 mb-5">
                 <div class="col-md-4">
                     <label class="fw-semibold mb-1">Status</label>
-                    <select class="form-select shadow-none bg-light input-soft-shadow border">
+                    <select class="form-select shadow-none border">
                         <option>Semua Status</option>
                         <option>Pending</option>
                         <option>Selesai</option>
@@ -173,7 +173,7 @@
                 </div>
                 <div class="col-md-4">
                     <label class="fw-semibold mb-1">Prioritas</label>
-                    <select class="form-select shadow-none bg-light input-soft-shadow border">
+                    <select class="form-select shadow-none border">
                         <option>Semua Prioritas</option>
                         <option>Tinggi</option>
                         <option>Rendah</option>
@@ -181,7 +181,7 @@
                 </div>
                 <div class="col-md-4">
                     <label class="fw-semibold mb-1">Wilayah</label>
-                    <select class="form-select shadow-none bg-light input-soft-shadow border">
+                    <select class="form-select shadow-none border">
                         <option>Semua Wilayah</option>
                         <option>Jakarta</option>
                         <option>Bandung</option>

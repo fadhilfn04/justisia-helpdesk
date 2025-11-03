@@ -50407,7 +50407,7 @@ body,
   }
 }
 [data-kt-app-layout=dark-sidebar] .app-sidebar {
-  background-color: #ffc107;
+  background-color: #F6E2D6;
   border-right: 0;
 }
 [data-kt-app-layout=dark-sidebar] .app-sidebar .scroll-y,
@@ -50590,7 +50590,7 @@ body,
 }
 [data-kt-app-layout=dark-sidebar] .app-sidebar .menu .menu-item .menu-link.active {
   transition: color 0.2s ease;
-  background-color: #05339C;
+  background-color: #FFC107;
   color: #F5F5F5;
 }
 [data-kt-app-layout=dark-sidebar] .app-sidebar .menu .menu-item .menu-link.active .menu-title {

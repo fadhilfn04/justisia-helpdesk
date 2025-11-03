@@ -14,7 +14,7 @@
     <meta property="og:title" content=""/>
     <link rel="canonical" href="{{ url()->current() }}"/>
     <link rel="stylesheet" href="{{ asset('assets/css/fontawesome/font-awesome.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('assets/css/custom-css/sidebarHeader.css') }}">
     {!! includeFavicon() !!}
 
     <!--begin::Fonts-->
@@ -47,7 +47,7 @@
 <body {!! printHtmlClasses('body') !!} {!! printHtmlAttributes('body') !!}>
 
 @include('partials/theme-mode/_init')
-
+<div class="mt-8"></div>
 @yield('content')
 
 <!--begin::Javascript-->
