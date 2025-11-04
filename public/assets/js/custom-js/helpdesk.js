@@ -242,6 +242,27 @@ $(document).ready(function () {
             { data: 'sla' },
             { data: 'respon' },
             { data: 'aksi', orderable: false, searchable: false }
+            // {
+            //     data: null,
+            //     orderable: false,
+            //     searchable: false,
+            //     render: function (data, type, row) {
+            //         return `
+            //             <div class="dropdown text-end">
+            //                 <button class="btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
+            //                     <i data-lucide="ellipsis" class="icon-action"></i>
+            //                 </button>
+            //                 <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+            //                     <li>
+            //                         <a class="dropdown-item btn-verifikasi" href="#" data-id="${row.id}">
+            //                             <i data-lucide="check-circle" class="me-2"></i> Verifikasi Data
+            //                         </a>
+            //                     </li>
+            //                 </ul>
+            //             </div>
+            //         `;
+            //     }
+            // }
         ],
         columnDefs: [
             { targets: [1,2,3,4,5,6,7,8], className: 'text-start' },
@@ -281,5 +302,13 @@ $(document).ready(function () {
         option.classList.add('active');
         console.log("Prioritas dipilih:", option.dataset.value);
         });
+    });
+
+    $(document).on('click', '.btn-verifikasi', function (e) {
+        e.preventDefault();
+        const id = $(this).data('id');
+        console.log('Verifikasi Data untuk tiket:', id);
+        // contoh: buka modal atau redirect
+        // window.location.href = `/helpdesk/verifikasi/${id}`;
     });
 });

@@ -65,18 +65,13 @@ class AddUserModal extends Component
                 'name' => $this->name,
             ];
 
-            if ($this->avatar) {
-                $data['profile_photo_path'] = $this->avatar->store('avatars', 'public');
-            } else {
-                $data['profile_photo_path'] = null;
-            }
-
             if (!$this->edit_mode) {
                 $data['password'] = Hash::make($this->email);
             }
 
             // Update or Create a new user record in the database
             $data['email'] = $this->email;
+            $data['role_id'] = $this->role;
             $user = User::find($this->user_id) ?? User::create($data);
 
             if ($this->edit_mode) {
@@ -87,18 +82,10 @@ class AddUserModal extends Component
             }
 
             if ($this->edit_mode) {
-                // Assign selected role for user
-                $user->syncRoles($this->role);
 
                 // Emit a success event with a message
                 $this->dispatch('success', __('User updated'));
             } else {
-                // Assign selected role for user
-                $user->assignRole($this->role);
-
-                // Send a password reset link to the user's email
-                Password::sendResetLink($user->only('email'));
-
                 // Emit a success event with a message
                 $this->dispatch('success', __('New user created'));
             }
