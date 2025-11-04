@@ -33,7 +33,7 @@ $(document).ready(function () {
                 pelapor: `
                     <span class="d-inline-flex align-items-center gap-2">
                         <i data-lucide="user" class="text-dark" style="width: 1.4rem;"></i>
-                        <span>Joko Widodo</span>
+                        <span>Sindi Salfa</span>
                     </span>
                 `,
                 pj: `
@@ -115,7 +115,7 @@ $(document).ready(function () {
                 pelapor: `
                     <span class="d-inline-flex align-items-center gap-2">
                         <i data-lucide="user" class="text-dark" style="width: 1.4rem;"></i>
-                        <span>Joko Widodo</span>
+                        <span>Sindi Salfa</span>
                     </span>
                 `,
                 pj: `

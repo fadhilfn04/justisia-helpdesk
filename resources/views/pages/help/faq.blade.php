@@ -357,6 +357,19 @@
             </div>
         </div>
 
+        <div class="card mt-5 border d-none" id="notfoundfaq">
+            <div class="card-body py-3 mb-5">
+                <div class="border border-0 p-10 text-center">
+                    <i data-lucide="message-circle" class="mb-3" width="35" height="35"></i>
+                    <p class="mb-2 fw-bold fs-2">Tidak ada FAQ yang ditemukan</p>
+                    <p class="mb-4 fs-7">Coba ubah kata kunci pencarian atau pilih kategori yang berbeda</p>
+                    <label for="fileUpload" class="btn btn-sm border bg-white border-gray-300">
+                        Gunakan chatbot untuk bantuan langsung
+                    </label>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 

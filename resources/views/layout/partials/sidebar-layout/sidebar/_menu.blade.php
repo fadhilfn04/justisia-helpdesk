@@ -66,67 +66,118 @@
 			</div>
 			<!--end:Menu item-->
 			<!--begin:Menu item-->
-			<!--end:Menu item-->
-			<!--begin:Menu item-->
-			<div class="menu-item">
-				<!--begin:Menu link-->
-				<a class="menu-link {{ request()->routeIs('laporan.*') ? 'active' : '' }}" href="{{ route('laporan.index') }}">
-					<i data-lucide="chart-column" class="menu-icon" width="18" height="18"></i>
-					<span class="menu-title">Laporan</span>
-				</a>
-				<!--end:Menu link-->
-			</div>
-			<!--end:Menu item-->
-			<!--begin:Menu item-->
-			<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('user-management.*') ? 'here show' : '' }}">
-				<!--begin:Menu link-->
-				<span class="menu-link">
-					<i data-lucide="users" class="menu-icon" width="18" height="18"></i>
-					<span class="menu-title">Manajemen Pengguna</span>
-					<span class="menu-arrow"></span>
-				</span>
-				<!--end:Menu link-->
-				<!--begin:Menu sub-->
-				<div class="menu-sub menu-sub-accordion">
-					<!--begin:Menu item-->
-					<div class="menu-item">
-						<!--begin:Menu link-->
-						<a class="menu-link {{ request()->routeIs('user-management.users.*') ? 'active' : '' }}" href="{{ route('user-management.users.index') }}">
-							<span class="menu-bullet">
-								<span class="bullet bullet-dot"></span>
-							</span>
-							<span class="menu-title">Pengguna</span>
-						</a>
-						<!--end:Menu link-->
-					</div>
-					<!--end:Menu item-->
-					<!--begin:Menu item-->
-					{{-- <div class="menu-item">
-						<!--begin:Menu link-->
-						<a class="menu-link {{ request()->routeIs('user-management.roles.*') ? 'active' : '' }}" href="{{ route('user-management.roles.index') }}">
-							<span class="menu-bullet">
-								<span class="bullet bullet-dot"></span>
-							</span>
-							<span class="menu-title">Role</span>
-						</a>
-						<!--end:Menu link-->
-					</div> --}}
-					<!--end:Menu item-->
-					<!--begin:Menu item-->
-					{{-- <div class="menu-item">
-						<!--begin:Menu link-->
-						<a class="menu-link {{ request()->routeIs('user-management.permissions.*') ? 'active' : '' }}" href="{{ route('user-management.permissions.index') }}">
-							<span class="menu-bullet">
-								<span class="bullet bullet-dot"></span>
-							</span>
-							<span class="menu-title">Izin Akses</span>
-						</a>
-						<!--end:Menu link-->
-					</div> --}}
-					<!--end:Menu item-->
-				</div>
-				<!--end:Menu sub-->
-			</div>
+            @if (auth()->user()->role->id != '3')
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('pembatalan-sertifikat.*') ? 'here show' : '' }}">
+                    <!--begin:Menu link-->
+                    <span class="menu-link">
+                        <i data-lucide="file-x" class="menu-icon" width="18" height="18"></i>
+                        <span class="menu-title">Pembatalan Sertifikat</span>
+                        <span class="menu-arrow"></span>
+                    </span>
+                    <!--end:Menu link-->
+                    <!--begin:Menu sub-->
+                    <div class="menu-sub menu-sub-accordion">
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link {{ request()->routeIs('pembatalan-sertifikat.index') ? 'active' : '' }}" href="{{ route('pembatalan-sertifikat.index') }}">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Daftar Pembatalan</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div>
+                        <!--end:Menu item-->
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link {{ request()->routeIs('pembatalan-sertifikat.cacat_administrasi') ? 'active' : '' }}" href="{{ route('pembatalan-sertifikat.cacat_administrasi') }}">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Cacat Administrasi</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div>
+                        <!--end:Menu item-->
+                        <!--begin:Menu item-->
+                        {{-- <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link {{ request()->routeIs('pembatalan-sertifikat.putusan_pengadilan') ? 'active' : '' }}" href="{{ route('pembatalan-sertifikat.putusan_pengadilan') }}">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Putusan Pengadilan</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div> --}}
+                        <!--end:Menu item-->
+                    </div>
+                    <!--end:Menu sub-->
+                </div>
+                <!--end:Menu item-->
+                <!--begin:Menu item-->
+                <div class="menu-item">
+                    <!--begin:Menu link-->
+                    <a class="menu-link {{ request()->routeIs('laporan.*') ? 'active' : '' }}" href="{{ route('laporan.index') }}">
+                        <i data-lucide="chart-column" class="menu-icon" width="18" height="18"></i>
+                        <span class="menu-title">Laporan</span>
+                    </a>
+                    <!--end:Menu link-->
+                </div>
+                <!--end:Menu item-->
+                <!--begin:Menu item-->
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('user-management.*') ? 'here show' : '' }}">
+                    <!--begin:Menu link-->
+                    <span class="menu-link">
+                        <i data-lucide="users" class="menu-icon" width="18" height="18"></i>
+                        <span class="menu-title">Manajemen Pengguna</span>
+                        <span class="menu-arrow"></span>
+                    </span>
+                    <!--end:Menu link-->
+                    <!--begin:Menu sub-->
+                    <div class="menu-sub menu-sub-accordion">
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link {{ request()->routeIs('user-management.users.*') ? 'active' : '' }}" href="{{ route('user-management.users.index') }}">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Pengguna</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div>
+                        <!--end:Menu item-->
+                        <!--begin:Menu item-->
+                        {{-- <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link {{ request()->routeIs('user-management.roles.*') ? 'active' : '' }}" href="{{ route('user-management.roles.index') }}">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Role</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div> --}}
+                        <!--end:Menu item-->
+                        <!--begin:Menu item-->
+                        {{-- <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link {{ request()->routeIs('user-management.permissions.*') ? 'active' : '' }}" href="{{ route('user-management.permissions.index') }}">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Izin Akses</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div> --}}
+                        <!--end:Menu item-->
+                    </div>
+                    <!--end:Menu sub-->
+                </div>
+            @endif
 			<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('help.*') ? 'here show' : '' }}">
 				<!--begin:Menu link-->
 				<span class="menu-link">
@@ -164,7 +215,7 @@
 					<!--begin:Menu item-->
 					<div class="menu-item">
 						<!--begin:Menu link-->
-						<a class="menu-link {{ request()->routeIs('help-kontak') ? 'active' : '' }}" href="{{ route('help.kontak') }}">
+						<a class="menu-link {{ request()->routeIs('help.kontak') ? 'active' : '' }}" href="{{ route('help.kontak') }}">
 							<span class="menu-bullet">
 								<span class="bullet bullet-dot"></span>
 							</span>

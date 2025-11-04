@@ -11,9 +11,11 @@
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_overview">Overview</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab_realtime">Real-Time</a>
-                </li>
+                @if (auth()->user()->role->id != '3')
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_realtime">Real-Time</a>
+                    </li>
+                @endif
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_notifikasi">Notifikasi</a>
                 </li>
@@ -41,7 +43,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-6">                            
+                        <div class="col-md-3 col-sm-6">
                             <div class="card shadow-sm border-0 h-100">
                                 <div class="card-body">
                                     <h6 class="text-muted mb-2">Kasus Sengketa</h6>
@@ -61,23 +63,25 @@
                         </div>
                     </div>
 
-                    <div class="row g-5 mb-5">
-                        <div class="col-xl-8">
-                            @include('partials.dashboard.charts._tren-tiket-bulanan')
+                    @if (auth()->user()->role->id != '3')
+                        <div class="row g-5 mb-5">
+                            <div class="col-xl-8">
+                                @include('partials.dashboard.charts._tren-tiket-bulanan')
+                            </div>
+                            <div class="col-xl-4">
+                                @include('partials.dashboard.charts._jenis-sengketa')
+                            </div>
                         </div>
-                        <div class="col-xl-4">
-                            @include('partials.dashboard.charts._jenis-sengketa')
-                        </div>
-                    </div>
 
-                    <div class="row g-5 mb-5">
-                        <div class="col-xl-8">
-                            @include('partials.dashboard.tables._tiket-terbaru')
+                        <div class="row g-5 mb-5">
+                            <div class="col-xl-8">
+                                @include('partials.dashboard.tables._tiket-terbaru')
+                            </div>
+                            <div class="col-xl-4">
+                                @include('partials.dashboard.cards._distribusi-regional')
+                            </div>
                         </div>
-                        <div class="col-xl-4">
-                            @include('partials.dashboard.cards._distribusi-regional')
-                        </div>
-                    </div>
+                    @endif
 
                     <div class="card shadow-sm border-0 rounded-4">
                         <div class="card-body py-4">

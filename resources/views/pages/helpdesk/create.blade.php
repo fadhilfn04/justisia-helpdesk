@@ -124,19 +124,21 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="card border mb-3">
-                    <div class="card-header border-0">
-                        <h1 class="card-title" style="font-size: 1.2rem; font-weight: 600;">
-                            Prioritas
-                        </h1>
-                    </div>
+                @if(auth()->user()->role->id != '3')
+                    <div class="card border mb-3">
+                        <div class="card-header border-0">
+                            <h1 class="card-title" style="font-size: 1.2rem; font-weight: 600;">
+                                Prioritas
+                            </h1>
+                        </div>
 
-                    <div class="card-body py-0 mb-2">
-                        <div class="priority-option text-danger fs-6 fw-semibold" data-value="tinggi">Tinggi</div>
-                        <div class="priority-option text-warning fs-6 fw-semibold active" data-value="sedang">Sedang</div>
-                        <div class="priority-option text-success fs-6 fw-semibold" data-value="rendah">Rendah</div>
+                        <div class="card-body py-0 mb-2">
+                            <div class="priority-option text-danger fs-6 fw-semibold" data-value="tinggi">Tinggi</div>
+                            <div class="priority-option text-warning fs-6 fw-semibold active" data-value="sedang">Sedang</div>
+                            <div class="priority-option text-success fs-6 fw-semibold" data-value="rendah">Rendah</div>
+                        </div>
                     </div>
-                </div>
+                @endif
 
                 <!-- Card Opsi Tambahan -->
                 <div class="card border mb-3">
