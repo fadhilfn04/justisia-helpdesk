@@ -67,56 +67,6 @@
 			<!--end:Menu item-->
 			<!--begin:Menu item-->
             @if (auth()->user()->role->id != '3')
-                <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('pembatalan-sertifikat.*') ? 'here show' : '' }}">
-                    <!--begin:Menu link-->
-                    <span class="menu-link">
-                        <i data-lucide="file-x" class="menu-icon" width="18" height="18"></i>
-                        <span class="menu-title">Pembatalan Sertifikat</span>
-                        <span class="menu-arrow"></span>
-                    </span>
-                    <!--end:Menu link-->
-                    <!--begin:Menu sub-->
-                    <div class="menu-sub menu-sub-accordion">
-                        <!--begin:Menu item-->
-                        <div class="menu-item">
-                            <!--begin:Menu link-->
-                            <a class="menu-link {{ request()->routeIs('pembatalan-sertifikat.index') ? 'active' : '' }}" href="{{ route('pembatalan-sertifikat.index') }}">
-                                <span class="menu-bullet">
-                                    <span class="bullet bullet-dot"></span>
-                                </span>
-                                <span class="menu-title">Daftar Pembatalan</span>
-                            </a>
-                            <!--end:Menu link-->
-                        </div>
-                        <!--end:Menu item-->
-                        <!--begin:Menu item-->
-                        <div class="menu-item">
-                            <!--begin:Menu link-->
-                            <a class="menu-link {{ request()->routeIs('pembatalan-sertifikat.cacat_administrasi') ? 'active' : '' }}" href="{{ route('pembatalan-sertifikat.cacat_administrasi') }}">
-                                <span class="menu-bullet">
-                                    <span class="bullet bullet-dot"></span>
-                                </span>
-                                <span class="menu-title">Cacat Administrasi</span>
-                            </a>
-                            <!--end:Menu link-->
-                        </div>
-                        <!--end:Menu item-->
-                        <!--begin:Menu item-->
-                        {{-- <div class="menu-item">
-                            <!--begin:Menu link-->
-                            <a class="menu-link {{ request()->routeIs('pembatalan-sertifikat.putusan_pengadilan') ? 'active' : '' }}" href="{{ route('pembatalan-sertifikat.putusan_pengadilan') }}">
-                                <span class="menu-bullet">
-                                    <span class="bullet bullet-dot"></span>
-                                </span>
-                                <span class="menu-title">Putusan Pengadilan</span>
-                            </a>
-                            <!--end:Menu link-->
-                        </div> --}}
-                        <!--end:Menu item-->
-                    </div>
-                    <!--end:Menu sub-->
-                </div>
-                <!--end:Menu item-->
                 <!--begin:Menu item-->
                 <div class="menu-item">
                     <!--begin:Menu link-->
