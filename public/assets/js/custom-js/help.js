@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // === LIVE SEARCH ===
     searchInput.addEventListener('keyup', function() {
         const query = this.value.toLowerCase();
+        const notFoundCard = document.getElementById('notfoundfaq');
+        let anyVisible = false;
 
         cards.forEach(card => {
             const accordionItems = card.querySelectorAll('.accordion-item');
@@ -50,6 +52,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             card.style.display = visibleItems.length > 0 ? 'block' : 'none';
 
+            if (visibleItems.length > 0) {
+                anyVisible = true;
+            }
+
             accordionItems.forEach(item => {
                 if (visibleItems.length === 1 && visibleItems.includes(item)) {
                     item.style.borderBottom = 'none';
@@ -58,5 +64,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+
+        // Tampilkan / sembunyikan "Tidak ada FAQ"
+        if (!anyVisible && query !== '') {
+            notFoundCard.classList.remove('d-none');
+        } else {
+            notFoundCard.classList.add('d-none');
+        }
     });
+
 });
