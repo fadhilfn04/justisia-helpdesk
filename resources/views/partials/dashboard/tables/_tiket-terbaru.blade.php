@@ -16,15 +16,22 @@
                             </td>
                             <td class="text-end">
                                 <div>
-                                    @if($ticket['status'] === 'open')
-                                        <span class="badge badge-light-primary">{{ $ticket['status'] }}</span>
-                                    @elseif($ticket['status'] === 'in_progress')
-                                        <span class="badge badge-light-warning">{{ $ticket['status'] }}</span>
-                                    @elseif($ticket['status'] === 'closed')
-                                        <span class="badge badge-light-success">{{ $ticket['status'] }}</span>
-                                    @else
-                                        <span class="badge badge-light-secondary">{{ $ticket['status'] }}</span>
-                                    @endif
+                                    @switch($ticket['status'])
+                                        @case('open')
+                                            <span class="badge badge-light-primary">Terbuka</span>
+                                            @break
+
+                                        @case('in_progress')
+                                            <span class="badge badge-light-warning">Sedang Diproses</span>
+                                            @break
+
+                                        @case('closed')
+                                            <span class="badge badge-light-success">Selesai</span>
+                                            @break
+
+                                        @default
+                                            <span class="badge badge-light-secondary">Tidak Diketahui</span>
+                                    @endswitch
                                 </div>
                                 <div class="text-muted fs-8 mt-1">
                                     {{ $ticket->created_at->diffForHumans() }}

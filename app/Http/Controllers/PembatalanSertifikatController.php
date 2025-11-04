@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PembatalanSertifikat;
 use App\Models\Ticket;
 use App\Models\TicketCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PembatalanSertifikatController extends Controller
 {
     public function index()
     {
-        return view('pages.pembatalan-sertifikat.index');
+        $data = PembatalanSertifikat::all();
+
+        return view('pages.pembatalan-sertifikat.index', compact('data'));
     }
 
     public function create()
@@ -30,53 +34,54 @@ class PembatalanSertifikatController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'category_id' => 'required|exists:ticket_categories,id',
-            'priority' => 'required|string',
+        $request->validate([
+            'no_sertifikat' => 'required|string|max:255',
+            'pemilik' => 'required|string|max:255',
+            'lokasi' => 'required|string|max:255',
+            'jenis' => 'required|string|max:255',
+            'status' => 'required|string|max:50',
+            'penanggung_jawab' => 'nullable|string|max:255',
+            'target_selesai' => 'nullable|date',
         ]);
 
-        $ticket = Ticket::create([
-            'user_id' => auth()->id(),
-            'category_id' => $validated['category_id'],
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'priority' => $validated['priority'],
-            'status' => 'open',
+        PembatalanSertifikat::create([
+            'id_pembatalan' => 'PB-' . Str::padLeft(PembatalanSertifikat::count() + 1, 3, '0'),
+            'no_sertifikat' => $request->no_sertifikat,
+            'pemilik' => $request->pemilik,
+            'lokasi' => $request->lokasi,
+            'jenis' => $request->jenis,
+            'status' => $request->status,
+            'penanggung_jawab' => $request->penanggung_jawab,
+            'target_selesai' => $request->target_selesai,
         ]);
 
-        if ($request->hasFile('attachment')) {
-            foreach ($request->file('attachment') as $file) {
-                $file->store('attachments');
-            }
-        }
-
-        return redirect()->route('helpdesk.index')->with('success', 'Tiket berhasil dibuat!');
+        return redirect()->route('pembatalan.index')->with('success', 'Data berhasil ditambahkan!');
     }
 
-    public function edit(Ticket $ticket) {}
+    public function edit(PembatalanSertifikat $pembatalan)
+    {
+        return view('pages.pembatalan_sertifikat.edit', compact('pembatalan'));
+    }
 
-    public function update(Request $request, Ticket $ticket) {}
+    public function update(Request $request, PembatalanSertifikat $pembatalan)
+    {
+        $request->validate([
+            'no_sertifikat' => 'required|string|max:255',
+            'pemilik' => 'required|string|max:255',
+            'lokasi' => 'required|string|max:255',
+            'jenis' => 'required|string|max:255',
+            'status' => 'required|string|max:50',
+            'penanggung_jawab' => 'nullable|string|max:255',
+            'target_selesai' => 'nullable|date',
+        ]);
 
-    // public function destroy(Ticket $ticket)
-    // {
-    //     $ticket->delete();
-    //     return redirect()->route('tiket.index')->with('success', 'Data tiket berhasil dihapus.');
-    // }
+        $pembatalan->update($request->all());
+        return redirect()->route('pembatalan.index')->with('success', 'Data berhasil diperbarui!');
+    }
 
-    // public function import(Request $request)
-    // {
-    //     $request->validate([
-    //         'file' => 'required|mimes:xls,xlsx'
-    //     ]);
-
-    //     try {
-    //         Excel::import(new KaryawanImport, $request->file('file'));
-
-    //         return redirect()->route('karyawan.index')->with('success', 'Data karyawan berhasil diimport!');
-    //     } catch (\Exception $e) {
-    //         return redirect()->route('karyawan.index')->with('error', 'Terjadi kesalahan saat mengimport: ' . $e->getMessage());
-    //     }
-    // }
+    public function destroy(PembatalanSertifikat $pembatalan)
+    {
+        $pembatalan->delete();
+        return redirect()->route('pembatalan.index')->with('success', 'Data berhasil dihapus!');
+    }
 }

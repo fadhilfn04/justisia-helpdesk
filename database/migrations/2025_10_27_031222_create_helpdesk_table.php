@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('guard_name')->nullable();
             $table->timestamps();
         });
 
@@ -56,6 +57,18 @@ return new class extends Migration
             $table->string('question');
             $table->text('answer');
             $table->foreignId('category_id')->constrained('ticket_categories')->onDelete('cascade');
+            $table->timestamps();
+        });
+
+        Schema::create('pembatalan_sertifikat', function (Blueprint $table) {
+            $table->id();
+            $table->string('no_sertifikat');
+            $table->string('pemilik');
+            $table->string('lokasi');
+            $table->string('jenis');
+            $table->string('status')->default('Proses');
+            $table->string('penanggung_jawab')->nullable();
+            $table->date('target_selesai')->nullable();
             $table->timestamps();
         });
 
@@ -130,6 +143,7 @@ return new class extends Migration
         Schema::dropIfExists('ticket_messages');
         Schema::dropIfExists('tickets');
         Schema::dropIfExists('faqs');
+        Schema::dropIfExists('pembatalan_sertifikat');
         Schema::dropIfExists('master_survey');
         Schema::dropIfExists('master_sla');
         Schema::dropIfExists('ticket_categories');

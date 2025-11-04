@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Exports\LaporanExport;
+use App\Models\Ticket;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 use Carbon\Carbon;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class LaporanController extends Controller
 {
@@ -66,14 +67,28 @@ class LaporanController extends Controller
         ];
     }
 
-    private function getKinerjaBulanan($periode, $wilayah)
+    private function getKinerjaBulanan($periode = null, $wilayah = null)
     {
-        return [
-            ['bulan' => 'Jan', 'selesai' => 25, 'open' => 5],
-            ['bulan' => 'Feb', 'selesai' => 30, 'open' => 3],
-            ['bulan' => 'Mar', 'selesai' => 28, 'open' => 4],
-            ['bulan' => 'Apr', 'selesai' => 35, 'open' => 2],
-        ];
+        $data = Ticket::select(
+                DB::raw('MONTH(created_at) as bulan'),
+                DB::raw('YEAR(created_at) as tahun'),
+                DB::raw("SUM(CASE WHEN status = 'closed' THEN 1 ELSE 0 END) as selesai"),
+                DB::raw("SUM(CASE WHEN status IN ('open', 'in_progress') THEN 1 ELSE 0 END) as masuk")
+            )
+            ->groupBy('tahun', 'bulan')
+            ->orderBy('tahun')
+            ->orderBy('bulan')
+            ->get();
+
+        $bulanNama = [1=>'Jan',2=>'Feb',3=>'Mar',4=>'Apr',5=>'Mei',6=>'Jun',7=>'Jul',8=>'Agu',9=>'Sep',10=>'Okt',11=>'Nov',12=>'Des'];
+
+        return $data->map(function ($row) use ($bulanNama) {
+            return [
+                'bulan' => $bulanNama[$row->bulan] ?? $row->bulan,
+                'selesai' => (int) $row->selesai,
+                'masuk' => (int) $row->masuk,
+            ];
+        });
     }
 
     private function getDistribusiKategori($periode, $wilayah)

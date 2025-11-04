@@ -135,7 +135,7 @@
 
         <div class="card-body py-4">
             <div class="table-responsive">
-                <table class="table align-middle table-row-dashed fs-6 gy-4">
+                <table id="pembatalanSertifikat" class="table align-middle table-row-dashed fs-6 gy-4">
                     <thead>
                         <tr class="text-start text-gray-500 fw-bold text-uppercase gs-0">
                             <th>ID Pembatalan</th>
@@ -150,34 +150,51 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($pembatalanList as $item)
+                        @foreach ($data as $item)
                             <tr>
-                                <td>{{ $item['id_pembatalan'] }}</td>
-                                <td>{{ $item['no_sertifikat'] }}</td>
-                                <td>{{ $item['pemilik'] }}</td>
-                                <td>{{ $item['lokasi'] }}</td>
-                                <td>{{ $item['jenis'] }}</td>
+                                <td>{{ $item->id }}</td>
+                                <td>{{ $item->no_sertifikat }}</td>
+                                <td>{{ $item->pemilik }}</td>
+                                <td>{{ $item->lokasi }}</td>
+                                <td>{{ $item->jenis }}</td>
                                 <td>
-                                    @switch($item['status'])
-                                        @case('Selesai')
-                                            <span class="badge bg-success">Selesai</span>
-                                            @break
-                                        @case('Proses')
-                                            <span class="badge bg-warning">Proses</span>
-                                            @break
-                                        @case('Menunggu')
-                                            <span class="badge bg-primary">Menunggu</span>
-                                            @break
-                                        @default
-                                            <span class="badge bg-danger">Ditolak</span>
-                                    @endswitch
+                                    <span class="badge bg-{{ $item->status == 'Selesai' ? 'success' : ($item->status == 'Proses' ? 'warning' : 'danger') }}">
+                                        {{ $item->status }}
+                                    </span>
                                 </td>
-                                <td>{{ $item['penanggung_jawab'] }}</td>
-                                <td>{{ \Carbon\Carbon::parse($item['target_selesai'])->format('d M Y') }}</td>
-                                <td class="text-end">
-                                    <a href="#" class="btn btn-sm btn-light-primary">
-                                        {!! getIcon('eye', 'fs-4 me-1') !!} Detail
+                                <td>{{ $item->penanggung_jawab ?? '-' }}</td>
+                                <td>{{ $item->target_selesai ?? '-' }}</td>
+                                <td class="text-center">
+                                    <a href="#"
+                                    class="btn btn-light btn-active-light-primary btn-flex btn-center btn-sm"
+                                    data-kt-menu-trigger="click"
+                                    data-kt-menu-placement="bottom-end">
+                                        Aksi
+                                        <i class="ki-duotone ki-down fs-5 ms-1"></i>
                                     </a>
+
+                                    <!--begin::Dropdown menu-->
+                                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 
+                                                menu-state-bg-light-primary fw-semibold fs-7 w-150px py-4"
+                                        data-kt-menu="true">
+                                        
+                                        <!--begin::Menu item-->
+                                        <div class="menu-item px-3">
+                                            <a href="#" class="menu-link px-3">
+                                                <i class="ki-duotone ki-pencil fs-5 me-2 text-warning"></i>Edit
+                                            </a>
+                                        </div>
+                                        <!--end::Menu item-->
+
+                                        <!--begin::Menu item-->
+                                        <div class="menu-item px-3">
+                                            <a href="#" class="menu-link px-3">
+                                                <i class="ki-duotone ki-trash fs-5 me-2 text-danger"></i>Hapus
+                                            </a>
+                                        </div>
+                                        <!--end::Menu item-->
+                                    </div>
+                                    <!--end::Dropdown menu-->
                                 </td>
                             </tr>
                         @endforeach
@@ -190,7 +207,17 @@
 
     @push('scripts')
         <script>
-            console.log('Halaman daftar pembatalan siap digunakan.');
+            $(document).ready(function() {
+                var table = $('#pembatalanSertifikat').DataTable({
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: true,
+                    columnDefs: [
+                        { className: 'text-center', targets: '_all' },
+                        { orderable: false, targets: -1 }
+                    ],
+                });
+            });
         </script>
     @endpush
 

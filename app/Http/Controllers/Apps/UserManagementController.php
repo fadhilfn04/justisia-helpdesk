@@ -19,9 +19,15 @@ class UserManagementController extends Controller
         // $totalTidakAktif = User::where('status', 'tidak_aktif')->count();
         // $totalDitangguhkan = User::where('status', 'ditangguhkan')->count();
 
-        $totalAdmin = User::query()->role('Administrator')->count();
-        $totalSupervisor = User::query()->role('Supervisor')->count();
-        $totalOperator = User::query()->role('Operator')->count();
+        $totalAdmin = User::whereHas('role', function ($query) {
+            $query->where('name', 'Administrator');
+        })->count();
+        $totalSupervisor = User::whereHas('role', function ($query) {
+            $query->where('name', 'Supervisor');
+        })->count();
+        $totalOperator = User::whereHas('role', function ($query) {
+            $query->where('name', 'Operator');
+        })->count();
 
         return $dataTable->render('pages/apps.user-management.users.list', compact(
             'totalUsers',

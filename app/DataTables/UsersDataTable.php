@@ -24,7 +24,7 @@ class UsersDataTable extends DataTable
                 return view('pages/apps.user-management.users.columns._user', compact('user'));
             })
             ->editColumn('role', function (User $user) {
-                return ucwords($user->roles->first()?->name ?? '-');
+                return ucwords($user->role?->name ?? '-');
             })
             ->addColumn('kontak', function (User $user) {
                 return $user->phone

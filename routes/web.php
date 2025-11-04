@@ -33,9 +33,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('tiket', TiketController::class);
 
     Route::prefix('pembatalan-sertifikat')->group(function () {
+        // Views
         Route::get('/index', [PembatalanSertifikatController::class, 'index'])->name('pembatalan-sertifikat.index');
         Route::get('/cacat-administrasi', [PembatalanSertifikatController::class, 'cacat_administrasi'])->name('pembatalan-sertifikat.cacat_administrasi');
         Route::get('/putusan-pengadilan', [PembatalanSertifikatController::class, 'putusan_pengadilan'])->name('pembatalan-sertifikat.putusan_pengadilan');
+
+        // CRUD
+        Route::get('/create', [PembatalanSertifikatController::class, 'create'])->name('pembatalan-sertifikat.create');
+        Route::post('/', [PembatalanSertifikatController::class, 'store'])->name('pembatalan-sertifikat.store');
+        Route::get('/{id}/edit', [PembatalanSertifikatController::class, 'edit'])->name('pembatalan-sertifikat.edit');
+        Route::put('/{id}', [PembatalanSertifikatController::class, 'update'])->name('pembatalan-sertifikat.update');
+        Route::delete('/{id}', [PembatalanSertifikatController::class, 'destroy'])->name('pembatalan-sertifikat.destroy');
     });
 
     Route::prefix('notifications')->group(function () {
