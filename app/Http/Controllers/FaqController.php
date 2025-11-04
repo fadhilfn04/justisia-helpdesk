@@ -19,5 +19,5 @@ class FaqController extends Controller
     public function kontak()
     {
         return view("pages.help.kontak");
-    }
+    } 
 }
