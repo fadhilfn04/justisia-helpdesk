@@ -100,16 +100,19 @@
                                     </a>
                                 </div>
 
-                                <div class="col-md col-sm-6">
-                                    <a href="{{ route('user-management.users.index') }}" class="text-decoration-none">
-                                        <div class="quick-action-card text-center p-4 rounded-3 border bg-white h-100">
-                                            <div class="fs-1 mb-2 text-success">
-                                                <i class="bi bi-people"></i>
+                                @if (auth()->user()->role->id != '3')
+                                    <div class="col-md col-sm-6">
+                                        <a href="{{ route('user-management.users.index') }}" class="text-decoration-none">
+                                            <div class="quick-action-card text-center p-4 rounded-3 border bg-white h-100">
+                                                <div class="fs-1 mb-2 text-success">
+                                                    <i class="bi bi-people"></i>
+                                                </div>
+                                                <div class="fw-semibold text-dark">Manajemen User</div>
                                             </div>
-                                            <div class="fw-semibold text-dark">Manajemen User</div>
-                                        </div>
-                                    </a>
-                                </div>
+                                        </a>
+                                    </div>
+                                @endif
+
                             </div>
                         </div>
                     </div>

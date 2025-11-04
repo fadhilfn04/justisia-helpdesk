@@ -256,7 +256,7 @@
                                     <!-- Footer Info -->
                                     <div class="d-flex align-items-center justify-content-between mt-auto">
                                     <div class="d-flex align-items-center gap-3">
-                                        <span class="badge badge-bg-chocolate px-3 py-2">Pemula</span>
+                                        <span class="badge badge-bg-warning px-3 py-2">Pemula</span>
                                             <span class="d-inline-flex align-items-center gap-1 text-dark small">
                                             <i data-lucide="clock" style="width: 1rem;"></i>
                                             8 menit
@@ -284,7 +284,7 @@
                                     <!-- Footer Info -->
                                     <div class="d-flex align-items-center justify-content-between mt-auto">
                                     <div class="d-flex align-items-center gap-3">
-                                        <span class="badge badge-bg-chocolate px-3 py-2">Pemula</span>
+                                        <span class="badge badge-bg-warning px-3 py-2">Pemula</span>
                                             <span class="d-inline-flex align-items-center gap-1 text-dark small">
                                             <i data-lucide="clock" style="width: 1rem;"></i>
                                             6 menit
@@ -312,7 +312,7 @@
                                     <!-- Footer Info -->
                                     <div class="d-flex align-items-center justify-content-between mt-auto">
                                     <div class="d-flex align-items-center gap-3">
-                                        <span class="badge badge-bg-chocolate px-3 py-2">Pemula</span>
+                                        <span class="badge badge-bg-warning px-3 py-2">Pemula</span>
                                             <span class="d-inline-flex align-items-center gap-1 text-dark small">
                                             <i data-lucide="clock" style="width: 1rem;"></i>
                                             10 menit
@@ -358,7 +358,7 @@
                                     <!-- Footer Info -->
                                     <div class="d-flex align-items-center justify-content-between mt-auto">
                                     <div class="d-flex align-items-center gap-3">
-                                        <span class="badge badge-bg-chocolate px-3 py-2">Menengah</span>
+                                        <span class="badge badge-bg-warning px-3 py-2">Menengah</span>
                                             <span class="d-inline-flex align-items-center gap-1 text-dark small">
                                             <i data-lucide="clock" style="width: 1rem;"></i>
                                             12 menit
@@ -414,7 +414,7 @@
                                     <!-- Footer Info -->
                                     <div class="d-flex align-items-center justify-content-between mt-auto">
                                     <div class="d-flex align-items-center gap-3">
-                                        <span class="badge badge-bg-chocolate px-3 py-2">Pemula</span>
+                                        <span class="badge badge-bg-warning px-3 py-2">Pemula</span>
                                             <span class="d-inline-flex align-items-center gap-1 text-dark small">
                                             <i data-lucide="clock" style="width: 1rem;"></i>
                                             7 menit
