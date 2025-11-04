@@ -97,17 +97,6 @@
                                 </div>
 
                                 <div class="col-md col-sm-6">
-                                    <a href="{{ route('pembatalan-sertifikat.index') }}" class="text-decoration-none">
-                                        <div class="quick-action-card text-center p-4 rounded-3 border bg-white h-100">
-                                            <div class="fs-1 mb-2 text-danger">
-                                                <i class="bi bi-file-earmark-x"></i>
-                                            </div>
-                                            <div class="fw-semibold text-dark">Pembatalan Sertifikat</div>
-                                        </div>
-                                    </a>
-                                </div>
-
-                                <div class="col-md col-sm-6">
                                     <a href="{{ route('user-management.users.index') }}" class="text-decoration-none">
                                         <div class="quick-action-card text-center p-4 rounded-3 border bg-white h-100">
                                             <div class="fs-1 mb-2 text-success">
