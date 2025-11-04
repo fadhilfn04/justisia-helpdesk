@@ -3,8 +3,8 @@ services:
   app:
     build:
       args:
-        user: helpdesk-justisia
-        uid: 1000
+        user: kabayan
+        uid: 1002
       context: ./
       dockerfile: Dockerfile
     image: helpdesk-justisia
@@ -15,7 +15,7 @@ services:
       - ./:/var/www
       - ./php.ini:/usr/local/etc/php/php.ini
     networks:
-      - justisia-helpdesk-net
+      - kby-atr-net
 
   nginx:
     image: nginx:alpine
@@ -27,7 +27,7 @@ services:
       - ./:/var/www
       - ./nginx:/etc/nginx/conf.d/
     networks:
-      - justisia-helpdesk-net
+      - kby-atr-net
   db:
       image: mariadb:10.5
       container_name: db-justisia-helpdesk-erm
@@ -40,9 +40,9 @@ services:
       volumes:
           - ./db_data:/var/lib/mysql
       networks:
-          - justisia-helpdesk-net
+          - kby-atr-net
       ports:
           - "8990:3306"
 networks:
-  justisia-helpdesk-net:
+  kby-atr-net:
     driver: bridge
