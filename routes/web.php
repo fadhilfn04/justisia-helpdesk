@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Apps\PermissionManagementController;
 use App\Http\Controllers\Apps\RoleManagementController;
 use App\Http\Controllers\Apps\UserManagementController;
@@ -7,11 +8,12 @@ use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\PembatalanSertifikatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SengketaKonflikController;
-use App\Http\Controllers\FaqController;
+use App\Http\Controllers\HelpController;
 use App\Http\Controllers\TiketController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\TicketCategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,7 +32,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [DashboardController::class, 'index']);
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('tiket', TiketController::class);
+
+    Route::prefix('tiket')->name('tiket.')->group(function () {
+        Route::resource('/', TiketController::class)->parameters(['' => 'tiket']);
+        Route::post('/{id}/verification', [TiketController::class, 'verification'])->name('verification');
+        Route::post('/{id}/return', [TiketController::class, 'return'])->name('return');
+    });
 
     Route::prefix('notifications')->group(function () {
         Route::get('/partial', [NotificationController::class, 'partial'])->name('notifications.partial');
@@ -40,8 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::resource('laporan', LaporanController::class);
-    Route::resource('settings', SettingsController::class);
-    Route::resource('faq', FaqController::class);
+    // Route::resource('settings', SettingsController::class);
 
     Route::name('user-management.')->group(function () {
         Route::resource('/user-management/users', UserManagementController::class);
@@ -50,9 +56,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::prefix('help')->group(function () {
-        Route::get('/faq', [FaqController::class, 'index'])->name('help.index');
-        Route::get('/guide', [FaqController::class, 'guide'])->name('help.guide');
-        Route::get('/kontak', [FaqController::class, 'kontak'])->name('help.kontak');
+        Route::get('/faq', [HelpController::class, 'index'])->name('help.index');
+        Route::get('/guide', [HelpController::class, 'guide'])->name('help.guide');
+        Route::get('/kontak', [HelpController::class, 'kontak'])->name('help.kontak');
+    });
+
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::resource('faq', FaqController::class);
+        Route::resource('ticket-category', TicketCategoryController::class);
     });
 });
 

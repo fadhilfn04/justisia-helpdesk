@@ -241,28 +241,28 @@ $(document).ready(function () {
             { data: 'wilayah' },
             { data: 'sla' },
             { data: 'respon' },
-            { data: 'aksi', orderable: false, searchable: false }
-            // {
-            //     data: null,
-            //     orderable: false,
-            //     searchable: false,
-            //     render: function (data, type, row) {
-            //         return `
-            //             <div class="dropdown text-end">
-            //                 <button class="btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
-            //                     <i data-lucide="ellipsis" class="icon-action"></i>
-            //                 </button>
-            //                 <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-            //                     <li>
-            //                         <a class="dropdown-item btn-verifikasi" href="#" data-id="${row.id}">
-            //                             <i data-lucide="check-circle" class="me-2"></i> Verifikasi Data
-            //                         </a>
-            //                     </li>
-            //                 </ul>
-            //             </div>
-            //         `;
-            //     }
-            // }
+            // { data: 'aksi', orderable: false, searchable: false }
+            {
+                data: null,
+                orderable: false,
+                searchable: false,
+                render: function (data, type, row) {
+                    return `
+                        <div class="dropdown text-end">
+                            <button class="btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i data-lucide="ellipsis" class="icon-action"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                <li>
+                                    <a class="dropdown-item btn-verifikasi" href="#" data-id="${row.id}">
+                                        <i data-lucide="check-circle" class="me-2"></i> Verifikasi
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    `;
+                }
+            }
         ],
         columnDefs: [
             { targets: [1,2,3,4,5,6,7,8], className: 'text-start' },
@@ -306,9 +306,119 @@ $(document).ready(function () {
 
     $(document).on('click', '.btn-verifikasi', function (e) {
         e.preventDefault();
+
         const id = $(this).data('id');
-        console.log('Verifikasi Data untuk tiket:', id);
-        // contoh: buka modal atau redirect
-        // window.location.href = `/helpdesk/verifikasi/${id}`;
+
+        $.ajax({
+            url: `/tiket/${id}`,
+            type: 'GET',
+            success: function (response) {
+                const tiket = response.data;
+
+                $('#tiket-judul').text(tiket.title);
+                $('#tiket-kategori').text(tiket.category.description);
+                $('#tiket-deskripsi').text(tiket.description);
+
+                if (tiket.lampiran) {
+                    $('#tiket-lampiran').html(
+                        `<a href="/storage/${tiket.lampiran}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            Lihat Lampiran
+                        </a>`
+                    );
+                } else {
+                    $('#tiket-lampiran').html('<span class="text-muted">Tidak ada lampiran</span>');
+                }
+
+                $('#modalDetailTiket').modal('show');
+                $('#btn-verifikasi-final').data('id', id);
+                $('#btn-return').data('id', id);
+            },
+            error: function () {
+                Swal.fire('Gagal!', 'Tidak dapat memuat detail tiket.', 'error');
+            }
+        });
+    });
+
+    $('#btn-verifikasi-final').click(function () {
+        const id = $(this).data('id');
+        const priority = $('#prioritas').val();
+        const agent_id = $('#agent_id').val();
+
+        if (!agent_id) {
+            Swal.fire('Peringatan', 'Silakan pilih agent terlebih dahulu.', 'warning');
+            return;
+        }
+
+        Swal.fire({
+            title: 'Verifikasi & Tugaskan Tiket',
+            text: `Yakin ingin memverifikasi tiket #${id}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Verifikasi',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/tiket/${id}/verification`,
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        priority,
+                        agent_id
+                    },
+                    success: function () {
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Tiket berhasil diverifikasi dan ditugaskan.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        $('#modalDetailTiket').modal('hide');
+                        // $('#tabel-tiket').DataTable().ajax.reload(null, false);
+                    },
+                    error: function () {
+                        Swal.fire('Gagal!', 'Terjadi kesalahan saat verifikasi tiket.', 'error');
+                    }
+                });
+            }
+        });
+    });
+
+    $('#btn-return').click(function () {
+        const id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Kembalikan Tiket',
+            text: 'Yakin ingin mengembalikan tiket ini ke pengguna untuk dilengkapi?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Kembalikan',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/tiket/${id}/return`,
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function () {
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Tiket berhasil dikembalikan ke pengguna.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        $('#modalDetailTiket').modal('hide');
+                        // $('#tabel-tiket').DataTable().ajax.reload(null, false);
+                    },
+                    error: function () {
+                        Swal.fire('Gagal!', 'Terjadi kesalahan saat mengembalikan tiket.', 'error');
+                    }
+                });
+            }
+        });
     });
 });

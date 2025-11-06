@@ -20,7 +20,7 @@ class Ticket extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function assignedTo()
+    public function agent()
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }

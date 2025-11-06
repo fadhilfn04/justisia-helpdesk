@@ -18,12 +18,8 @@
         <div>
             <div class="d-flex align-items-center gap-2 mb-1">
                 <span class="fw-bold text-gray-900">{{ $notif->title ?? 'Tanpa Judul' }}</span>
-
-                @if (!empty($notif->badge))
-                    <span class="badge badge-light-{{ $type }}">{{ $notif->badge }}</span>
-                @endif
             </div>
-            <div class="text-muted fs-7">{{ $notif->description ?? 'Tidak ada deskripsi' }}</div>
+            <div class="text-muted fs-7">{{ $notif->message ?? 'Tidak ada deskripsi' }}</div>
             <div class="text-gray-500 fs-8 mt-1">{{ $notif->created_at->diffForHumans() }}</div>
         </div>
 

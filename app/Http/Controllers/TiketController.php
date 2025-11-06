@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Models\Ticket;
 use App\Models\TicketCategory;
+use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 
 class TiketController extends Controller
@@ -11,7 +14,41 @@ class TiketController extends Controller
     public function index()
     {
         $ticket = Ticket::all();
-        return view('pages.helpdesk.index', compact('ticket'));
+        $agents = User::whereHas('categoryAgent')->get();
+        return view('pages.helpdesk.index', compact('ticket', 'agents'));
+    }
+
+    // public function index()
+    // {
+    //     $user = auth()->user();
+
+    //     $query = Ticket::with(['user', 'agent'])->latest();
+
+    //     if ($user->role->name === 'admin') {
+    //         // Admin bisa lihat semua tiket
+    //         $tickets = $query->get();
+    //     } elseif ($user->role->name === 'agent') {
+    //         // Agent hanya lihat tiket yang ditugaskan ke dia
+    //         $tickets = $query->where('assigned_to', $user->id)->get();
+    //     } else {
+    //         // Pengguna hanya lihat tiket yang dia buat
+    //         $tickets = $query->where('user_id', $user->id)->get();
+    //     }
+
+    //     // Daftar agent hanya untuk admin
+    //     $agents = User::whereHas('categoryAgent')->get();
+
+    //     return view('pages.helpdesk.index', compact('tickets', 'agents'));
+    // }
+
+    public function show($id)
+    {
+        $tiket = Ticket::with(['user', 'category'])->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $tiket
+        ]);
     }
 
     public function create()
@@ -20,55 +57,57 @@ class TiketController extends Controller
         return view('pages.helpdesk.create', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function verification($id, Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'category_id' => 'required|exists:ticket_categories,id',
-            'priority' => 'required|string',
-        ]);
+        try {
+            $tiket = Ticket::findOrFail($id);
+            $tiket->assigned_to = $request->agent_id;
+            $tiket->priority = $request->priority;
+            $tiket->status = 'assignee';
+            $tiket->save();
 
-        $ticket = Ticket::create([
-            'user_id' => auth()->id(),
-            'category_id' => $validated['category_id'],
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'priority' => $validated['priority'],
-            'status' => 'open',
-        ]);
+            NotificationService::send(
+                $tiket->user_id,
+                'Tiket Diverifikasi',
+                "Tiket #{$tiket->id} telah diverifikasi dan sedang diproses."
+            );
 
-        if ($request->hasFile('attachment')) {
-            foreach ($request->file('attachment') as $file) {
-                $file->store('attachments');
-            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Tiket berhasil diverifikasi!',
+                'data' => $tiket
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memverifikasi tiket: ' . $e->getMessage()
+            ], 500);
         }
-
-        return redirect()->route('helpdesk.index')->with('success', 'Tiket berhasil dibuat!');
     }
 
-    public function edit(Ticket $ticket) {}
+    public function return($id)
+    {
+        try {
+            $tiket = Ticket::findOrFail($id);
+            $tiket->status = 'need_revision';
+            $tiket->save();
 
-    public function update(Request $request, Ticket $ticket) {}
+            NotificationService::send(
+                $tiket->user_id,
+                'Tiket Dikembalikan',
+                "Tiket #{$tiket->id} telah dikembalikan dikarenakan informasi yang diterima kurang."
+            );
 
-    // public function destroy(Ticket $ticket)
-    // {
-    //     $ticket->delete();
-    //     return redirect()->route('tiket.index')->with('success', 'Data tiket berhasil dihapus.');
-    // }
-
-    // public function import(Request $request)
-    // {
-    //     $request->validate([
-    //         'file' => 'required|mimes:xls,xlsx'
-    //     ]);
-
-    //     try {
-    //         Excel::import(new KaryawanImport, $request->file('file'));
-
-    //         return redirect()->route('karyawan.index')->with('success', 'Data karyawan berhasil diimport!');
-    //     } catch (\Exception $e) {
-    //         return redirect()->route('karyawan.index')->with('error', 'Terjadi kesalahan saat mengimport: ' . $e->getMessage());
-    //     }
-    // }
+            return response()->json([
+                'success' => true,
+                'message' => 'Tiket berhasil direvisi!',
+                'data' => $tiket
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal merevisi tiket: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

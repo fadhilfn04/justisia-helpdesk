@@ -109,7 +109,7 @@
                     </div>
                     <div class="card-body py-3 mb-5">
                         <form>
-                             <div class="border border-dashed border-gray-400 rounded-3 p-10 text-center"
+                            <div class="border border-dashed border-gray-400 rounded-3 p-10 text-center"
                                 style="cursor: pointer;">
                                 <i data-lucide="download" class="mb-3" width="35" height="35"></i>
                                 <p class="mb-2 fs-7">Drag & drop files atau klik untuk upload</p>
