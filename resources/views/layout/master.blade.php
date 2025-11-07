@@ -15,6 +15,13 @@
     <link rel="canonical" href="{{ url()->current() }}"/>
     <link rel="stylesheet" href="{{ asset('assets/css/fontawesome/font-awesome.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/custom-css/sidebarHeader.css') }}">
+
+    <!-- FilePond core -->
+    <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+
+    <!-- Plugin preview (gambar) -->
+    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
+
     {!! includeFavicon() !!}
 
     <!--begin::Fonts-->
@@ -46,6 +53,12 @@
 <!--begin::Body-->
 <body {!! printHtmlClasses('body') !!} {!! printHtmlAttributes('body') !!}>
 
+{{-- loader --}}
+<div id="loaderTiket" style="display: none !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.6); z-index: 9999; display: flex; justify-content: center; align-items: center;">
+  <div class="loader-spinner"></div>
+</div>
+
+
 @include('partials/theme-mode/_init')
 <div class="mt-8"></div>
 @yield('content')
@@ -68,6 +81,9 @@
     {!! sprintf('<script src="%s"></script>', asset($path)) !!}
 @endforeach
 <!--end::Custom Javascript-->
+<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+
 {{-- data lucide icon --}}
 <script src="{{ asset('assets/js/lucide/lucide.js') }}"></script>
 <script>

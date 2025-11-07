@@ -1,33 +1,27 @@
 <x-default-layout>
 <link rel="stylesheet" href="{{ asset('assets/css/custom-css/helpdesk.css') }}">
 
+<style>
+.filepond-wrapper {
+  background-color: #ffffff !important;
+  border: 2px dashed #d1d5db;
+  border-radius: 0.75rem;
+}
+
+.filepond--panel-root {
+  background-color: #ffffff !important;
+}
+
+</style>
+
 <div class="content-wrapper">
     <div class="container-fluid">
         <div class="row g-4">
 
             {{-- Status Tiket --}}
             <div class="col-12">
-                <div class="row g-3">
-                    @php
-                        $statuses = [
-                            ['label' => 'Semua Tiket', 'count' => 5, 'color' => 'text-dark'],
-                            ['label' => 'Terbuka', 'count' => 1, 'color' => 'text-primary'],
-                            ['label' => 'Proses', 'count' => 1, 'color' => 'text-warning'],
-                            ['label' => 'Menunggu', 'count' => 1, 'color' => 'text-orange'],
-                            ['label' => 'Selesai', 'count' => 1, 'color' => 'text-success'],
-                            ['label' => 'Terlambat', 'count' => 1, 'color' => 'text-danger'],
-                        ];
-                    @endphp
+                <div class="row g-3 row-status-summary">
 
-                    @foreach ($statuses as $status)
-                        <div class="col-md-2 col-6">
-                            <div class="card h-100 card-index-helpdesk rounded border p-12 text-center"
-                            data-status="{{ strtolower($status['label']) }}">
-                                <div class="fw-bold fs-1 {{ $status['color'] }}">{{ $status['count'] }}</div>
-                                <div class="fs-7 small">{{ $status['label'] }}</div>
-                            </div>
-                        </div>
-                    @endforeach
                 </div>
             </div>
 
@@ -35,28 +29,20 @@
             <div class="col-12">
                 <div class="py-10 px-5 rounded bg-white border">
                     <div class="row g-3 align-items-center">
-                        <div class="col-md-2">
-                            <div class="position-relative">
-                                {!! getIcon('magnifier', 'fs-5 position-absolute top-50 start-0 translate-middle-y ms-3 text-dark') !!}
-                                <input type="text" class="form-control ps-12" placeholder="Cari tiket, ID, atau pelapor...">
-                            </div>
+                        <div class="col-md-{{ auth()->user()->role->id != 1 ? 2 : 4 }}">
+                                <div class="position-relative">
+                                    {!! getIcon('magnifier', 'fs-5 position-absolute top-50 start-0 translate-middle-y ms-3 text-dark') !!}
+                                    <input type="text" class="form-control ps-12" id="searchTiket" placeholder="Cari tiket, ID, atau pelapor...">
+                                </div>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select text-dark">
-                                <option selected>Semua Status</option>
-                                <option value="terbuka">Terbuka</option>
-                                <option value="proses">Proses</option>
-                                <option value="menunggu">Menungggu</option>
-                                <option value="selesai">Selesai</option>
-                                <option value="terlambat">Terlambat</option>
+                            <select class="form-select text-dark" id="statusSelect">
+
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select text-dark">
-                                <option selected>Semua Prioritas</option>
-                                <option value="tinggi">Tinggi</option>
-                                <option value="sedang">Sedang</option>
-                                <option value="rendah">Rendah</option>
+                            <select class="form-select text-dark" id="prioritasSelect">
+
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -69,16 +55,22 @@
                                 <option value="makassar">Makassar</option>
                             </select>
                         </div>
-                        <div class="col-md-4 d-flex gap-4 justify-content-end">
+                        <div class="col-md-2">
                             <button class="btn bg-white border border-gray-300 w-100 btn-hover-primary"
                                     data-bs-toggle="modal"
                                     data-bs-target="#exportModal">
                                 <i class="fas fa-download me-1"></i> Export Data
                             </button>
-                            <button class="btn btn-dark w-100">
-                                <i class="fas fa-plus me-1"></i> Buat Tiket Baru
-                            </button>
                         </div>
+                        @if (auth()->user()->role->id != '1')
+                            <div class="col-md-2">
+                                <button class="btn btn-dark w-100"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#createTiketModal">
+                                    <i class="fas fa-plus me-1"></i> Buat Tiket Baru
+                                </button>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -92,17 +84,17 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table id="tabel-tiket" class="table bg-white table-border-bottom-only fs-6-5" style="min-width: 1335px;">
+                        <table id="tabel-tiket" class="table bg-white table-border-bottom-only fs-6-5" style="min-width: 1435px;">
                             <thead class="fw-semibold">
                                 <tr>
-                                    <th style="width: 12%;">ID Tiket</th>
-                                    <th style="width: 25%;">Judul</th>
-                                    <th style="width: 5%;">Status</th>
-                                    <th style="width: 5%;">Prioritas</th>
-                                    <th style="width: 12%;">Pelapor</th>
-                                    <th style="width: 16%;">Penanggung Jawab</th>
-                                    <th style="width: 15%;">Wilayah</th>
-                                    <th style="width: 10%;">SLA</th>
+                                    <th>ID Tiket</th>
+                                    <th>Judul</th>
+                                    <th>Status</th>
+                                    <th>Prioritas</th>
+                                    <th>Pelapor</th>
+                                    <th>Penanggung Jawab</th>
+                                    <th>Wilayah</th>
+                                    <th>SLA</th>
                                     <th>Respon</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -116,6 +108,7 @@
 
 </div>
 
+{{-- modal export data --}}
 <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 650px;">
         <div class="modal-content">
@@ -321,6 +314,176 @@
         </div>
     </div>
 </div>
+
+{{-- modal buat tiket baru --}}
+<div class="modal fade" id="createTiketModal" tabindex="-1" aria-labelledby="createTiketModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 850px;">
+    <div class="modal-content">
+        <div class="modal-header d-flex flex-column align-items-start border-0">
+            <div class="d-flex align-items-center mb-1">
+                <i data-lucide="ticket" class="me-2" style="width: 1.8rem;"></i>
+                <h3 class="modal-title mb-0" id="createTiketModalLabel">Buat Tiket</h3>
+            </div>
+            <button type="button" class="btn-close position-absolute end-0 top-0 mt-3 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-2">
+            <form id="formTiket" enctype="multipart/form-data">
+                @csrf
+                {{-- user id --}}
+                <input type="hidden" name="tiketId" class="tiket-id">
+                <input type="hidden" name="userPelaporId" value="{{ auth()->user()->id }}">
+
+                <div class="mx-auto" style="max-width: 900px;">
+                    <!-- Card FAQ Header -->
+                    <div class="card border mb-4 border-gray-300">
+                        <div class="py-3">
+                            <div class="d-flex justify-content-start mx-5 align-items-center gap-3">
+                                <i data-lucide="circle-alert" class="text-dark" style="width: 1.3rem;;"></i>
+                                <span class="text-dark mb-0">Pastikan semua informasi yang Anda berikan akurat dan lengkap untuk mempercepat proses penanganan.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-5">
+                        <!-- 🧭 Kiri: Kontak dan Form -->
+                        <div class="col-lg-{{ auth()->user()->role->id != 3 ? 8 : 12 }}">
+                            <!-- 1️⃣ Saluran Kontak Resmi -->
+                            <div class="card mb-5 border border-gray-300">
+                                <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">
+                                    <span class="card-title p-0 d-flex align-items-center">
+                                        Informasi Tiket
+                                    </span>
+                                    <p class="py-0">Berikan detail lengkap mengenai masalah yang Anda hadapi</p>
+                                </div>
+                                <div class="card-body py-3 mb-5">
+                                    <div class="mb-4">
+                                        <label for="judul" class="form-label fw-semibold">Judul Tiket <span class="text-dark">*</span></label>
+                                        <input type="text" id="judul" class="form-control fs-6" name="title" placeholder="Ringkasan singkat masalah Anda" required>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="deskripsi" class="form-label fw-semibold">Deskripsi Detail <span class="text-dark">*</span></label>
+                                        <textarea id="deskripsi" class="form-control fs-6" name="deskripsi" rows="2" placeholder="Jelaskan masalah Anda secara detail, termasuk kronologi dan dampak yang terjadi" required></textarea>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-md-8">
+                                            <label for="kategori" class="form-label fw-semibold">Kategori <span class="text-dark">*</span></label>
+                                            <select id="kategori" class="form-select fs-6" style="width: 100%;" name="kategori" required>
+
+                                            </select>
+                                        </div>
+
+                                        <!-- Wilayah -->
+                                        <div class="col-md-4">
+                                            <label for="wilayah" class="form-label fw-semibold">Wilayah <span class="text-dark">*</span></label>
+                                            <select id="wilayah" class="form-select fs-6">
+                                                <option selected disabled>Pilih wilayah</option>
+                                                <option value="jakarta-pusat">Jakarta Pusat</option>
+                                                <option value="jakarta-selatan">Jakarta Selatan</option>
+                                                <option value="jakarta-timur">Jakarta Timur</option>
+                                                <option value="jakarta-barat">Jakarta Barat</option>
+                                                <option value="jakarta-utara">Jakarta Utara</option>
+                                                <option value="bandung">Bandung</option>
+                                                <option value="surabaya">Surabaya</option>
+                                                <option value="medan">Medan</option>
+                                                <option value="makassar">Makassar</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-5 border border-gray-300">
+                                <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">
+                                    <span class="card-title p-0 d-flex align-items-center">
+                                        Data Pelapor
+                                    </span>
+                                    <p class="py-0">Informasi kontak untuk komunikasi dan update tiket</p>
+                                </div>
+                                <div class="card-body py-3 mb-5">
+                                    <div class="mb-4">
+                                        <label for="nama_lengkap" class="form-label fw-semibold">Nama lengkap<span class="text-dark">*</span></label>
+                                        <input type="text" id="nama_lengkap" class="form-control fs-6" value="{{ auth()->user()->name }}" disabled>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-md-6">
+                                            <label for="email" class="form-label fw-semibold">Email <span class="text-dark">*</span></label>
+                                            <input id="email" class="form-control fs-6" value="{{ auth()->user()->email }}" disabled>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="no_telepon" class="form-label fw-semibold">No Telepon <span class="text-dark">*</span></label>
+                                            <input id="no_telepon" class="form-control fs-6" value="{{ auth()->user()->phone }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-5 border border-gray-300">
+                                <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">
+                                    <span class="card-title p-0 d-flex align-items-center">
+                                        Lampiran Dokumen
+                                    </span>
+                                    <p class="py-0">
+                                        Upload dokumen pendukung (maksimal 10MB per file). Format: JPG, JPEG, PNG, PDF.
+                                    </p>
+                                </div>
+                                <div class="card-body py-3 mb-5">
+                                    <div class="filepond-wrapper" style="padding: 2rem 1rem;">
+                                        <input type="file" id="fileUpload" name="fileTiket[]" accept=".jpg,.jpeg,.png,.pdf" required/>
+                                        <div id="previewArea" class="mt-5"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if(auth()->user()->role->id != '3')
+                            <div class="col-lg-4">
+                                <div class="card border mb-3 border-gray-300">
+                                    <div class="card-header border-0">
+                                        <h1 class="card-title" style="font-size: 1.2rem; font-weight: 600;">
+                                            Prioritas
+                                        </h1>
+                                    </div>
+
+                                    <div class="card-body py-0 mb-2">
+                                        <div class="priority-option text-danger fs-6 fw-semibold" data-value="tinggi">Tinggi</div>
+                                        <div class="priority-option text-warning fs-6 fw-semibold active" data-value="sedang">Sedang</div>
+                                        <div class="priority-option text-success fs-6 fw-semibold" data-value="rendah">Rendah</div>
+                                    </div>
+                                </div>
+
+                                <!-- Card Estimasi SLA -->
+                                <div class="card border mb-3 border-gray-300">
+                                    <div class="card-header border-0">
+                                        <h1 class="card-title" style="font-size: 1.2rem; font-weight: 600;">Estimasi SLA</h1>
+                                    </div>
+                                    <div class="card-body py-0 mb-5 text-dark">
+                                        <span class="fw-semibold">Berdasarkan kategori dan prioritas:</span>
+                                        <ul class="mt-2 mb-0 ps-3">
+                                            <li>Respon awal: <span class="fw-bold text-dark">3x24 jam</span></li>
+                                            <li>Penyelesaian: <span class="fw-bold text-dark">7–14 hari kerja</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer d-flex justify-content-end gap-2">
+            <button class="btn border border-gray-300 btn-hover-primary py-2 fw-semibold bg-white" id="btnDraftTiket">Simpan Draft</button>
+            <button class="btn btn-dark py-2 fw-semibold" id="btnCreateTiket">Buat Tiket</button>
+            <button class="btn btn-dark py-2 fw-semibold d-none" id="btnEditTiket">Edit Tiket</button>
+        </div>
+    </div>
+  </div>
+</div>
+
 
 @push('scripts')
     <script src="{{ asset('assets/js/custom-js/helpdesk.js') }}"></script>
