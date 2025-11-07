@@ -65,7 +65,6 @@ return new class extends Migration
             $table->text('answer');
             $table->foreignId('category_id')->constrained('ticket_categories')->onDelete('cascade');
             $table->timestamps();
-            $table->softDeletes();
         });
 
         Schema::create('tickets', function (Blueprint $table) {
@@ -79,7 +78,13 @@ return new class extends Migration
             $table->string('status')->default('open');
             $table->string('priority')->default('medium');
             $table->timestamps();
-            $table->softDeletes();
+        });
+
+        Schema::create('ticket_files', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');
+            $table->string('file_ticket');
+            $table->timestamps();
         });
 
         Schema::create('ticket_files', function (Blueprint $table) {
