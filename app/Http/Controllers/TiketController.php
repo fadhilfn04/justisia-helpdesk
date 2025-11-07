@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Ticket;
@@ -73,6 +74,16 @@ class TiketController extends Controller
             'description' => $request->deskripsi,
             'status' => $request->status,
         ]);
+
+        if($request->status != 'draft')
+        {
+            Notification::create([
+                'user_id' => $request->userPelaporId,
+                'type' => 'success',
+                'title' => 'Tiket berhasil dibuat',
+                'message' => 'Tiket Anda telah berhasil dibuat. Mohon tunggu, admin akan segera melakukan verifikasi.'
+            ]);
+        }
 
         $fileUrls = [];
 
