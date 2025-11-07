@@ -78,6 +78,7 @@ return new class extends Migration
             $table->string('status')->default('open');
             $table->string('priority')->default('medium');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('ticket_files', function (Blueprint $table) {
