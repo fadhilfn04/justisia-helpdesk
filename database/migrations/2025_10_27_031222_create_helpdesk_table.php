@@ -90,14 +90,6 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('ticket_files', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');
-            $table->string('file_ticket');
-            $table->timestamps();
-            $table->softDeletes();
-        });
-
         Schema::create('ticket_messages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');
