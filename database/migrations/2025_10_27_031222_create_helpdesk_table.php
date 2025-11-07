@@ -65,6 +65,7 @@ return new class extends Migration
             $table->text('answer');
             $table->foreignId('category_id')->constrained('ticket_categories')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('tickets', function (Blueprint $table) {
@@ -86,6 +87,7 @@ return new class extends Migration
             $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');
             $table->string('file_ticket');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('ticket_messages', function (Blueprint $table) {

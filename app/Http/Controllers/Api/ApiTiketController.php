@@ -184,6 +184,20 @@ class ApitiketController extends BaseController
                             <a href="#" class="dropdown-item btn-delete" data-id="'.$row->id.'">Hapus</a>';
                 }
 
+                if ($row->status === 'open' || $row->status === 'need_revision') {
+                    $dropdown .= '
+                            <a class="dropdown-item btn-verifikasi" href="#" data-id="' . $row->id . '">
+                                <i data-lucide="check-circle" class="me-2 text-success"></i> Verifikasi
+                            </a>';
+                }
+
+                if ($row->status === 'in_progress') {
+                    $dropdown .= '
+                            <a class="dropdown-item btn-tutup" href="#" data-id="' . $row->id . '">
+                                <i data-lucide="x-circle" class="me-2 text-danger"></i> Tutup Tiket
+                            </a>';
+                }
+
                 $dropdown .= '
                         </div>
                     </div>';

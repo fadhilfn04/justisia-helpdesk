@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Api\ApitiketController;
 use App\Http\Controllers\Apps\PermissionManagementController;
 use App\Http\Controllers\Apps\RoleManagementController;
@@ -38,10 +39,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::prefix('tiket')->group(function () {
+        Route::resource('/', TiketController::class)->parameters(['' => 'tiket']);
         Route::get('/', [TiketController::class, 'index'])->name('tiket.index');
         Route::post('/store', [TiketController::class, 'store'])->name('tiket.store');
         Route::post('/update', [TiketController::class, 'update'])->name('tiket.update');
         Route::post('/delete', [TiketController::class, 'delete'])->name('tiket.destroy');
+        Route::post('/{id}/verification', [TiketController::class, 'verification'])->name('verification');
+        Route::post('/{id}/return', [TiketController::class, 'return'])->name('return');
 
         // api
         Route::prefix('api')->group(function () {

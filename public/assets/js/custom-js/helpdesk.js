@@ -541,6 +541,124 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    $(document).on('click', '.btn-verifikasi', function (e) {
+        e.preventDefault();
+
+        const id = $(this).data('id');
+
+        $.ajax({
+            url: `/tiket/${id}`,
+            type: 'GET',
+            success: function (response) {
+                const tiket = response.data;
+
+                $('#tiket-judul').text(tiket.title);
+                $('#tiket-kategori').text(tiket.category.description);
+                $('#tiket-deskripsi').text(tiket.description);
+
+                if (tiket.lampiran) {
+                    $('#tiket-lampiran').html(
+                        `<a href="/storage/${tiket.lampiran}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            Lihat Lampiran
+                        </a>`
+                    );
+                } else {
+                    $('#tiket-lampiran').html('<span class="text-muted">Tidak ada lampiran</span>');
+                }
+
+                $('#modalDetailTiket').modal('show');
+                $('#btn-verifikasi-final').data('id', id);
+                $('#btn-return').data('id', id);
+            },
+            error: function () {
+                Swal.fire('Gagal!', 'Tidak dapat memuat detail tiket.', 'error');
+            }
+        });
+    });
+
+    $('#btn-verifikasi-final').click(function () {
+        const id = $(this).data('id');
+        const priority = $('#prioritas').val();
+        const agent_id = $('#agent_id').val();
+
+        if (!agent_id) {
+            Swal.fire('Peringatan', 'Silakan pilih agent terlebih dahulu.', 'warning');
+            return;
+        }
+
+        Swal.fire({
+            title: 'Verifikasi & Tugaskan Tiket',
+            text: `Yakin ingin memverifikasi tiket #${id}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Verifikasi',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/tiket/${id}/verification`,
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        priority,
+                        agent_id
+                    },
+                    success: function () {
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Tiket berhasil diverifikasi dan ditugaskan.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        $('#modalDetailTiket').modal('hide');
+                        // $('#tabel-tiket').DataTable().ajax.reload(null, false);
+                    },
+                    error: function () {
+                        Swal.fire('Gagal!', 'Terjadi kesalahan saat verifikasi tiket.', 'error');
+                    }
+                });
+            }
+        });
+    });
+
+    $('#btn-return').click(function () {
+        const id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Kembalikan Tiket',
+            text: 'Yakin ingin mengembalikan tiket ini ke pengguna untuk dilengkapi?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Kembalikan',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/tiket/${id}/return`,
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function () {
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Tiket berhasil dikembalikan ke pengguna.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        $('#modalDetailTiket').modal('hide');
+                        // $('#tabel-tiket').DataTable().ajax.reload(null, false);
+                    },
+                    error: function () {
+                        Swal.fire('Gagal!', 'Terjadi kesalahan saat mengembalikan tiket.', 'error');
+                    }
+                });
+            }
+        });
+    });
+
     function getStatusColor(statusHtml) {
         const text = $('<div>').html(statusHtml).text().toLowerCase();
         if (text.includes('draft')) return 'bg-primary';
