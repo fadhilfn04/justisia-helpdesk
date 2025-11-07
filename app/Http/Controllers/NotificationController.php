@@ -12,6 +12,13 @@ class NotificationController extends Controller
         $notifications = Notification::where('is_read', 0)
         ->latest()->take(10)->get();
 
+        if(auth()->user()->role->id == '3')
+        {
+            $notifications = Notification::where('is_read', 0)
+            ->where('user_id', auth()->user()->id)
+            ->latest()->take(10)->get();
+        }
+
         return view('partials.dashboard.cards._notifikasi-list', compact('notifications'));
     }
 

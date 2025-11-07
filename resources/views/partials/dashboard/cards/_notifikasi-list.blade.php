@@ -23,7 +23,7 @@
                     <span class="badge badge-light-{{ $type }}">{{ $notif->badge }}</span>
                 @endif
             </div>
-            <div class="text-muted fs-7">{{ $notif->description ?? 'Tidak ada deskripsi' }}</div>
+            <div class="text-muted fs-7">{{ $notif->message ?? 'Tidak ada deskripsi' }}</div>
             <div class="text-gray-500 fs-8 mt-1">{{ $notif->created_at->diffForHumans() }}</div>
         </div>
 
