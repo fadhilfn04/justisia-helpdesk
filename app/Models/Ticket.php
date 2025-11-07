@@ -10,7 +10,7 @@ class Ticket extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'category_id', 'assigned_to',
+        'user_id', 'category_id', 'assigned_to', 'wilayah_id',
         'title', 'description', 'status', 'priority'
     ];
 
@@ -48,5 +48,9 @@ class Ticket extends Model
     public function feedbackSurveys()
     {
         return $this->hasMany(FeedbackSurvey::class);
+    }
+    public function file()
+    {
+        return $this->hasMany(TicketFile::class);
     }
 }

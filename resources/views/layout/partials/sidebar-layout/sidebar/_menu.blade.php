@@ -15,58 +15,17 @@
 			</div>
 			<!--end:Menu item-->
 			<!--begin:Menu item-->
-			<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('tiket.*') ? 'here show' : '' }}">
+            <div class="menu-item">
 				<!--begin:Menu link-->
-				<span class="menu-link">
+				<a class="menu-link {{ request()->routeIs('tiket.index') ? 'active' : '' }}" href="{{ route('tiket.index') }}">
 					<i data-lucide="ticket" class="menu-icon" width="18" height="18"></i>
 					<span class="menu-title">Helpdesk</span>
-					<span class="menu-arrow"></span>
-				</span>
+				</a>
 				<!--end:Menu link-->
-				<!--begin:Menu sub-->
-				<div class="menu-sub menu-sub-accordion">
-					<!--begin:Menu item-->
-					<div class="menu-item">
-						<!--begin:Menu link-->
-						<a class="menu-link {{ request()->routeIs('tiket.index') ? 'active' : '' }}" href="{{ route('tiket.index') }}">
-							<span class="menu-bullet">
-								<span class="bullet bullet-dot"></span>
-							</span>
-							<span class="menu-title">Semua Tiket</span>
-						</a>
-						<!--end:Menu link-->
-					</div>
-					<!--end:Menu item-->
-					<!--begin:Menu item-->
-					{{-- <div class="menu-item">
-						<!--begin:Menu link-->
-						<a class="menu-link {{ request()->routeIs('helpdesk.*') ? 'active' : '' }}" href="{{ route('helpdesk.mytiket') }}">
-							<span class="menu-bullet">
-								<span class="bullet bullet-dot"></span>
-							</span>
-							<span class="menu-title">Tiket Saya</span>
-						</a>
-						<!--end:Menu link-->
-					</div> --}}
-				<!--end:Menu item-->
-					<!--begin:Menu item-->
-					<div class="menu-item">
-						<!--begin:Menu link-->
-						<a class="menu-link {{ request()->routeIs('tiket.create') ? 'active' : '' }}" href="{{ route('tiket.create') }}">
-							<span class="menu-bullet">
-								<span class="bullet bullet-dot"></span>
-							</span>
-							<span class="menu-title">Buat Tiket</span>
-						</a>
-						<!--end:Menu link-->
-					</div>
-					<!--end:Menu item-->
-				</div>
-				<!--end:Menu sub-->
 			</div>
 			<!--end:Menu item-->
 			<!--begin:Menu item-->
-            @if (auth()->user()->role->id != '3')
+            @if (auth()->user()->role->id != '3' && auth()->user()->role->id != '2')
                 <!--begin:Menu item-->
                 <div class="menu-item">
                     <!--begin:Menu link-->

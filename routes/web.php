@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\ApitiketController;
 use App\Http\Controllers\Apps\PermissionManagementController;
 use App\Http\Controllers\Apps\RoleManagementController;
 use App\Http\Controllers\Apps\UserManagementController;
 use App\Http\Controllers\Auth\SocialiteController;
-use App\Http\Controllers\PembatalanSertifikatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SengketaKonflikController;
 use App\Http\Controllers\FaqController;
@@ -30,13 +30,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [DashboardController::class, 'index']);
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('tiket', TiketController::class);
 
     Route::prefix('notifications')->group(function () {
         Route::get('/partial', [NotificationController::class, 'partial'])->name('notifications.partial');
         Route::post('/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
         Route::post('/{id}/mark-read', [NotificationController::class, 'markRead'])->name('notifications.markRead');
         Route::delete('/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    });
+
+    Route::prefix('tiket')->group(function () {
+        Route::get('/', [TiketController::class, 'index'])->name('tiket.index');
+        Route::post('/store', [TiketController::class, 'store'])->name('tiket.store');
+        Route::post('/update', [TiketController::class, 'update'])->name('tiket.update');
+        Route::post('/delete', [TiketController::class, 'delete'])->name('tiket.destroy');
+
+        // api
+        Route::prefix('api')->group(function () {
+            Route::get('/getKategori', [ApitiketController::class, 'getKategori'])->name('tiket.getKategori');
+            Route::get('/getTiket', [ApitiketController::class, 'getTiket'])->name('tiket.getTiket');
+            Route::get('/getDetailTiket/{id}', [ApitiketController::class, 'getDetailTiket'])->name('tiket.getDetailTiket');
+            Route::get('/status-summary', [ApitiketController::class, 'statusSummary']);
+        });
     });
 
     Route::resource('laporan', LaporanController::class);

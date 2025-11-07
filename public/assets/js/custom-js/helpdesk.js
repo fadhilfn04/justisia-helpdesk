@@ -1,298 +1,582 @@
-$(document).ready(function () {
+document.addEventListener('DOMContentLoaded', function() {
 
     // helpdesk index js
-    function getStatusColor(statusHtml) {
-        const text = $('<div>').html(statusHtml).text().toLowerCase();
-        if (text.includes('terbuka')) return 'bg-primary';
-        if (text.includes('proses')) return 'bg-warning';
-        if (text.includes('menunggu')) return 'bg-orange';
-        if (text.includes('selesai')) return 'bg-success';
-        if (text.includes('terlambat')) return 'bg-danger';
-        return 'bg-secondary';
+    let cardStatus = '';
+
+    FilePond.registerPlugin(FilePondPluginImagePreview);
+    const inputElement = document.querySelector('#fileUpload');
+
+    const pond = FilePond.create(inputElement, {
+    allowMultiple: true,
+    acceptedFileTypes: ['image/*', 'application/pdf'],
+    instantUpload: false,
+    allowProcess: false,
+    allowRevert: false,
+    credits: false,
+    labelIdle: `
+        <div style="display: flex; cursor: pointer; flex-direction: column; align-items: center; padding-top: 1.5rem; padding-bottom: 1.5rem;">
+            <i data-lucide="download" class="mb-3" width="35" height="35"></i>
+            <span>Drag & drop files atau <span class="filepond--label-action">Pilih File</span></span>
+        </div>
+    `,
+    fileValidateTypeDetectType: (source, type) => new Promise((resolve) => resolve(type))
+    });
+
+    pond.on('init', () => {
+        lucide.createIcons();
+    });
+
+    // Update preview setiap kali file ditambahkan
+    pond.on('addfile', () => {
+        updatePdfPreviewArea(pond);
+    });
+
+    // Update preview setiap kali file dihapus
+    pond.on('removefile', () => {
+        updatePdfPreviewArea(pond);
+    });
+
+    function updatePdfPreviewArea(pondInstance) {
+        const previewArea = document.getElementById('previewArea');
+        previewArea.innerHTML = '';
+
+        pondInstance.getFiles().forEach(fileItem => {
+            const file = fileItem.file;
+            if (file && file.type === 'application/pdf') {
+                const iframe = document.createElement('iframe');
+                iframe.src = URL.createObjectURL(file);
+                iframe.width = '100%';
+                iframe.height = '500px';
+                iframe.style.border = '1px solid #ccc';
+                iframe.classList.add('mb-3');
+                previewArea.appendChild(iframe);
+            }
+        });
     }
 
-    const table = $('#tabel-tiket').DataTable({
-        processing: true,
-        serverSide: false,
-        data: [
-            {
-                id: 'TKT-2021-001',
-                judul: 'Sengketa batas tanah di Jakarta Selatan',
-                description: 'Konflik batas tanah antara dua pemilik yang bersebelahan',
-                status: `
-                <span class="badge d-inline-flex align-items-center gap-2 py-0 px-3 badge-bg-primary">
-                    <i data-lucide="triangle-alert" class="text-primary" style="width: 0.95rem;"></i>
-                    <span class="text-primary">Terbuka</span>
-                </span>
-                `,
-                prioritas: `
-                    <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-1 border border-gray-300 text-dark bg-transparent">
-                        Tinggi
-                    </span>
-                `,
-                pelapor: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <i data-lucide="user" class="text-dark" style="width: 1.4rem;"></i>
-                        <span>Sindi Salfa</span>
-                    </span>
-                `,
-                pj: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <span class="profile-circle bg-brown text-white fw-semibold">AF</span>
-                        <span>Ahmad Fauzi</span>
-                    </span>
-                `,
-                wilayah: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <i data-lucide="map-pin" class="text-dark" style="width: 1.4rem;"></i>
-                        <span>Jakarta Selatan</span>
-                    </span>
-                `,
-                sla: '2 hari 4 jam',
-                respon: '<i data-lucide="message-square" class="text-dark" style="width: 1.1rem;"></i> 3',
-                aksi: `
-                    <button type="button" class="btn-icon">
-                        <i data-lucide="ellipsis" class="icon-action"></i>
-                    </button>
-                `,
+    $('#kategori').select2({
+        placeholder: 'Pilih Kategori Tiket',
+        ajax: {
+            url: '/tiket/api/getKategori',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+                return {
+                    results: data.map(function (item) {
+                        return {
+                            id: item.id,
+                            text: item.name + ' - ' + item.description
+                        };
+                    })
+                };
             },
-            {
-                id: 'TKT-2021-002',
-                judul: 'Penataan administrasi cacat administrasi',
-                description: 'Konflik batas tanah antara dua pemilik yang bersebelahan',
-                status: `
-                <span class="badge d-inline-flex align-items-center gap-2 py-0 px-3 badge-bg-warning">
-                    <i data-lucide="clock" class="text-warning" style="width: 0.95rem;"></i>
-                    <span class="text-warning">Proses</span>
-                </span>
-                `,
-                prioritas: `
-                    <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-1 border border-gray-300 text-dark bg-transparent">
-                        Tinggi
-                    </span>
-                `,
-                pelapor: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <i data-lucide="user" class="text-dark" style="width: 1.4rem;"></i>
-                        <span>Rina Mustika</span>
-                    </span>
-                `,
-                pj: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <span class="profile-circle bg-brown text-white fw-semibold">AF</span>
-                        <span>Dovi Sartika</span>
-                    </span>
-                `,
-                wilayah: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <i data-lucide="map-pin" class="text-dark" style="width: 1.4rem;"></i>
-                        <span>Jakarta Barat</span>
-                    </span>
-                `,
-                sla: '1 hari 8 jam',
-                respon: '<i data-lucide="message-square" class="text-dark" style="width: 1.1rem;"></i> 3',
-                aksi: `
-                    <button type="button" class="btn-icon">
-                        <i data-lucide="ellipsis" class="icon-action"></i>
-                    </button>
-                `,
-            },
-            {
-                id: 'TKT-2021-003',
-                judul: 'Konflik kepemilikan tanah warisan',
-                description: 'Konflik batas tanah antara dua pemilik yang bersebelahan',
-                status: `
-                    <span class="badge d-inline-flex align-items-center gap-2 py-0 px-3 badge-bg-chocolate">
-                        <i data-lucide="clock" style="width: 0.95rem;"></i>
-                        <span>Menunggu</span>
-                    </span>
-                `,
-                prioritas: `
-                    <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-1 border border-gray-300 text-dark bg-transparent">
-                        Sedang
-                    </span>
-                `,
-                pelapor: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <i data-lucide="user" class="text-dark" style="width: 1.4rem;"></i>
-                        <span>Sindi Salfa</span>
-                    </span>
-                `,
-                pj: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <span class="profile-circle bg-brown text-white fw-semibold">AF</span>
-                        <span>Susi Sartika</span>
-                    </span>
-                `,
-                wilayah: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <i data-lucide="map-pin" class="text-dark" style="width: 1.4rem;"></i>
-                        <span>Jakarta Pusat</span>
-                    </span>
-                `,
-                sla: '5 hari 2 jam',
-                respon: '<i data-lucide="message-square" class="text-dark" style="width: 1.1rem;"></i> 3',
-                aksi: `
-                    <button type="button" class="btn-icon">
-                        <i data-lucide="ellipsis" class="icon-action"></i>
-                    </button>
-                `,
-            },
-            {
-                id: 'TKT-2021-004',
-                judul: 'Verifikasi dokumen pengadilan',
-                description: 'Konflik batas tanah antara dua pemilik yang bersebelahan',
-                status: `
-                    <span class="badge d-inline-flex align-items-center gap-2 py-0 px-3 badge-bg-success text-success">
-                        <i data-lucide="circle-check-big" style="width: 0.95rem;"></i>
-                        <span>Selesai</span>
-                    </span>
-                `,
-                prioritas: `
-                    <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-1 border border-gray-300 text-dark bg-transparent">
-                        Rendah
-                    </span>
-                `,
-                pelapor: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <i data-lucide="user" class="text-dark" style="width: 1.4rem;"></i>
-                        <span>Ahmad Fauzi</span>
-                    </span>
-                `,
-                pj: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <span class="profile-circle bg-brown text-white fw-semibold">AF</span>
-                        <span>Rina Mustika</span>
-                    </span>
-                `,
-                wilayah: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <i data-lucide="map-pin" class="text-dark" style="width: 1.4rem;"></i>
-                        <span>Jakarta Timur</span>
-                    </span>
-                `,
-                sla: '1 hari 2 jam',
-                respon: '<i data-lucide="message-square" class="text-dark" style="width: 1.1rem;"></i> 3',
-                aksi: `
-                    <button type="button" class="btn-icon">
-                        <i data-lucide="ellipsis" class="icon-action"></i>
-                    </button>
-                `,
-            },
-            {
-                id: 'TKT-2021-005',
-                judul: 'Verifikasi dokumen kepemilikan',
-                description: 'Konflik batas tanah antara dua pemilik yang bersebelahan',
-                status: `
-                <span class="badge d-inline-flex align-items-center gap-2 py-0 px-3 badge-bg-danger">
-                    <i data-lucide="triangle-alert" class="text-danger" style="width: 0.95rem;"></i>
-                    <span class="text-danger">Terlambat</span>
-                </span>
-                `,
-                prioritas: `
-                    <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-1 border border-gray-300 text-dark bg-transparent">
-                        Tinggi
-                    </span>
-                `,
-                pelapor: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <i data-lucide="user" class="text-dark" style="width: 1.4rem;"></i>
-                        <span>Sari Indah</span>
-                    </span>
-                `,
-                pj: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <span class="profile-circle bg-brown text-white fw-semibold">AF</span>
-                        <span>Ahmad Fauzi</span>
-                    </span>
-                `,
-                wilayah: `
-                    <span class="d-inline-flex align-items-center gap-2">
-                        <i data-lucide="map-pin" class="text-dark" style="width: 1.4rem;"></i>
-                        <span>Jakarta Selatan</span>
-                    </span>
-                `,
-                sla: '2 hari',
-                respon: '<i data-lucide="message-square" class="text-dark" style="width: 1.1rem;"></i> 3',
-                aksi: `
-                    <button type="button" class="btn-icon">
-                        <i data-lucide="ellipsis" class="icon-action"></i>
-                    </button>
-                `,
-            }
-        ],
-        columns: [
-            { data: 'id' },
-            {
-                data: null,
-                render: function (data, type, row) {
-                    return `
-                        <div class="d-flex flex-column">
-                            <span class="fw-semibold text-dark">${row.judul}</span>
-                            <span class="text-truncate-ellipsis">${row.description}</span>
-                        </div>
-                    `;
-                }
-            },
-            { data: 'status' },
-            { data: 'prioritas' },
-            { data: 'pelapor' },
-            { data: 'pj' },
-            { data: 'wilayah' },
-            { data: 'sla' },
-            { data: 'respon' },
-            { data: 'aksi', orderable: false, searchable: false }
-            // {
-            //     data: null,
-            //     orderable: false,
-            //     searchable: false,
-            //     render: function (data, type, row) {
-            //         return `
-            //             <div class="dropdown text-end">
-            //                 <button class="btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
-            //                     <i data-lucide="ellipsis" class="icon-action"></i>
-            //                 </button>
-            //                 <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-            //                     <li>
-            //                         <a class="dropdown-item btn-verifikasi" href="#" data-id="${row.id}">
-            //                             <i data-lucide="check-circle" class="me-2"></i> Verifikasi Data
-            //                         </a>
-            //                     </li>
-            //                 </ul>
-            //             </div>
-            //         `;
-            //     }
-            // }
-        ],
-        columnDefs: [
-            { targets: [1,2,3,4,5,6,7,8], className: 'text-start' },
-            { targets: [0,9], className: 'text-end' }
-        ],
-        createdRow: function (row, data, dataIndex) {
-            const colorClass = getStatusColor(data.status);
-            const td = $('td', row).eq(0);
-            td.addClass('td-id-wrapper').html(`
-                <span class="status-indicator ${colorClass}"></span>
-                ${data.id}
-            `);
-        },
-        drawCallback: function(settings) {
-            lucide.createIcons();
+            cache: true
         }
     });
 
+    function setSelect2Value(selector, id, text) {
+        if (!id || !text) return;
+
+        const option = new Option(text, id, true, true);
+        $(selector)
+            .append(option)
+            .trigger('change.select2');
+    }
+
+
+    $('#createTiketModal').on('shown.bs.modal', function () {
+        $('#btnCreateTiket').on('click', function (e) {
+            e.preventDefault();
+
+            const title = $('#formTiket input[name="title"]').val()?.trim();
+            const deskripsi = $('#formTiket textarea[name="deskripsi"]').val()?.trim();
+            const kategori = $('#formTiket select[name="kategori"]').val();
+            const fileCount = pond.getFiles().length;
+
+            if (!title || !deskripsi || !kategori || fileCount === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Form belum lengkap',
+                    text: 'Pastikan semua data sudah terisi sebelum melanjutkan.',
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Yakin semua data tiket sudah sesuai dan ingin melanjutkan proses ini?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, simpan',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let formData = new FormData($('#formTiket')[0]);
+                    let maxSize = 10 * 1024 * 1024;
+                    let oversizedFiles = [];
+
+                    pond.getFiles().forEach((fileItem, index) => {
+                        if (fileItem.file.size > maxSize) {
+                            oversizedFiles.push(fileItem.file.name);
+                        }
+                    });
+
+                    if (oversizedFiles.length > 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Ukuran file tidak boleh lebih dari 10MB'
+                        });
+                        return;
+                    }
+
+                    pond.getFiles().forEach((fileItem, index) => {
+                        formData.append(`fileTiket[${index}]`, fileItem.file);
+                    });
+
+                    formData.append('status', 'open');
+
+                    $('#loaderTiket').show();
+
+                    $.ajax({
+                        url: '/tiket/store',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Tiket berhasil dibuat.',
+                            });
+                            pond.removeFiles();
+                            $('#loaderTiket').hide();
+                            $("#createTiketModal").modal('hide');
+                            $('#formTiket')[0].reset();
+                            table.ajax.reload(null, false);
+                        },
+                        error: function (xhr) {
+                            console.error(xhr.responseText);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan saat membuat tiket.',
+                            });
+                            $('#loaderTiket').hide();
+                        }
+                    });
+                }
+            });
+        });
+
+        $('#btnDraftTiket').on('click', function (e) {
+            e.preventDefault();
+
+            const title = $('#formTiket input[name="title"]').val()?.trim();
+            const deskripsi = $('#formTiket textarea[name="deskripsi"]').val()?.trim();
+            const kategori = $('#formTiket select[name="kategori"]').val();
+            const fileCount = pond.getFiles().length;
+
+            if (!title || !deskripsi || !kategori || fileCount === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Form belum lengkap',
+                    text: 'Pastikan semua data sudah terisi sebelum melanjutkan.',
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Apakah kamu yakin semua data tiket sudah terisi dengan benar dan ingin menyimpannya sebagai draft?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, simpan',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let formData = new FormData($('#formTiket')[0]);
+                    let maxSize = 10 * 1024 * 1024;
+                    let oversizedFiles = [];
+
+                    pond.getFiles().forEach((fileItem, index) => {
+                        if (fileItem.file.size > maxSize) {
+                            oversizedFiles.push(fileItem.file.name);
+                        }
+                    });
+
+                    if (oversizedFiles.length > 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Ukuran file tidak boleh lebih dari 10MB'
+                        });
+                        return;
+                    }
+
+                    pond.getFiles().forEach((fileItem, index) => {
+                        formData.append(`fileTiket[${index}]`, fileItem.file);
+                    });
+
+                    formData.append('status', 'draft');
+
+                    $('#loaderTiket').show();
+
+                    $.ajax({
+                        url: '/tiket/store',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Tiket berhasil disimpan sebagai draft.',
+                            });
+                            pond.removeFiles();
+                            $('#loaderTiket').hide();
+                            $("#createTiketModal").modal('hide');
+                            $('#formTiket')[0].reset();
+                            table.ajax.reload(null, false);
+                        },
+                        error: function (xhr) {
+                            console.error(xhr.responseText);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan saat membuat tiket.',
+                            });
+                            $('#loaderTiket').hide();
+                        }
+                    });
+                }
+            });
+        });
+
+        $("#btnEditTiket").on('click', function(e) {
+            e.preventDefault();
+
+            const tiketId = $('#formTiket input[name="tiketId"]').val()?.trim();
+            const title = $('#formTiket input[name="title"]').val()?.trim();
+            const deskripsi = $('#formTiket textarea[name="deskripsi"]').val()?.trim();
+            const kategori = $('#formTiket select[name="kategori"]').val();
+            const fileCount = pond.getFiles().length;
+
+            if (!tiketId ||!title || !deskripsi || !kategori || fileCount === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Form belum lengkap',
+                    text: 'Pastikan semua data sudah terisi sebelum melanjutkan.',
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Apakah kamu yakin ingin mengedit data tiket ini?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, edit',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let formData = new FormData($('#formTiket')[0]);
+                    let maxSize = 10 * 1024 * 1024;
+                    let oversizedFiles = [];
+
+                    pond.getFiles().forEach((fileItem, index) => {
+                        if (fileItem.file.size > maxSize) {
+                            oversizedFiles.push(fileItem.file.name);
+                        }
+                    });
+
+                    if (oversizedFiles.length > 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Ukuran file tidak boleh lebih dari 10MB'
+                        });
+                        return;
+                    }
+
+                    pond.getFiles().forEach((fileItem, index) => {
+                        formData.append(`fileTiket[${index}]`, fileItem.file);
+                    });
+
+                    $('#loaderTiket').show();
+
+                    $.ajax({
+                        url: '/tiket/update',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Tiket berhasil diedit.',
+                            });
+                            pond.removeFiles();
+                            $('#loaderTiket').hide();
+                            $("#createTiketModal").modal('hide');
+                            $('#formTiket')[0].reset();
+                        },
+                        error: function (xhr) {
+                            console.error(xhr.responseText);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan saat megedit tiket.',
+                            });
+                            $('#loaderTiket').hide();
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+    $('#createTiketModal').on('hidden.bs.modal', function () {
+        pond.removeFiles();
+        $('#formTiket')[0].reset();
+        $('#kategori').val(null).trigger('change');
+    });
+
+    // btn create tiket modal
+    $(document).on('click', '[data-bs-target="#createTiketModal"]', function () {
+        $('#formTiket')[0].reset();
+        $('#kategori').val(null).trigger('change');
+        $('#createTiketModalLabel').text('Buat Tiket Baru');
+
+        $('#btnCreateTiket').show();
+        $('#btnDraftTiket').show();
+        $('#btnEditTiket').addClass('d-none');
+
+        $('#formTiket :input:not(#nama_lengkap):not(#email):not(#no_telepon)').prop('disabled', false);
+
+        pond.removeFiles();
+        $('#previewArea').html('');
+
+        pond.setOptions({
+            disabled: false,
+            allowBrowse: true,
+            allowDrop: true,
+            allowPaste: true,
+            labelIdle: `
+                <div style="display: flex; cursor: pointer; flex-direction: column; align-items: center; padding-top: 1.5rem; padding-bottom: 1.5rem;">
+                    <i data-lucide="download" class="mb-3" style="width:35px; height:35px;"></i>
+                    <span>Drag & drop files atau <span class="filepond--label-action">Pilih File</span></span>
+                </div>
+            `
+        });
+
+        setTimeout(() => {
+            lucide.createIcons();
+        }, 50);
+    });
+
+    // btn buka detail modal
+    $(document).on('click', '.btn-detail', function () {
+        const id = $(this).data('id');
+
+        // Setup UI untuk mode detail
+        $('#createTiketModalLabel').text('Detail Tiket');
+        $('#btnCreateTiket').hide();
+        $('#btnDraftTiket').hide();
+        $('#btnEditTiket').addClass('d-none');
+        $('#formTiket :input').prop('disabled', true);
+
+        pond.removeFiles();
+        const previewArea = $('#previewArea');
+        previewArea.html('');
+
+        $.get(`/tiket/api/getDetailTiket/${id}`, function (res) {
+            // Isi form
+            $('#judul').val(res.title);
+            $('#deskripsi').val(res.description);
+            $('#wilayah').val(res.wilayah_id);
+            setSelect2Value('#kategori', res.category_id, res.category_name);
+
+            const fileList = res.file_ticket?.filter(url => !!url);
+
+            if (fileList.length > 0) {
+                pond.setOptions({
+                    disabled: true,
+                    allowBrowse: false,
+                    allowDrop: false,
+                    allowPaste: false,
+                    labelIdle: ''
+                });
+
+                setTimeout(() => {
+                    lucide.createIcons();
+                }, 50);
+
+                fileList.forEach(fileUrl => {
+                    pond.addFile(fileUrl).then(() => {
+                        console.log('Preview file lama ditampilkan:', fileUrl);
+                    }).catch(err => {
+                        console.warn('File gagal dimuat:', fileUrl);
+                    });
+                });
+            } else {
+                previewArea.html(`
+                    <div class="d-flex flex-column align-items-center justify-content-center text-muted py-4">
+                        <i data-lucide="file-x" class="mb-2" style="width:2.5rem;height:2.5rem;"></i>
+                        <div class="fw-semibold">File tidak ditemukan</div>
+                        <small class="text-secondary">Dokumen belum tersedia untuk tiket ini</small>
+                    </div>
+                `);
+                lucide.createIcons();
+
+                pond.setOptions({
+                    disabled: true,
+                    allowBrowse: false,
+                    allowDrop: false,
+                    allowPaste: false,
+                    labelIdle: ''
+                });
+            }
+        }).fail(function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal memuat detail',
+                text: 'Terjadi kesalahan saat mengambil data tiket.'
+            });
+        });
+    });
+
+    // btn buka edit modal
+    $(document).on('click', '.btn-edit', function () {
+        const id = $(this).data('id');
+
+        $('#createTiketModalLabel').text('Edit Tiket');
+        $('#btnCreateTiket').hide();
+        $('#btnDraftTiket').hide();
+        $('#btnEditTiket').removeClass('d-none');
+
+        $('#formTiket :input').prop('disabled', false);
+
+        pond.removeFiles();
+        $('#previewArea').html('');
+
+        $.get(`/tiket/api/getDetailTiket/${id}`, function (res) {
+            $('#judul').val(res.title);
+            $('#deskripsi').val(res.description);
+            $('#wilayah').val(res.wilayah_id);
+            $('.tiket-id').val(res.id);
+            setSelect2Value('#kategori', res.category_id, res.category_name);
+
+            const fileList = Array.isArray(res.file_ticket) ? res.file_ticket : JSON.parse(res.file_ticket || '[]');
+
+            pond.setOptions({
+                disabled: false,
+                allowBrowse: true,
+                allowDrop: true,
+                allowPaste: true,
+                labelIdle: `
+                    <div style="display: flex; cursor: pointer; flex-direction: column; align-items: center; padding-top: 1.5rem; padding-bottom: 1.5rem;">
+                        <i data-lucide="download" class="mb-3" style="width:35px; height:35px;"></i>
+                        <span>Drag & drop files atau <span class="filepond--label-action">Pilih File</span></span>
+                    </div>
+                `,
+            });
+
+            setTimeout(() => {
+                lucide.createIcons();
+            }, 50);
+
+            if (fileList.length > 0) {
+                fileList.forEach(fileUrl => {
+                    pond.addFile(fileUrl).then(() => {
+                        console.log('Preview file lama ditampilkan:', fileUrl);
+                    }).catch(err => {
+                        console.warn('File gagal dimuat, dilewati:', fileUrl);
+                    });
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-delete', function () {
+        const id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Hapus Tiket?',
+            text: 'Tindakan ini akan menghapus tiket dan semua file terkait. Lanjutkan?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/tiket/delete',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (res) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: res.message,
+                        });
+                        table.ajax.reload(null, false);
+                    },
+                    error: function (xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Tiket tidak berhasil dihapus.',
+                        });
+                    }
+                });
+            }
+        });
+    });
+
+    function getStatusColor(statusHtml) {
+        const text = $('<div>').html(statusHtml).text().toLowerCase();
+        if (text.includes('draft')) return 'bg-primary';
+        if (text.includes('proses')) return 'bg-warning';
+        if (text.includes('terbuka')) return 'bg-dark-blue';
+        if (text.includes('selesai')) return 'bg-success';
+        if (text.includes('perlu revisi')) return 'bg-danger';
+        return 'bg-secondary';
+    }
+
+    $.get('/tiket/api/status-summary', function (data) {
+        const container = $('.row-status-summary');
+        container.empty();
+
+        data.forEach(item => {
+            container.append(`
+            <div class="col-md-2 col-6">
+                <div class="card h-100 card-index-helpdesk rounded border p-12 text-center"
+                data-status="${item.key}">
+                <div class="fw-bold fs-1 ${item.color}">${item.count}</div>
+                <div class="fs-7 small">${item.label}</div>
+                </div>
+            </div>
+            `);
+        });
+    });
+
     $(document).on('click', '.card-index-helpdesk', function () {
-        const selectedStatus = $(this).data('status')?.toLowerCase() || '';
+        const selected = $(this).data('status') || '';
 
         $('.card-index-helpdesk').removeClass('border-primary');
         $(this).addClass('border-primary');
 
-        if (selectedStatus === 'semua tiket' || selectedStatus === '') {
-            table.column(2).search('').draw();
-            return;
-        }
+        cardStatus = selected === 'semua tiket' ? '' : selected;
 
-        table.column(2).search(selectedStatus, true, false).draw();
+        table.ajax.reload();
     });
 
     // helpdesk create js
@@ -311,4 +595,100 @@ $(document).ready(function () {
         // contoh: buka modal atau redirect
         // window.location.href = `/helpdesk/verifikasi/${id}`;
     });
+
+    // select2
+    const statusSelect = $('#statusSelect');
+    const prioritasSelect = $('#prioritasSelect');
+
+    const options = [
+      { value: '', text: 'Semua Status' },
+      { value: 'terbuka', text: 'Terbuka' },
+      { value: 'proses', text: 'Proses' },
+      { value: 'selesai', text: 'Selesai' },
+      { value: 'draft', text: 'Draft' },
+      { value: 'revisi', text: 'Perlu Revisi' }
+    ];
+
+    const optionsPrioritas = [
+      { value: '', text: 'Semua Prioritas' },
+      { value: 'rendah', text: 'Rendah' },
+      { value: 'sedang', text: 'Sedang' },
+      { value: 'tinggi', text: 'Tinggi' },
+    ];
+
+    options.forEach(opt => {
+      statusSelect.append(new Option(opt.text, opt.value));
+    });
+
+    optionsPrioritas.forEach(opt => {
+      prioritasSelect.append(new Option(opt.text, opt.value));
+    });
+
+    statusSelect.select2({
+      placeholder: 'Semua Status',
+      allowClear: true,
+      width: '100%'
+    });
+
+    prioritasSelect.select2({
+      placeholder: 'Semua Prioritas',
+      allowClear: true,
+      width: '100%'
+    });
+
+    statusSelect.on('change', function () {
+        cardStatus = '';
+        $('.card-index-helpdesk').removeClass('border-primary');
+        table.ajax.reload();
+    });
+
+    prioritasSelect.on('change', function () {
+        table.ajax.reload();
+    });
+
+    $('#searchTiket').on('keyup', function () {
+        table.search(this.value).draw();
+    });
+
+    // datatable
+    const table = $('#tabel-tiket').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '/tiket/api/getTiket',
+            data: function (d) {
+                d.status = cardStatus || statusSelect.val();
+                d.prioritas = prioritasSelect.val();
+            }
+        },
+        columns: [
+            { data: 'id', name: 'id' },
+            { data: 'judul', name: 'title' },
+            { data: 'status', name: 'status' },
+            { data: 'prioritas', name: 'priority' },
+            { data: 'pelapor', name: 'pelapor' },
+            { data: 'pj', name: 'pj' },
+            { data: 'wilayah', name: 'wilayah' },
+            { data: 'sla', name: 'sla' },
+            { data: 'respon', name: 'respon' },
+            { data: 'aksi', orderable: false, searchable: false }
+        ],
+        columnDefs: [
+            { targets: [1,2,3,4,5,6,7,8], className: 'text-start align-middle' },
+            { targets: [0,9], className: 'text-end align-middle' }
+        ],
+        createdRow: function (row, data, dataIndex) {
+            const colorClass = getStatusColor(data.status);
+            const td = $('td', row).eq(0);
+            td.addClass('td-id-wrapper').html(`
+                <span class="status-indicator ${colorClass}"></span>
+                ${data.id}
+            `);
+        },
+        drawCallback: function () {
+            lucide.createIcons();
+        }
+    });
+
+
 });

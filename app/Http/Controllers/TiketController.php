@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Ticket;
 use App\Models\TicketCategory;
+use App\Models\TicketFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request as FacadesRequest;
 
 class TiketController extends Controller
 {
@@ -14,61 +18,114 @@ class TiketController extends Controller
         return view('pages.helpdesk.index', compact('ticket'));
     }
 
-    public function create()
-    {
-        $categories = TicketCategory::all();
-        return view('pages.helpdesk.create', compact('categories'));
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'userPelaporId' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'category_id' => 'required|exists:ticket_categories,id',
-            'priority' => 'required|string',
+            'deskripsi' => 'required|string',
+            'kategori' => 'required|exists:ticket_categories,id',
+            'fileTiket.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
         ]);
 
         $ticket = Ticket::create([
-            'user_id' => auth()->id(),
-            'category_id' => $validated['category_id'],
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'priority' => $validated['priority'],
-            'status' => 'open',
+            'user_id' => $request->userPelaporId,
+            'category_id' => $request->kategori,
+            'assigned_to' => null,
+            'wilayah_id' => null,
+            'title' => $request->title,
+            'description' => $request->deskripsi,
+            'status' => $request->status,
         ]);
 
-        if ($request->hasFile('attachment')) {
-            foreach ($request->file('attachment') as $file) {
-                $file->store('attachments');
+        $fileUrls = [];
+
+        if ($request->hasFile('fileTiket')) {
+            foreach ($request->file('fileTiket') as $file) {
+                $path = $file->store('fileTickets', 'public');
+                $url = Storage::url($path);
+
+                TicketFile::create([
+                    'ticket_id' => $ticket->id,
+                    'file_ticket' => $url,
+                ]);
+
+                $fileUrls[] = $url;
             }
         }
 
-        return redirect()->route('helpdesk.index')->with('success', 'Tiket berhasil dibuat!');
+        return response()->json([
+            'message' => 'Tiket berhasil disimpan',
+            'ticket_id' => $ticket->id,
+            'files' => $fileUrls,
+        ]);
     }
 
-    public function edit(Ticket $ticket) {}
+    public function update(Request $request)
+    {
+        $validated = $request->validate([
+            'tiketId' => 'required|exists:tickets,id',
+            'title' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'kategori' => 'required|exists:ticket_categories,id',
+            'fileTiket.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
+        ]);
 
-    public function update(Request $request, Ticket $ticket) {}
+        $ticket = Ticket::findOrFail($request->tiketId);
 
-    // public function destroy(Ticket $ticket)
-    // {
-    //     $ticket->delete();
-    //     return redirect()->route('tiket.index')->with('success', 'Data tiket berhasil dihapus.');
-    // }
+        foreach ($ticket->file as $file) {
+            $path = str_replace('/storage/', '', $file->file_ticket);
+            Storage::disk('public')->delete($path);
+            $file->delete();
+        }
 
-    // public function import(Request $request)
-    // {
-    //     $request->validate([
-    //         'file' => 'required|mimes:xls,xlsx'
-    //     ]);
+        $fileUrls = [];
+        if ($request->hasFile('fileTiket')) {
+            foreach ($request->file('fileTiket') as $file) {
+                $path = $file->store('fileTickets', 'public');
+                $url = Storage::url($path);
 
-    //     try {
-    //         Excel::import(new KaryawanImport, $request->file('file'));
+                TicketFile::create([
+                    'ticket_id' => $ticket->id,
+                    'file_ticket' => $url,
+                ]);
 
-    //         return redirect()->route('karyawan.index')->with('success', 'Data karyawan berhasil diimport!');
-    //     } catch (\Exception $e) {
-    //         return redirect()->route('karyawan.index')->with('error', 'Terjadi kesalahan saat mengimport: ' . $e->getMessage());
-    //     }
-    // }
+                $fileUrls[] = $url;
+            }
+        }
+
+        $ticket->update([
+            'category_id' => $request->kategori,
+            'title' => $request->title,
+            'description' => $request->deskripsi,
+        ]);
+
+        return response()->json([
+            'message' => 'Tiket berhasil diperbarui',
+            'ticket_id' => $ticket->id,
+            'files' => $fileUrls,
+        ]);
+    }
+
+    public function delete(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:tickets,id',
+        ]);
+
+        $ticket = Ticket::with('file')->findOrFail($request->id);
+
+        foreach ($ticket->file as $file) {
+            $path = str_replace('/storage/', '', $file->file_ticket);
+            Storage::disk('public')->delete($path);
+            $file->delete();
+        }
+
+        $ticket->delete();
+
+        return response()->json([
+            'message' => 'Tiket dan file berhasil dihapus'
+        ]);
+    }
+
 }

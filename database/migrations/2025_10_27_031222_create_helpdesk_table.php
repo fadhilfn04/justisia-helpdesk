@@ -61,27 +61,23 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('pembatalan_sertifikat', function (Blueprint $table) {
-            $table->id();
-            $table->string('no_sertifikat');
-            $table->string('pemilik');
-            $table->string('lokasi');
-            $table->string('jenis');
-            $table->string('status')->default('Proses');
-            $table->string('penanggung_jawab')->nullable();
-            $table->date('target_selesai')->nullable();
-            $table->timestamps();
-        });
-
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('category_id')->constrained('ticket_categories')->onDelete('cascade');
             $table->foreignId('assigned_to')->nullable()->constrained('users')->onDelete('set null');
+            $table->integer('wilayah_id')->nullable();
             $table->string('title');
             $table->text('description');
             $table->string('status')->default('open');
             $table->string('priority')->default('medium');
+            $table->timestamps();
+        });
+
+        Schema::create('ticket_files', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');
+            $table->string('file_ticket');
             $table->timestamps();
         });
 
@@ -144,7 +140,6 @@ return new class extends Migration
         Schema::dropIfExists('ticket_messages');
         Schema::dropIfExists('tickets');
         Schema::dropIfExists('faqs');
-        Schema::dropIfExists('pembatalan_sertifikat');
         Schema::dropIfExists('master_survey');
         Schema::dropIfExists('master_sla');
         Schema::dropIfExists('ticket_categories');

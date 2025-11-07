@@ -21,7 +21,6 @@ class DatabaseSeeder extends Seeder
             TicketTimelineSeeder::class,
             FeedbackSurveySeeder::class,
             NotificationSeeder::class,
-            PembatalanSertifikatSeeder::class
         ]);
 
         \App\Models\User::factory(10)->create();

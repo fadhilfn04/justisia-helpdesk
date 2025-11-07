@@ -90,7 +90,7 @@
 
                             <div class="row g-3">
                                 <div class="col-md col-sm-6">
-                                    <a href="{{ route('tiket.create') }}" class="text-decoration-none">
+                                    <a href="{{ route('tiket.index') }}" class="text-decoration-none">
                                         <div class="quick-action-card text-center p-4 rounded-3 border bg-white h-100">
                                             <div class="fs-1 mb-2 text-primary">
                                                 <i class="bi bi-ticket-perforated"></i>
