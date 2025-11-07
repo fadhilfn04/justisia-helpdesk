@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    $('#faqSearch').on('keyup', function () {
+        table.search(this.value).draw();
+    });
     const csrf = $('meta[name="csrf-token"]').attr('content');
 
     const table = $('#faqTable').DataTable({
@@ -6,7 +9,15 @@ $(document).ready(function () {
         serverSide: false,
         ajax: '/settings/faq/data',
         columns: [
-            { data: 'id' },
+            {
+                data: null,
+                render: function (data, type, row, meta) {
+                    return meta.row + 1;
+                },
+                className: 'text-center',
+                orderable: false,
+                searchable: false
+            },
             {
                 data: 'question',
             },
@@ -16,8 +27,23 @@ $(document).ready(function () {
             {
                 data: 'category',
                 render: function (data) {
+                    // Warna default
+                    let badgeClass = 'border-gray-300 text-dark bg-transparent';
+
+                    switch (data?.id) {
+                        case 1:
+                            badgeClass = 'border-primary text-primary bg-light-primary';
+                            break;
+                        case 2:
+                            badgeClass = 'border-warning text-warning bg-light-warning';
+                            break;
+                        case 3:
+                            badgeClass = 'border-danger text-danger bg-light-danger';
+                            break;
+                    }
+
                     return `
-                        <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-1 border border-gray-300 text-dark bg-transparent">
+                        <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-1 border fw-semibold ${badgeClass}">
                             ${data?.name ?? '-'}
                         </span>
                     `;

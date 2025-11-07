@@ -1,4 +1,8 @@
 $(document).ready(function () {
+    $('#ticketCategorySearch').on('keyup', function () {
+        table.search(this.value).draw();
+    });
+
     const csrf = $('meta[name="csrf-token"]').attr('content');
 
     const table = $('#ticketCategory').DataTable({
@@ -6,7 +10,15 @@ $(document).ready(function () {
         serverSide: false,
         ajax: '/settings/ticket-category/data',
         columns: [
-            { data: 'id' },
+            {
+                data: null,
+                render: function (data, type, row, meta) {
+                    return meta.row + 1;
+                },
+                className: 'text-center',
+                orderable: false,
+                searchable: false
+            },
             {
                 data: 'name',
             },

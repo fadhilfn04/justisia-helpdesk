@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('guard_name')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('users', function (Blueprint $table) {
@@ -24,6 +25,7 @@ return new class extends Migration
             $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
             $table->string('phone')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('category_agents', function (Blueprint $table) {
@@ -31,6 +33,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('category');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('ticket_categories', function (Blueprint $table) {
@@ -38,6 +41,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('master_sla', function (Blueprint $table) {
@@ -45,12 +49,14 @@ return new class extends Migration
             $table->string('prioritas');
             $table->foreignId('category_id')->constrained('ticket_categories')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('master_survey', function (Blueprint $table) {
             $table->id();
             $table->string('pertanyaan');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('faqs', function (Blueprint $table) {
@@ -59,6 +65,7 @@ return new class extends Migration
             $table->text('answer');
             $table->foreignId('category_id')->constrained('ticket_categories')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('tickets', function (Blueprint $table) {
@@ -72,6 +79,7 @@ return new class extends Migration
             $table->string('status')->default('open');
             $table->string('priority')->default('medium');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('ticket_files', function (Blueprint $table) {
@@ -79,6 +87,7 @@ return new class extends Migration
             $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');
             $table->string('file_ticket');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('ticket_messages', function (Blueprint $table) {
@@ -88,6 +97,7 @@ return new class extends Migration
             $table->text('message');
             $table->string('attachment')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('ticket_status_logs', function (Blueprint $table) {
@@ -98,6 +108,7 @@ return new class extends Migration
             $table->string('new_status');
             $table->text('note')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('ticket_timelines', function (Blueprint $table) {
@@ -107,6 +118,7 @@ return new class extends Migration
             $table->string('action');
             $table->text('description')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('feedback_surveys', function (Blueprint $table) {
@@ -118,6 +130,7 @@ return new class extends Migration
             $table->text('comment')->nullable();
             $table->string('sent_via')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('notifications', function (Blueprint $table) {
@@ -128,6 +141,7 @@ return new class extends Migration
             $table->text('message');
             $table->boolean('is_read')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
