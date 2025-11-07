@@ -5,14 +5,11 @@ use App\Http\Controllers\Apps\PermissionManagementController;
 use App\Http\Controllers\Apps\RoleManagementController;
 use App\Http\Controllers\Apps\UserManagementController;
 use App\Http\Controllers\Auth\SocialiteController;
-use App\Http\Controllers\PembatalanSertifikatController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SengketaKonflikController;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\TiketController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TicketCategoryController;
 use Illuminate\Support\Facades\Route;
 

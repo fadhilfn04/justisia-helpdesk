@@ -10,8 +10,12 @@
             </button>
         </div>
 
-        <div class="card border">
+        <div class="card mb-7 border-0 shadow-sm">
             <div class="card-body">
+                <div class="flex-grow-1 position-relative">
+                    {!! getIcon('magnifier', 'fs-3 position-absolute ms-5 top-50 translate-middle-y text-gray-500') !!}
+                    <input type="text" data-kt-ticketCategory-table-filter="search" class="form-control form-control-solid ps-13" placeholder="Cari Kategori Tiket..." id="ticketCategorySearch"/>
+                </div>
                 <div class="table-responsive">
                     <table id="ticketCategory" class="table align-middle table-row-dashed fs-6 gy-5">
                         <thead>

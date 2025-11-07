@@ -16,7 +16,7 @@ $(document).ready(function () {
         serverSide: false,
         data: [
             {
-                id: 'TKT-2021-001',
+                id: '1',
                 judul: 'Sengketa batas tanah di Jakarta Selatan',
                 description: 'Konflik batas tanah antara dua pemilik yang bersebelahan',
                 status: `
@@ -241,23 +241,40 @@ $(document).ready(function () {
             { data: 'wilayah' },
             { data: 'sla' },
             { data: 'respon' },
-            // { data: 'aksi', orderable: false, searchable: false }
             {
                 data: null,
                 orderable: false,
                 searchable: false,
                 render: function (data, type, row) {
+                    let actionButton = '';
+
+                    if (row.status === 'open' || row.status === 'need_revision') {
+                        actionButton = `
+                            <a class="dropdown-item btn-verifikasi" href="#" data-id="${row.id}">
+                                <i data-lucide="check-circle" class="me-2 text-success"></i> Verifikasi
+                            </a>
+                        `;
+                    } else if (row.status === 'in_progress') {
+                        actionButton = `
+                            <a class="dropdown-item btn-tutup" href="#" data-id="${row.id}">
+                                <i data-lucide="x-circle" class="me-2 text-danger"></i> Tutup Tiket
+                            </a>
+                        `;
+                    } else {
+                        actionButton = `
+                            <span class="dropdown-item text-muted">
+                                <i data-lucide="minus-circle" class="me-2"></i> Tidak ada aksi
+                            </span>
+                        `;
+                    }
+
                     return `
                         <div class="dropdown text-end">
                             <button class="btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i data-lucide="ellipsis" class="icon-action"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                                <li>
-                                    <a class="dropdown-item btn-verifikasi" href="#" data-id="${row.id}">
-                                        <i data-lucide="check-circle" class="me-2"></i> Verifikasi
-                                    </a>
-                                </li>
+                                <li>${actionButton}</li>
                             </ul>
                         </div>
                     `;

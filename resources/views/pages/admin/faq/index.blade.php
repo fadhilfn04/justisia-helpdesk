@@ -10,8 +10,12 @@
             </button>
         </div>
 
-        <div class="card border">
-            <div class="card-body">
+        <div class="card mb-7 border-0 shadow-sm">
+            <div class="card-body d-flex flex-wrap align-items-center gap-3">
+                <div class="flex-grow-1 position-relative">
+                    {!! getIcon('magnifier', 'fs-3 position-absolute ms-5 top-50 translate-middle-y text-gray-500') !!}
+                    <input type="text" data-kt-faq-table-filter="search" class="form-control form-control-solid ps-13" placeholder="Cari FAQ..." id="faqSearch"/>
+                </div>
                 <div class="table-responsive">
                     <table id="faqTable" class="table align-middle table-row-dashed fs-6 gy-5">
                         <thead>
@@ -31,7 +35,6 @@
     </div>
 </div>
 
-<!-- Modal Tambah/Edit FAQ -->
 <div class="modal fade" id="faqModal" tabindex="-1" aria-labelledby="faqModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">

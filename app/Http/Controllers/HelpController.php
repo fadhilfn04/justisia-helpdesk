@@ -16,9 +16,9 @@ class HelpController extends Controller
         });
 
         $icons = [
-            'Teknis' => 'ticket',
-            'Akun' => 'file-x',
-            'Lainnya' => 'chart-column',
+            'Helpdesk' => 'ticket',
+            'Pembatalan Sertifikat' => 'file-x',
+            'Sengketa & Konflik' => 'chart-column',
             'Umum' => 'help-circle',
         ];
 
