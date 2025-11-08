@@ -455,7 +455,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Card Estimasi SLA -->
                                 <div class="card border mb-3 border-gray-300">
                                     <div class="card-header border-0">
                                         <h1 class="card-title" style="font-size: 1.2rem; font-weight: 600;">Estimasi SLA</h1>
@@ -466,6 +465,21 @@
                                             <li>Respon awal: <span class="fw-bold text-dark">3x24 jam</span></li>
                                             <li>Penyelesaian: <span class="fw-bold text-dark">7–14 hari kerja</span></li>
                                         </ul>
+                                    </div>
+                                </div>
+
+                                <div class="card mb-5 border border-gray-300 timeline-card d-none">
+                                    <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">
+                                        <span class="card-title p-0 d-flex align-items-center">
+                                            <i data-lucide="clock" class="me-2 text-primary"></i>
+                                            Riwayat Aktivitas
+                                        </span>
+                                        <p class="py-0">Catatan aktivitas dan perubahan status tiket</p>
+                                    </div>
+                                    <div class="card-body py-3 mb-5">
+                                        <div id="timelineContainer" class="timeline position-relative ms-3 ps-3 border-start border-gray-300">
+                                            <div class="text-muted small">Memuat data...</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

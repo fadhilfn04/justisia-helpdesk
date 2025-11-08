@@ -46,10 +46,18 @@ class ApitiketController extends BaseController
 
     public function getTiket(Request $request)
     {
-        $userId = Auth::id();
-        $query = Ticket::where('user_id', $userId);
+        $user = Auth::user();
+        $query = Ticket::query();
 
-        // filter status
+        if ($user->role->name === 'Administrator') {
+        } 
+        elseif ($user->role === 'Agent') {
+            $query->where('assigned_to', $user->id);
+        } 
+        else {
+            $query->where('user_id', $user->id);
+        }
+
         if ($request->filled('status')) {
             $statusMap = [
                 'terbuka' => 'open',
@@ -176,7 +184,9 @@ class ApitiketController extends BaseController
                             <i data-lucide="ellipsis" class="icon-action"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu-fixed">
-                            <a href="javascript:void(0)" class="dropdown-item btn-detail" data-id="'.$row->id.'" data-bs-toggle="modal" data-bs-target="#createTiketModal">Detail</a>';
+                            <a class="dropdown-item btn-detail" href="#" data-bs-toggle="modal" data-bs-target="#createTiketModal" data-id="' . $row->id . '">
+                                <i data-lucide="eye" class="me-2 text-success"></i> Detail
+                            </a>';
 
                 if ($row->status === 'draft') {
                     $dropdown .= '
@@ -186,6 +196,9 @@ class ApitiketController extends BaseController
 
                 if ($row->status === 'open' || $row->status === 'need_revision') {
                     $dropdown .= '
+                            <a class="dropdown-item btn-tolak" href="#" data-id="' . $row->id . '">
+                                <i data-lucide="x-circle" class="me-2 text-danger"></i> Tolak Tiket
+                            </a>
                             <a class="dropdown-item btn-verifikasi" href="#" data-id="' . $row->id . '">
                                 <i data-lucide="check-circle" class="me-2 text-success"></i> Verifikasi
                             </a>';

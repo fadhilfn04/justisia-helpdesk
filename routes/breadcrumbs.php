@@ -51,3 +51,8 @@ Breadcrumbs::for('user-management.permissions.index', function (BreadcrumbTrail 
     $trail->parent('user-management.index');
     $trail->push('Izin Akses', route('user-management.permissions.index'));
 });
+
+Breadcrumbs::for('settings.faq.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('home');
+    $trail->push('Kelola FAQ', route('settings.faq.index'));
+});

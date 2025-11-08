@@ -52,29 +52,20 @@
 
 @push('scripts')
 <script>
+    const trenData = @json($trenTiketHarian);
+
+    const categories = trenData.map(item => item.tanggal);
+    const tiketMasuk = trenData.map(item => item.tiket_masuk);
+    const tiketSelesai = trenData.map(item => item.tiket_selesai);
+
     const optionsTren = {
-        chart: {
-            type: 'line',
-            height: 320,
-            toolbar: { show: false }
-        },
+        chart: { type: 'line', height: 320, toolbar: { show: false } },
         series: [
-            {
-                name: 'Tiket Masuk',
-                data: [120, 140, 150, 160, 170, 180]
-            },
-            {
-                name: 'Tiket Selesai',
-                data: [100, 120, 130, 150, 160, 175]
-            }
+            { name: 'Tiket Masuk', data: tiketMasuk },
+            { name: 'Tiket Selesai', data: tiketSelesai }
         ],
-        xaxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun']
-        },
-        stroke: {
-            curve: 'smooth',
-            width: 3
-        },
+        xaxis: { categories },
+        stroke: { curve: 'smooth', width: 3 },
         colors: ['#008FFB', '#00E396'],
         dataLabels: { enabled: false },
         legend: { position: 'top' },
@@ -82,7 +73,6 @@
         tooltip: { theme: 'light' }
     };
 
-    const chartTren = new ApexCharts(document.querySelector("#chartTrenTiketHarian"), optionsTren);
-    chartTren.render();
+    new ApexCharts(document.querySelector("#chartTrenTiketHarian"), optionsTren).render();
 </script>
 @endpush

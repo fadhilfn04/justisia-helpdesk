@@ -84,7 +84,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    $('#createTiketModal').on('shown.bs.modal', function () {
+    $('#createTiketModal').on('shown.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        const tiketId = button.data('id');
+
         $('#btnCreateTiket').on('click', function (e) {
             e.preventDefault();
 
@@ -337,6 +340,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+
+        if (tiketId) {
+            loadTimeline(tiketId);
+        }
     });
 
     $('#createTiketModal').on('hidden.bs.modal', function () {
@@ -496,6 +503,46 @@ document.addEventListener('DOMContentLoaded', function() {
                     }).catch(err => {
                         console.warn('File gagal dimuat, dilewati:', fileUrl);
                     });
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-tolak', function () {
+        const id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Tolak Tiket?',
+            text: 'Tindakan ini akan menolak tiket yang diajukan. Lanjutkan?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/tiket/reject',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (res) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: res.message,
+                        });
+                        table.ajax.reload(null, false);
+                    },
+                    error: function (xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Tiket tidak berhasil ditolak.',
+                        });
+                    }
                 });
             }
         });
@@ -886,7 +933,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 lucide.createIcons();
             }
         });
-
-
     });
+
+    function loadTimeline(ticketId) {
+        const timelineCard = document.querySelector('.timeline-card');
+        const container = document.getElementById('timelineContainer');
+        if (!timelineCard) return;
+
+        timelineCard.classList.remove('d-none');
+        container.innerHTML = '<div class="text-muted small">Memuat data...</div>';
+
+        fetch(`/tiket/${ticketId}/timeline`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success || data.timelines.length === 0) {
+                    container.innerHTML = '<div class="text-muted small">Belum ada aktivitas</div>';
+                    return;
+                }
+
+                container.innerHTML = data.timelines.map(item => {
+                    const colors = {
+                        'Ticket Created': 'bg-success',
+                        'Status Updated': 'bg-info',
+                        'Reopened': 'bg-warning',
+                        'Closed': 'bg-danger',
+                    };
+                    const icons = {
+                        'Ticket Created': 'plus-circle',
+                        'Status Updated': 'refresh-ccw',
+                        'Reopened': 'rotate-ccw',
+                        'Closed': 'check-circle',
+                    };
+                    const color = colors[item.action] || 'bg-secondary';
+                    const icon = icons[item.action] || 'clock';
+
+                    return `
+                        <div class="timeline-item">
+                            <div class="timeline-dot ${color} d-flex align-items-center justify-content-center">
+                                <i data-lucide="${icon}" class="text-white" style="width: 0.75rem;"></i>
+                            </div>
+                            <div class="ms-4">
+                                <div class="fw-semibold">${item.action}</div>
+                                <div class="text-muted small mb-1">
+                                    oleh ${item.actor?.name ?? 'Sistem'} • ${item.created_at_human}
+                                </div>
+                                ${item.description ? `<div class="text-gray-700">${item.description}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                lucide.createIcons();
+            })
+            .catch(err => {
+                container.innerHTML = '<div class="text-danger small">Gagal memuat timeline</div>';
+                console.error(err);
+            });
+    }
 });

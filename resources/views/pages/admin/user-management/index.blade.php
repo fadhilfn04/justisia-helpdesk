@@ -1,11 +1,11 @@
 <x-default-layout>
 
     @section('title')
-        Kelola FAQ
+        Daftar Pengguna
     @endsection
 
     @section('breadcrumbs')
-        {{ Breadcrumbs::render('settings.faq.index') }}
+        {{ Breadcrumbs::render('user-management.users.index') }}
     @endsection
 
 <div class="content-wrapper">
@@ -13,24 +13,29 @@
 
         <div class="d-flex justify-content-end align-items-center mb-4">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#faqModal" onclick="openCreateModal()">
-                <i class="bi bi-plus-lg"></i> Tambah FAQ
+                <i class="bi bi-plus-lg"></i> Tambah Pengguna
             </button>
         </div>
 
         <div class="card mb-7 border-0 shadow-sm">
-            <div class="card-body">
+            <div class="card-body d-flex flex-wrap align-items-center gap-3">
                 <div class="position-relative">
                     {!! getIcon('magnifier', 'fs-3 position-absolute ms-5 top-50 translate-middle-y text-gray-500') !!}
-                    <input type="text" data-kt-faq-table-filter="search" class="form-control form-control-solid ps-13" placeholder="Cari FAQ..." id="faqSearch"/>
+                    <input type="text" data-kt-user-table-filter="search" class="form-control form-control-solid ps-13" placeholder="Cari Pengguna..." id="userSearch"/>
                 </div>
                 <div class="table-responsive">
-                    <table id="faqTable" class="table align-middle table-row-dashed fs-6 gy-5">
+                    <table id="users" class="table align-middle table-row-dashed fs-6 gy-5">
                         <thead>
                             <tr class=" text-gray-500 fw-bold fs-7 text-uppercase gs-0">
                                 <th>No</th>
-                                <th>Pertanyaan</th>
-                                <th>Jawaban</th>
-                                <th>Kategori</th>
+                                <th>Nama</th>
+                                <th>Role</th>
+                                <th>Kontak</th>
+                                <th>Departemen</th>
+                                <th>Wilayah</th>
+                                <th>Status</th>
+                                <th>Tiket Ditangani</th>
+                                <th>Terakhir Login</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -42,17 +47,16 @@
     </div>
 </div>
 
-<div class="modal fade" id="faqModal" tabindex="-1" aria-labelledby="faqModalLabel" aria-hidden="true">
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="faqModalLabel">Tambah FAQ</h5>
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white" id="userModalLabel">Tambah Pengguna</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="faqForm">
+            <form id="userForm">
                 <div class="modal-body">
-                    @include('pages.admin.faq._form')
-                    <input type="hidden" id="faq_id" name="faq_id">
+                    @include('pages.admin.user-management._form')
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -66,7 +70,7 @@
 </div>
 
 @push('scripts')
-    <script src="{{ asset('assets/js/custom-js/faq.js') }}"></script>
+    <script src="{{ asset('assets/js/custom-js/user-management.js') }}"></script>
 @endpush
 
 </x-default-layout>
