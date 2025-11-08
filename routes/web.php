@@ -47,12 +47,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/{id}/verification', [TiketController::class, 'verification'])->name('verification');
         Route::post('/{id}/return', [TiketController::class, 'return'])->name('return');
 
+        // tiket message
+        Route::get('/getAllChat/{ticketId}', [TiketController::class, 'getAllChat']);
+        Route::post('/sendChat', [TiketController::class, 'sendChat']);
+
         // api
         Route::prefix('api')->group(function () {
             Route::get('/getKategori', [ApitiketController::class, 'getKategori'])->name('tiket.getKategori');
             Route::get('/getTiket', [ApitiketController::class, 'getTiket'])->name('tiket.getTiket');
             Route::get('/getDetailTiket/{id}', [ApitiketController::class, 'getDetailTiket'])->name('tiket.getDetailTiket');
-            Route::get('/status-summary', [ApitiketController::class, 'statusSummary']);
+            Route::get('/status-summary', [ApitiketController::class, 'statusSummary'])->name('tiket.statusSummary');
+            Route::get('/checkDuplicateTiket/{id}/{title}', [ApitiketController::class, 'checkDuplicateTiket'])->name('tiket.checkDuplicateTiket');
         });
     });
 

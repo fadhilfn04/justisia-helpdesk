@@ -46,8 +46,13 @@ class ApitiketController extends BaseController
 
     public function getTiket(Request $request)
     {
+        $query = Ticket::latest();
         $userId = Auth::id();
-        $query = Ticket::where('user_id', $userId);
+
+        if(auth()->user()->role->id == '3')
+        {
+            $query = Ticket::where('user_id', $userId)->latest();
+        }
 
         // filter status
         if ($request->filled('status')) {
@@ -142,7 +147,7 @@ class ApitiketController extends BaseController
                 ';
             })
             ->addColumn('pelapor', function ($row) {
-                $user = Auth::user();
+                $user = $row->user;
                 $nama = e($user->name ?? 'User');
                 return '
                     <span class="d-inline-flex align-items-center gap-2">
@@ -168,7 +173,17 @@ class ApitiketController extends BaseController
                 ';
             })
             ->addColumn('sla', fn() => '-')
-            ->addColumn('respon', fn() => '<i data-lucide="message-square" class="text-dark" style="width:1.1rem;"></i> 0')
+            ->addColumn('respon', function ($row) use ($userId) {
+                $countResponMessage = $row->messages->where('sender_id', '!=', $userId)->count();
+
+                return '<a href="javascript:void(0)"
+                            class="btn-respon text-dark"
+                            data-id="' . $row->id . '"
+                            data-status="' . $row->status . '">
+                            <i data-lucide="message-square" class="text-dark" style="width:1.1rem;cursor:pointer;"></i>
+                            '. $countResponMessage .'
+                        </a>';
+            })
             ->addColumn('aksi', function ($row) {
                 $dropdown = '
                     <div class="dropdown position-relative">
@@ -176,11 +191,15 @@ class ApitiketController extends BaseController
                             <i data-lucide="ellipsis" class="icon-action"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu-fixed">
-                            <a href="javascript:void(0)" class="dropdown-item btn-detail" data-id="'.$row->id.'" data-bs-toggle="modal" data-bs-target="#createTiketModal">Detail</a>';
+                            <a href="javascript:void(0)" class="dropdown-item btn-detail" data-id="'.$row->id.'" data-status="'.$row->status.'" data-bs-toggle="modal" data-bs-target="#createTiketModal">Detail</a>';
 
                 if ($row->status === 'draft') {
                     $dropdown .= '
-                            <a href="javascript:void(0)" class="dropdown-item btn-edit" data-id="'.$row->id.'" data-bs-toggle="modal" data-bs-target="#createTiketModal">Edit</a>
+                        <a href="javascript:void(0)" class="dropdown-item btn-edit" data-id="'.$row->id.'" data-bs-toggle="modal" data-bs-target="#createTiketModal">Edit</a>';
+                }
+
+                if ($row->status === 'draft' ||$row->status === 'open') {
+                    $dropdown .= '
                             <a href="#" class="dropdown-item btn-delete" data-id="'.$row->id.'">Hapus</a>';
                 }
 
@@ -205,24 +224,6 @@ class ApitiketController extends BaseController
                     </div>';
 
                 return $dropdown;
-            })
-            ->addColumn('searchable_status', function ($row) {
-                switch ($row->status) {
-                    case 'draft': return 'Draft';
-                    case 'in_progress': return 'Proses';
-                    case 'open': return 'Terbuka';
-                    case 'closed': return 'Selesai';
-                    case 'need_revision': return 'Perlu Revisi';
-                    default: return '-';
-                }
-            })
-            ->addColumn('searchable_prioritas', function ($row) {
-                switch ($row->priority) {
-                    case 'low': return 'Rendah';
-                    case 'medium': return 'Sedang';
-                    case 'high': return 'Tinggi';
-                    default: return '-';
-                }
             })
             ->rawColumns(['judul', 'status', 'prioritas', 'pelapor', 'pj', 'wilayah', 'respon', 'aksi'])
             ->make(true);
@@ -275,4 +276,19 @@ class ApitiketController extends BaseController
 
         return response()->json($response);
     }
+
+    public function checkDuplicateTiket($userId, $title)
+    {
+        $normalizedTitle = strtolower(trim(preg_replace('/\s+/', ' ', $title)));
+
+        $exists = Ticket::where('user_id', $userId)
+            ->get()
+            ->contains(function ($ticket) use ($normalizedTitle) {
+                $dbTitle = strtolower(trim(preg_replace('/\s+/', ' ', $ticket->title)));
+                return $dbTitle === $normalizedTitle;
+            });
+
+        return response()->json(['exists' => $exists]);
+    }
+
 }

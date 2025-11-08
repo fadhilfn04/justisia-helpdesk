@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Ticket;
 use App\Models\TicketCategory;
 use App\Models\TicketFile;
+use App\Models\TicketMessage;
 use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
@@ -65,6 +66,21 @@ class TiketController extends Controller
             'fileTiket.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
         ]);
 
+        $normalizedTitle = strtolower(trim(preg_replace('/\s+/', ' ', $request->title)));
+        $isDuplicate = Ticket::where('user_id', $request->userPelaporId)
+            ->get()
+            ->contains(function ($ticket) use ($normalizedTitle) {
+                $dbTitle = strtolower(trim(preg_replace('/\s+/', ' ', $ticket->title)));
+                return $dbTitle === $normalizedTitle;
+            });
+
+        if ($isDuplicate) {
+            return response()->json([
+                'message' => 'Tiket dengan judul yang sama telah tercatat sebelumnya.',
+                'duplicate' => true
+            ], 422);
+        }
+
         $ticket = Ticket::create([
             'user_id' => $request->userPelaporId,
             'category_id' => $request->kategori,
@@ -80,8 +96,8 @@ class TiketController extends Controller
             Notification::create([
                 'user_id' => $request->userPelaporId,
                 'type' => 'success',
-                'title' => 'Tiket berhasil dibuat',
-                'message' => 'Tiket Anda telah berhasil dibuat. Mohon tunggu, admin akan segera melakukan verifikasi.'
+                'title' => 'Tiket berhasil diajukan',
+                'message' => 'Tiket Anda telah berhasil diajukan. Mohon tunggu, admin akan segera melakukan verifikasi.'
             ]);
         }
 
@@ -110,6 +126,27 @@ class TiketController extends Controller
 
     public function update(Request $request)
     {
+        $ticket = Ticket::findOrFail($request->tiketId);
+
+        // jika user mengajukan tiket draft
+        if($request->isAjukan == 1 && $ticket->status == "draft")
+        {
+            $ticket->update([
+                'status' => 'open',
+            ]);
+
+            Notification::create([
+                'user_id' => $request->userPelaporId,
+                'type' => 'success',
+                'title' => 'Tiket berhasil diajukan',
+                'message' => 'Tiket Anda telah berhasil diajukan. Mohon tunggu, admin akan segera melakukan verifikasi.'
+            ]);
+
+            return response()->json([
+                'message' => 'Tiket berhasil diperbarui'
+            ]);
+        }
+
         $validated = $request->validate([
             'tiketId' => 'required|exists:tickets,id',
             'title' => 'required|string|max:255',
@@ -117,8 +154,6 @@ class TiketController extends Controller
             'kategori' => 'required|exists:ticket_categories,id',
             'fileTiket.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
         ]);
-
-        $ticket = Ticket::findOrFail($request->tiketId);
 
         foreach ($ticket->file as $file) {
             $path = str_replace('/storage/', '', $file->file_ticket);
@@ -227,5 +262,31 @@ class TiketController extends Controller
                 'message' => 'Gagal merevisi tiket: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function getAllChat($ticketId)
+    {
+        $messages = TicketMessage::with('sender')
+            ->where('ticket_id', $ticketId)
+            ->orderBy('id')
+            ->get();
+
+        return response()->json($messages);
+    }
+
+    public function sendChat(Request $request)
+    {
+        $request->validate([
+            'ticket_id' => 'required|integer',
+            'message'   => 'required|string',
+        ]);
+
+        $msg = TicketMessage::create([
+            'ticket_id' => $request->ticket_id,
+            'sender_id' => $request->sender_id,
+            'message'   => $request->message
+        ]);
+
+        return response()->json($msg);
     }
 }

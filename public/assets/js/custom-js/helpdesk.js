@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // helpdesk index js
     let cardStatus = '';
+    const userId = $('#formTiket input[name="userPelaporId"]').val();
 
     // select2
     const statusSelect = $('#statusSelect');
@@ -78,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { data: 'wilayah', name: 'wilayah' },
             { data: 'sla', name: 'sla' },
             { data: 'respon', name: 'respon' },
-            { data: 'aksi', orderable: false, searchable: false }
+            { data: 'aksi', orderable: false, searchable: false },
         ],
         columnDefs: [
             { targets: [1,2,3,4,5,6,7,8], className: 'text-start align-middle' },
@@ -97,24 +98,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-
     FilePond.registerPlugin(FilePondPluginImagePreview);
     const inputElement = document.querySelector('#fileUpload');
 
     const pond = FilePond.create(inputElement, {
-    allowMultiple: true,
-    acceptedFileTypes: ['image/*', 'application/pdf'],
-    instantUpload: false,
-    allowProcess: false,
-    allowRevert: false,
-    credits: false,
-    labelIdle: `
-        <div style="display: flex; cursor: pointer; flex-direction: column; align-items: center; padding-top: 1.5rem; padding-bottom: 1.5rem;">
-            <i data-lucide="download" class="mb-3" width="35" height="35"></i>
-            <span>Drag & drop files atau <span class="filepond--label-action">Pilih File</span></span>
-        </div>
-    `,
-    fileValidateTypeDetectType: (source, type) => new Promise((resolve) => resolve(type))
+        allowMultiple: true,
+        acceptedFileTypes: ['image/*', 'application/pdf'],
+        instantUpload: false,
+        allowProcess: false,
+        allowRevert: false,
+        credits: false,
+        labelIdle: `
+            <div style="display: flex; cursor: pointer; flex-direction: column; align-items: center; padding-top: 1.5rem; padding-bottom: 1.5rem;">
+                <i data-lucide="download" class="mb-3" width="35" height="35"></i>
+                <span>Drag & drop files atau <span class="filepond--label-action">Pilih File</span></span>
+            </div>
+        `,
+        fileValidateTypeDetectType: (source, type) => new Promise((resolve) => resolve(type))
     });
 
     pond.on('init', () => {
@@ -178,7 +178,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .trigger('change.select2');
     }
 
-
     $('#createTiketModal').on('shown.bs.modal', function () {
         $('#btnCreateTiket').on('click', function (e) {
             e.preventDefault();
@@ -197,72 +196,95 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            Swal.fire({
-                title: 'Konfirmasi',
-                text: 'Yakin semua data tiket sudah sesuai dan ingin melanjutkan proses ini?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, simpan',
-                cancelButtonText: 'Batal',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let formData = new FormData($('#formTiket')[0]);
-                    let maxSize = 10 * 1024 * 1024;
-                    let oversizedFiles = [];
-
-                    pond.getFiles().forEach((fileItem, index) => {
-                        if (fileItem.file.size > maxSize) {
-                            oversizedFiles.push(fileItem.file.name);
-                        }
+            const userId = $('#formTiket input[name="userPelaporId"]').val();
+            $.get(`/tiket/api/checkDuplicateTiket/${userId}/${encodeURIComponent(title)}`, function (res) {
+                if (res.exists) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Tiket sudah tersedia',
+                        text: 'Tiket dengan judul yang sama telah tercatat sebelumnya.'
                     });
-
-                    if (oversizedFiles.length > 0) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Ukuran file tidak boleh lebih dari 10MB'
-                        });
-                        return;
-                    }
-
-                    pond.getFiles().forEach((fileItem, index) => {
-                        formData.append(`fileTiket[${index}]`, fileItem.file);
-                    });
-
-                    formData.append('status', 'open');
-
-                    $('#loaderTiket').show();
-
-                    $.ajax({
-                        url: '/tiket/store',
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil!',
-                                text: 'Tiket berhasil dibuat.',
-                            });
-                            pond.removeFiles();
-                            $('#loaderTiket').hide();
-                            $("#createTiketModal").modal('hide');
-                            $('#formTiket')[0].reset();
-                            table.ajax.reload(null, false);
-                            refreshStatusSummary();
-                        },
-                        error: function (xhr) {
-                            console.error(xhr.responseText);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal!',
-                                text: 'Terjadi kesalahan saat membuat tiket.',
-                            });
-                            $('#loaderTiket').hide();
-                        }
-                    });
+                    return;
                 }
+
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Yakin semua data tiket sudah sesuai dan ingin melanjutkan proses ini?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, ajukan',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let formData = new FormData($('#formTiket')[0]);
+                        let maxSize = 10 * 1024 * 1024;
+                        let oversizedFiles = [];
+
+                        pond.getFiles().forEach((fileItem, index) => {
+                            if (fileItem.file.size > maxSize) {
+                                oversizedFiles.push(fileItem.file.name);
+                            }
+                        });
+
+                        if (oversizedFiles.length > 0) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Ukuran file tidak boleh lebih dari 10MB'
+                            });
+                            return;
+                        }
+
+                        pond.getFiles().forEach((fileItem, index) => {
+                            formData.append(`fileTiket[${index}]`, fileItem.file);
+                        });
+
+                        formData.append('status', 'open');
+
+                        $('#loaderTiket').show();
+
+                        $.ajax({
+                            url: '/tiket/store',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: 'Tiket berhasil diajukan.',
+                                });
+                                pond.removeFiles();
+                                $('#loaderTiket').hide();
+                                $("#createTiketModal").modal('hide');
+                                $('#formTiket')[0].reset();
+                                table.ajax.reload(null, false);
+                                refreshStatusSummary();
+                            },
+                            error: function (xhr) {
+                                // console.error(xhr.responseText);
+                                if (xhr.status === 422 && xhr.responseJSON?.duplicate) {
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Tiket sudah tersedia.',
+                                        text: xhr.responseJSON.message
+                                    });
+                                    $('#loaderTiket').hide();
+                                    return;
+                                }
+
+                                console.error(xhr.responseText);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal!',
+                                    text: 'Terjadi kesalahan saat mengajukan tiket.',
+                                });
+                                $('#loaderTiket').hide();
+                            }
+                        });
+                    }
+                });
             });
         });
 
@@ -283,72 +305,94 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            Swal.fire({
-                title: 'Konfirmasi',
-                text: 'Apakah kamu yakin semua data tiket sudah terisi dengan benar dan ingin menyimpannya sebagai draft?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, simpan',
-                cancelButtonText: 'Batal',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let formData = new FormData($('#formTiket')[0]);
-                    let maxSize = 10 * 1024 * 1024;
-                    let oversizedFiles = [];
-
-                    pond.getFiles().forEach((fileItem, index) => {
-                        if (fileItem.file.size > maxSize) {
-                            oversizedFiles.push(fileItem.file.name);
-                        }
+            $.get(`/tiket/api/checkDuplicateTiket/${userId}/${encodeURIComponent(title)}`, function (res) {
+                if (res.exists) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Tiket sudah tersedia',
+                        text: 'Tiket dengan judul yang sama telah tercatat sebelumnya.'
                     });
-
-                    if (oversizedFiles.length > 0) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Ukuran file tidak boleh lebih dari 10MB'
-                        });
-                        return;
-                    }
-
-                    pond.getFiles().forEach((fileItem, index) => {
-                        formData.append(`fileTiket[${index}]`, fileItem.file);
-                    });
-
-                    formData.append('status', 'draft');
-
-                    $('#loaderTiket').show();
-
-                    $.ajax({
-                        url: '/tiket/store',
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil!',
-                                text: 'Tiket berhasil disimpan sebagai draft.',
-                            });
-                            pond.removeFiles();
-                            $('#loaderTiket').hide();
-                            $("#createTiketModal").modal('hide');
-                            $('#formTiket')[0].reset();
-                            table.ajax.reload(null, false);
-                            refreshStatusSummary();
-                        },
-                        error: function (xhr) {
-                            console.error(xhr.responseText);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal!',
-                                text: 'Terjadi kesalahan saat membuat tiket.',
-                            });
-                            $('#loaderTiket').hide();
-                        }
-                    });
+                    return;
                 }
+
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah kamu yakin semua data tiket sudah terisi dengan benar dan ingin menyimpannya sebagai draft?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, simpan',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let formData = new FormData($('#formTiket')[0]);
+                        let maxSize = 10 * 1024 * 1024;
+                        let oversizedFiles = [];
+
+                        pond.getFiles().forEach((fileItem, index) => {
+                            if (fileItem.file.size > maxSize) {
+                                oversizedFiles.push(fileItem.file.name);
+                            }
+                        });
+
+                        if (oversizedFiles.length > 0) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Ukuran file tidak boleh lebih dari 10MB'
+                            });
+                            return;
+                        }
+
+                        pond.getFiles().forEach((fileItem, index) => {
+                            formData.append(`fileTiket[${index}]`, fileItem.file);
+                        });
+
+                        formData.append('status', 'draft');
+
+                        $('#loaderTiket').show();
+
+                        $.ajax({
+                            url: '/tiket/store',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: 'Tiket berhasil disimpan sebagai draft.',
+                                });
+                                pond.removeFiles();
+                                $('#loaderTiket').hide();
+                                $("#createTiketModal").modal('hide');
+                                $('#formTiket')[0].reset();
+                                table.ajax.reload(null, false);
+                                refreshStatusSummary();
+                            },
+                            error: function (xhr) {
+                                // console.error(xhr.responseText);
+
+                                if (xhr.status === 422 && xhr.responseJSON?.duplicate) {
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Tiket sudah tersedia.',
+                                        text: xhr.responseJSON.message
+                                    });
+                                    $('#loaderTiket').hide();
+                                    return;
+                                }
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal!',
+                                    text: 'Terjadi kesalahan saat membuat tiket.',
+                                });
+                                $('#loaderTiket').hide();
+                            }
+                        });
+                    }
+                });
             });
         });
 
@@ -402,6 +446,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         formData.append(`fileTiket[${index}]`, fileItem.file);
                     });
 
+                    formData.append('isAjukan', 0);
+
                     $('#loaderTiket').show();
 
                     $.ajax({
@@ -429,6 +475,58 @@ document.addEventListener('DOMContentLoaded', function() {
                                 icon: 'error',
                                 title: 'Gagal!',
                                 text: 'Terjadi kesalahan saat megedit tiket.',
+                            });
+                            $('#loaderTiket').hide();
+                        }
+                    });
+                }
+            });
+        });
+
+        $("#btnAjukanTiket").on('click', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Setelah tiket diajukan, kamu tidak bisa mengedit data lagi. Yakin ingin melanjutkan proses ini?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, ajukan',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let formData = new FormData($('#formTiket')[0]);
+                    formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+                    formData.append('isAjukan', 1);
+
+                    $('#loaderTiket').show();
+
+                    $.ajax({
+                        url: '/tiket/update',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Tiket berhasil diajukan.',
+                            });
+                            pond.removeFiles();
+                            $('#loaderTiket').hide();
+                            $("#createTiketModal").modal('hide');
+                            $('#formTiket')[0].reset();
+                            table.ajax.reload(null, false);
+                            refreshStatusSummary();
+                        },
+                        error: function (xhr) {
+                            // console.error(xhr.responseText);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan saat mengajukan tiket.',
                             });
                             $('#loaderTiket').hide();
                         }
@@ -477,16 +575,135 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 50);
     });
 
+    // btn buka respon modal
+    $(document).on('click', '.btn-respon', function () {
+        const ticketId = $(this).data('id');
+        const ticketStatus = $(this).data('status');
+        const chatArea = $('#chatArea');
+        const chatInput = $('#chatInput');
+
+        if(ticketStatus == "draft")
+        {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Status tiket kamu masih dalam tahap draft. Silakan ajukan tiket terlebih dahulu untuk memulai diskusi dengan agen.',
+            });
+            return;
+        }
+
+        $('#responModal').modal('show');
+
+        chatArea.html('<div class="text-center text-muted mt-4">Memuat pesan...</div>');
+
+        let isFirstLoad = true;
+
+        function loadChat() {
+            if (isFirstLoad) {
+                chatArea.html(`
+                    <div class="p-3">
+                        <div class="skeleton mb-3" style="width: 60%; height: 40px;"></div>
+                        <div class="skeleton mb-3 ms-auto" style="width: 45%; height: 40px;"></div>
+                        <div class="skeleton mb-3" style="width: 70%; height: 40px;"></div>
+                        <div class="skeleton mb-3 ms-auto" style="width: 50%; height: 40px;"></div>
+                    </div>
+                `);
+            }
+
+            $.ajax({
+                url: `/tiket/getAllChat/${ticketId}`,
+                method: 'GET',
+                success: function (data) {
+                    chatArea.empty();
+                    isFirstLoad = false;
+
+                    if (!data || data.length === 0) {
+                        chatArea.html('<div class="text-center text-muted mt-4">Belum ada pesan.</div>');
+                        return;
+                    }
+
+                    data.forEach(msg => {
+                        const isUser = msg.sender_id == userId;
+                        const waktu = new Date(msg.created_at).toLocaleString('id-ID', {
+                            day: '2-digit',
+                            month: 'long',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+
+                        const messageHTML = `
+                            <div class="d-flex ${isUser ? 'justify-content-end' : ''} mb-3">
+                                <div class="${isUser ? 'bg-primary text-white' : 'bg-white border'} rounded-3 p-3 shadow-sm" style="max-width: 70%; position: relative;">
+                                    ${!isUser ? `<strong>${msg.sender?.name || 'Agen'}:</strong><br>` : ''}
+                                    ${msg.message}
+                                    <div class="text-end mt-1" style="font-size: 0.75rem; opacity: 0.7;">${waktu}</div>
+                                </div>
+                            </div>
+                        `;
+                        chatArea.append(messageHTML);
+                    });
+
+                    chatArea.scrollTop(chatArea[0].scrollHeight);
+                },
+                error: function () {
+                    chatArea.html('<div class="text-center text-danger mt-4">Gagal memuat chat.</div>');
+                }
+            });
+        }
+
+        loadChat();
+        const chatInterval = setInterval(loadChat, 2000);
+
+        $('#responModal').on('hidden.bs.modal', function () {
+            clearInterval(chatInterval);
+        });
+
+        $('#sendBtn').off('click').on('click', function () {
+            const message = chatInput.val().trim();
+            if (!message) return;
+
+            const formData = new FormData();
+            formData.append('ticket_id', ticketId);
+            formData.append('sender_id', userId);
+            formData.append('message', message);
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+            $.ajax({
+                url: `/tiket/sendChat`,
+                method: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function () {
+                    chatInput.val('');
+                    loadChat();
+                    table.ajax.reload(null, false);
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseJSON);
+                    alert('Gagal mengirim pesan.');
+                }
+            });
+        });
+    });
+
     // btn buka detail modal
     $(document).on('click', '.btn-detail', function () {
         const id = $(this).data('id');
+        const StatusTiket = $(this).data('status');
 
-        // Setup UI untuk mode detail
+        $("#btnAjukanTiket").addClass('d-none');
+        if(StatusTiket == "draft")
+        {
+            $("#btnAjukanTiket").removeClass('d-none');
+        }
+
         $('#createTiketModalLabel').text('Detail Tiket');
         $('#btnCreateTiket').hide();
         $('#btnDraftTiket').hide();
         $('#btnEditTiket').addClass('d-none');
-        $('#formTiket :input').prop('disabled', true);
+        $('#formTiket :input').not('.tiket-id').not('.user-pelapor-id').prop('disabled', true);
 
         pond.removeFiles();
         const previewArea = $('#previewArea');
@@ -497,6 +714,7 @@ document.addEventListener('DOMContentLoaded', function() {
             $('#judul').val(res.title);
             $('#deskripsi').val(res.description);
             $('#wilayah').val(res.wilayah_id);
+            $('.tiket-id').val(res.id);
             setSelect2Value('#kategori', res.category_id, res.category_name);
 
             const fileList = res.file_ticket?.filter(url => !!url);
