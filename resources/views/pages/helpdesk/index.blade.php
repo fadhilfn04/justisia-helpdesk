@@ -511,8 +511,8 @@
                         <!-- Area pesan -->
                         <div id="chatArea" class="flex-grow-1 overflow-auto p-4" style="background: #f8f9fa;"></div>
 
-                        <div class="border-top p-3 bg-white d-flex align-items-center justify-content-between gap-2">
-                            <div class="flex-grow-1">
+                        <div class="border-top p-3 bg-white d-flex align-items-center justify-content-between gap-2 input-chat-wrapper">
+                            <div class="flex-grow-1"">
                                 <input
                                     type="text"
                                     id="chatInput"

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller as BaseController;
 use App\Models\Ticket;
 use App\Models\TicketCategory;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -174,12 +175,19 @@ class ApitiketController extends BaseController
             })
             ->addColumn('sla', fn() => '-')
             ->addColumn('respon', function ($row) use ($userId) {
-                $countResponMessage = $row->messages->where('sender_id', '!=', $userId)->count();
+                $countResponMessage = $row->messages->count();
+                $admin = User::where('id', $userId)->first();
+
+                if(auth()->user()->role->id != '1')
+                {
+                    $countResponMessage = $row->messages->where('sender_id', '!=', $userId)->count();
+                }
 
                 return '<a href="javascript:void(0)"
                             class="btn-respon text-dark"
                             data-id="' . $row->id . '"
-                            data-status="' . $row->status . '">
+                            data-status="' . $row->status . '"
+                            data-admin-role-id="' . $admin->role_id . '">
                             <i data-lucide="message-square" class="text-dark" style="width:1.1rem;cursor:pointer;"></i>
                             '. $countResponMessage .'
                         </a>';

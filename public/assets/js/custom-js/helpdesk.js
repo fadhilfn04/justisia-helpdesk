@@ -579,6 +579,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $(document).on('click', '.btn-respon', function () {
         const ticketId = $(this).data('id');
         const ticketStatus = $(this).data('status');
+        const adminRoleId = $(this).data('admin-role-id');
         const chatArea = $('#chatArea');
         const chatInput = $('#chatInput');
 
@@ -593,6 +594,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         $('#responModal').modal('show');
+        if (adminRoleId == 1) {
+            $("#responModalLabel").html("Diskusi terkait <strong>tiket user</strong> dengan agen");
+            $('.input-chat-wrapper').addClass('d-none');
+        } else {
+            $('.input-chat-wrapper').removeClass('d-none');
+        }
 
         chatArea.html('<div class="text-center text-muted mt-4">Memuat pesan...</div>');
 
@@ -623,7 +630,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
 
                     data.forEach(msg => {
-                        const isUser = msg.sender_id == userId;
+                        let isRight;
+
+                        if (adminRoleId == 1) {
+                            const senderIds = [...new Set(data.map(m => m.sender_id))];
+                            const leftId = senderIds[0];
+                            isRight = msg.sender_id !== leftId;
+                        } else {
+                            isRight = msg.sender_id == userId;
+                        }
+
                         const waktu = new Date(msg.created_at).toLocaleString('id-ID', {
                             day: '2-digit',
                             month: 'long',
@@ -632,10 +648,17 @@ document.addEventListener('DOMContentLoaded', function() {
                             minute: '2-digit'
                         });
 
+                        let senderName;
+                        if (adminRoleId == 1) {
+                            senderName = msg.sender?.name || 'Agen';
+                        } else {
+                            senderName = isRight ? 'Anda' : (msg.sender?.name || 'Agen');
+                        }
+
                         const messageHTML = `
-                            <div class="d-flex ${isUser ? 'justify-content-end' : ''} mb-3">
-                                <div class="${isUser ? 'bg-primary text-white' : 'bg-white border'} rounded-3 p-3 shadow-sm" style="max-width: 70%; position: relative;">
-                                    ${!isUser ? `<strong>${msg.sender?.name || 'Agen'}:</strong><br>` : ''}
+                            <div class="d-flex ${isRight ? 'justify-content-end' : ''} mb-3">
+                                <div class="${isRight ? 'bg-primary text-white' : 'bg-white border'} rounded-3 p-3 shadow-sm" style="max-width: 70%; position: relative;">
+                                    <strong>${senderName}:</strong><br>
                                     ${msg.message}
                                     <div class="text-end mt-1" style="font-size: 0.75rem; opacity: 0.7;">${waktu}</div>
                                 </div>
@@ -643,6 +666,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         `;
                         chatArea.append(messageHTML);
                     });
+
 
                     chatArea.scrollTop(chatArea[0].scrollHeight);
                 },
