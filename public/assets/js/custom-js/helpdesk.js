@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
         table.ajax.reload();
     });
 
+    // live search
     $('#searchTiket').on('keyup', function () {
         table.search(this.value).draw();
     });

@@ -1,0 +1,85 @@
+/* Tombol Chat */
+.chat-button {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background-color: #05339C;
+    color: white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    cursor: pointer;
+    z-index: 1050;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+.chat-button:hover {
+    transform: scale(1.05);
+}
+
+/* Kotak Chat */
+.chat-box {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1051;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.15);
+    transition: right 0.4s ease-in-out;
+}
+
+.chat-box.active {
+    right: 0;
+}
+
+/* Header */
+.chat-header {
+    background: #FFC107;
+    color: white;
+    padding: 12px 15px;
+}
+
+/* Body */
+.chat-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    background: #f8f9fa;
+}
+
+/* Footer */
+.chat-footer {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background: #fff;
+}
+
+.chat-header .btn-close {
+    filter: invert(1) brightness(200%);
+    opacity: 1;
+}
+
+#kt_scrolltop {
+    position: fixed;
+    bottom: 30px !important;
+    left: calc(265px + 25px) !important; 
+    background-color: #FFC107 !important;
+    color: #fff !important;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+#kt_scrolltop:hover {
+    background-color: #e0a800 !important;
+    transform: scale(1.1);
+}

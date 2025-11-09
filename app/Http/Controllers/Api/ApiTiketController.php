@@ -87,6 +87,60 @@ class ApitiketController extends BaseController
         }
 
         return DataTables::of($query)
+            ->filter(function ($query) use ($request) {
+                if ($search = $request->get('search')['value']) {
+
+                    $searchLower = strtolower($search);
+                    $priorityMap = [
+                        'rendah' => 'low',
+                        'sedang' => 'medium',
+                        'tinggi' => 'high',
+                    ];
+                    $statusMap = [
+                        'draft' => 'draft',
+                        'proses' => 'in_progress',
+                        'terbuka' => 'open',
+                        'selesai' => 'closed',
+                        'perlu revisi' => 'need_revision'
+                    ];
+
+                    $mappedPriority = $priorityMap[$searchLower] ?? null;
+                    $mappedStatus = $statusMap[$searchLower] ?? null;
+
+                    $idSearch = null;
+                    if (preg_match('/TKT-\d{4}-(\d+)/i', $search, $matches)) {
+                        $idSearch = (int)$matches[1];
+                    } elseif (is_numeric($search)) {
+                        $idSearch = (int)$search;
+                    }
+
+                    $query->where(function ($q) use ($search, $mappedPriority, $mappedStatus, $idSearch) {
+                        $q->where('title', 'like', "%{$search}%")
+                        ->orWhere('status', 'like', "%{$search}%")
+                        ->orWhere('priority', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+
+                        // search priority
+                        if ($mappedPriority) {
+                            $q->orWhere('priority', $mappedPriority);
+                        }
+
+                        // search status
+                        if ($mappedStatus) {
+                            $q->orWhere('status', $mappedStatus);
+                        }
+
+                        // search id
+                        if ($idSearch) {
+                            $q->orWhere('id', 'like', "%{$idSearch}%");
+                        }
+                        if (stripos($search, 'tkt') !== false) {
+                            $q->orWhereRaw("CONCAT('TKT-', YEAR(created_at), '-', LPAD(id, 3, '0')) LIKE ?", ["%{$search}%"]);
+                        }
+
+                    });
+                }
+            })
             ->addColumn('id', function ($row) {
                 $tahun = $row->created_at ? $row->created_at->format('Y') : date('Y');
                 return sprintf('TKT-%s-%03d', $tahun, $row->id);
