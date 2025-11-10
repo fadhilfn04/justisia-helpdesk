@@ -94,12 +94,12 @@ class TiketController extends Controller
 
         if($request->status != 'draft')
         {
-            Notification::create([
-                'user_id' => $request->userPelaporId,
-                'type' => 'success',
-                'title' => 'Tiket berhasil diajukan',
-                'message' => 'Tiket Anda telah berhasil diajukan. Mohon tunggu, admin akan segera melakukan verifikasi.'
-            ]);
+            NotificationService::send(
+                $request->userPelaporId,
+                'Tiket berhasil diajukan',
+                "Tiket Anda telah berhasil diajukan. Mohon tunggu, admin akan segera melakukan verifikasi.",
+                "success",
+            );
         }
 
         $fileUrls = [];
@@ -130,7 +130,7 @@ class TiketController extends Controller
         $ticket = Ticket::findOrFail($request->tiketId);
 
         // jika user mengajukan tiket draft
-        if($request->isAjukan == 1 && $ticket->status == "draft")
+        if($request->isAjukan == 1 && ($ticket->status == "draft" || $ticket->status == 'need_revision'))
         {
             $ticket->update([
                 'status' => 'open',
@@ -309,6 +309,43 @@ class TiketController extends Controller
         return response()->json([
             'success' => true,
             'timelines' => $timelines,
+        ]);
+    }
+
+    public function actionTiketAgent(Request $request)
+    {
+        $tiket = Ticket::findOrFail($request->tiketId);
+        if($request->isAction == "0")
+        {
+            $tiket->status = "agent_rejected";
+            $tiket->assigned_to = null;
+
+            NotificationService::send(
+                $tiket->user_id,
+                "Tiket #{$tiket->id} ditolak oleh agent",
+                $request->message,
+                "info",
+            );
+
+            $tiket->save();
+        }
+
+        if($request->isAction == "1")
+        {
+            $tiket->status = "in_progress";
+
+            NotificationService::send(
+                $tiket->user_id,
+                'Tiket berhasil diterima agent',
+                "Tiket #{$tiket->id} telah diterima oleh agen. Silakan klik icon respon pada tabel sesuai id tiket anda untuk memulai diskusi. Proses akan selesai setelah agen menginput penyelesaian tiket.",
+                "info",
+            );
+
+            $tiket->save();
+        }
+
+        return response()->json([
+            'success' => true,
         ]);
     }
 }

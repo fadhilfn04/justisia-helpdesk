@@ -91,15 +91,22 @@
             <div class="col-12">
                 <div class="p-10 rounded border bg-white">
                     <div class="mb-5">
-                        <h4 class="fw-bold mb-1">Daftar Tiket (5)</h4>
-                        <p class="text-muted mb-0 fs-7">Kelola dan pantau semua tiket helpdesk</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="fw-bold mb-1">Daftar Tiket (5)</h4>
+                                <p class="text-muted mb-0 fs-7">Kelola dan pantau semua tiket helpdesk</p>
+                            </div>
+                            <button class="btn btn-sm bg-white border border-gray-300 btn-hover-primary" id="btnRefreshTabel">
+                                <i data-lucide="refresh-cw" class="me-2" width="16" height="16"></i> Refresh Tabel
+                            </button>
+                        </div>
                     </div>
 
                     <div class="table-responsive">
                         <table id="tabel-tiket" class="table bg-white table-border-bottom-only fs-6-5" style="min-width: 1435px;">
                             <thead class="fw-semibold">
                                 <tr>
-                                    <th>ID Tiket</th>
+                                    <th style="width: 8%;">ID Tiket</th>
                                     <th>Judul</th>
                                     <th>Status</th>
                                     <th>Prioritas</th>
@@ -490,8 +497,9 @@
             <div class="modal-footer d-flex justify-content-end gap-2">
                 <button class="btn border border-gray-300 btn-hover-primary py-2 fw-semibold bg-white" id="btnDraftTiket">Simpan Draft</button>
                 <button class="btn btn-dark py-2 fw-semibold" id="btnCreateTiket">Buat Tiket</button>
-                <button class="btn btn-dark py-2 fw-semibold d-none" id="btnEditTiket">Edit Tiket</button>
-                <button class="btn btn-dark py-2 fw-semibold d-none" id="btnAjukanTiket">Ajukan Tiket</button>
+                <button class="btn btn-dark py-2 fw-semibold" id="btnEditTiket">Edit Tiket</button>
+                <button class="btn border border-gray-300 btn-hover-primary py-2 fw-semibold bg-white" id="btnTolakTiket">Tolak Tiket</button>
+                <button class="btn btn-dark py-2 fw-semibold" id="btnTerimaTiket">Terima Tiket</button>
             </div>
         </div>
     </div>
