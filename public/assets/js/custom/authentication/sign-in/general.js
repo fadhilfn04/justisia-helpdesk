@@ -128,10 +128,9 @@ var KTSigninGeneral = (function () {
                             new FormData(form)
                         )
                         .then(function (response) {
-                            if (response) {
+                            if (response && response.data && response.data.redirect_url) {
                                 form.reset();
 
-                                // Show message popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                                 Swal.fire({
                                     text: "Kamu telah berhasil masuk!",
                                     icon: "success",
@@ -140,17 +139,9 @@ var KTSigninGeneral = (function () {
                                     customClass: {
                                         confirmButton: "btn btn-primary",
                                     },
-                                });
-
-                                const redirectUrl = form.getAttribute(
-                                    "data-kt-redirect-url"
-                                );
-
-                                if (redirectUrl) {
-                                    location.href = redirectUrl;
-                                }
+                                })
+                                location.href = response.data.redirect_url;
                             } else {
-                                // Show error popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                                 Swal.fire({
                                     text: "Sorry, the email or password is incorrect, please try again.",
                                     icon: "error",

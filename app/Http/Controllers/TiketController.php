@@ -20,41 +20,10 @@ class TiketController extends Controller
     public function index()
     {
         $ticket = Ticket::all();
-        $agents = User::whereHas('categoryAgent')->get();
+        $agents = User::whereHas('role', function ($query) {
+            $query->where('name', 'Agent');
+        })->get();
         return view('pages.helpdesk.index', compact('ticket', 'agents'));
-    }
-
-    // public function index()
-    // {
-    //     $user = auth()->user();
-
-    //     $query = Ticket::with(['user', 'agent'])->latest();
-
-    //     if ($user->role->name === 'admin') {
-    //         // Admin bisa lihat semua tiket
-    //         $tickets = $query->get();
-    //     } elseif ($user->role->name === 'agent') {
-    //         // Agent hanya lihat tiket yang ditugaskan ke dia
-    //         $tickets = $query->where('assigned_to', $user->id)->get();
-    //     } else {
-    //         // Pengguna hanya lihat tiket yang dia buat
-    //         $tickets = $query->where('user_id', $user->id)->get();
-    //     }
-
-    //     // Daftar agent hanya untuk admin
-    //     $agents = User::whereHas('categoryAgent')->get();
-
-    //     return view('pages.helpdesk.index', compact('tickets', 'agents'));
-    // }
-
-    public function show($id)
-    {
-        $tiket = Ticket::with(['user', 'category'])->findOrFail($id);
-
-        return response()->json([
-            'success' => true,
-            'data' => $tiket
-        ]);
     }
 
     public function store(Request $request)
@@ -94,12 +63,12 @@ class TiketController extends Controller
 
         if($request->status != 'draft')
         {
-            Notification::create([
-                'user_id' => $request->userPelaporId,
-                'type' => 'success',
-                'title' => 'Tiket berhasil diajukan',
-                'message' => 'Tiket Anda telah berhasil diajukan. Mohon tunggu, admin akan segera melakukan verifikasi.'
-            ]);
+            NotificationService::send(
+                $request->userPelaporId,
+                'success',
+                'Tiket berhasil diajukan',
+                'Tiket #{$ticket->id} Anda telah berhasil diajukan. Mohon tunggu, admin akan segera melakukan verifikasi.'
+            );
         }
 
         $fileUrls = [];
@@ -129,19 +98,18 @@ class TiketController extends Controller
     {
         $ticket = Ticket::findOrFail($request->tiketId);
 
-        // jika user mengajukan tiket draft
         if($request->isAjukan == 1 && $ticket->status == "draft")
         {
             $ticket->update([
                 'status' => 'open',
             ]);
 
-            Notification::create([
-                'user_id' => $request->userPelaporId,
-                'type' => 'success',
-                'title' => 'Tiket berhasil diajukan',
-                'message' => 'Tiket Anda telah berhasil diajukan. Mohon tunggu, admin akan segera melakukan verifikasi.'
-            ]);
+            NotificationService::send(
+                $request->userPelaporId,
+                'success',
+                'Tiket berhasil diperbarui',
+                "Tiket #{$ticket->id} Anda telah berhasil diperbarui. Mohon tunggu, admin akan segera melakukan verifikasi."
+            );
 
             return response()->json([
                 'message' => 'Tiket berhasil diperbarui'
@@ -198,6 +166,12 @@ class TiketController extends Controller
 
         $ticket = Ticket::with('file')->findOrFail($request->id);
 
+        NotificationService::send(
+            $ticket->user_id,
+            'Tiket Dihapus',
+            "Tiket #{$ticket->id} telah berhasil dihapus."
+        );
+
         foreach ($ticket->file as $file) {
             $path = str_replace('/storage/', '', $file->file_ticket);
             Storage::disk('public')->delete($path);
@@ -217,7 +191,7 @@ class TiketController extends Controller
             $tiket = Ticket::findOrFail($id);
             $tiket->assigned_to = $request->agent_id;
             $tiket->priority = $request->priority;
-            $tiket->status = 'assignee';
+            $tiket->status = 'in_progress';
             $tiket->save();
 
             NotificationService::send(
@@ -255,6 +229,32 @@ class TiketController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Tiket berhasil direvisi!',
+                'data' => $tiket
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal merevisi tiket: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function close($id)
+    {
+        try {
+            $tiket = Ticket::findOrFail($id);
+            $tiket->status = 'closed';
+            $tiket->save();
+
+            NotificationService::send(
+                $tiket->user_id,
+                'Tiket Ditutup',
+                "Tiket #{$tiket->id} telah ditutup dikarenakan permasalahan sudah selesai."
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tiket berhasil ditutup!',
                 'data' => $tiket
             ]);
         } catch (\Exception $e) {

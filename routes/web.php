@@ -46,6 +46,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/delete', [TiketController::class, 'delete'])->name('tiket.destroy');
         Route::post('/{id}/verification', [TiketController::class, 'verification'])->name('verification');
         Route::post('/{id}/return', [TiketController::class, 'return'])->name('return');
+        Route::post('/{id}/close', [TiketController::class, 'close'])->name('return');
         Route::get('/{id}/timeline', [TiketController::class, 'getTimeline']);
 
         // tiket message

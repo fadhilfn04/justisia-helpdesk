@@ -2,7 +2,7 @@
 
     <!--begin::Form-->
     <form class="form w-100" novalidate="novalidate" id="kt_sign_in_form"
-        data-kt-redirect-url="{{ route('dashboard') }}" action="{{ route('login') }}">
+        action="{{ route('login') }}">
         @csrf
 
         <!--begin::Heading-->
@@ -29,13 +29,11 @@
 
         <!--begin::Input group-->
         <div class="fv-row mb-8">
-            <input type="text" placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent"
-                value="demo@demo.com" />
+            <input type="text" placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent" />
         </div>
 
         <div class="fv-row mb-3">
-            <input type="password" placeholder="Kata Sandi" name="password" autocomplete="off" class="form-control bg-transparent"
-                value="demo" />
+            <input type="password" placeholder="Kata Sandi" name="password" autocomplete="off" class="form-control bg-transparent" />
         </div>
         <!--end::Input group-->
 

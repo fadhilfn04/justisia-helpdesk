@@ -15,7 +15,8 @@ class UserManagementController extends Controller
     {
         $user = User::latest()->paginate(10);
         $roles = Role::all();
-        return view('pages.admin.user-management.index', compact('user', 'roles'));
+        $ticketCategories = TicketCategory::all();
+        return view('pages.admin.user-management.index', compact('user', 'roles', 'ticketCategories'));
     }
 
     public function show()

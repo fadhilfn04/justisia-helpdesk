@@ -249,78 +249,61 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalDetailTiket" tabindex="-1" aria-labelledby="detailTiketLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered mw-650px">
-        <div class="modal-content">
-            <div class="modal-header" id="kt_modal_detail_tiket_header">
-                <!--begin::Modal title-->
-                <h2 class="fw-bold">Detail Tiket</h2>
-                <!--end::Modal title-->
-                <!--begin::Close-->
-                <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal" aria-label="Close">
-                    {!! getIcon('cross','fs-1') !!}
-                </div>
-                <!--end::Close-->
-            </div>
-
-            <!-- Body -->
-            <div class="modal-body p-5">
-                <div id="detail-tiket-content">
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <label class="fw-semibold text-gray-700">Judul Tiket</label>
-                            <div id="tiket-judul" class="fw-bold fs-6 text-dark"></div>
+<div class="modal fade" id="modalVerifikasiTiket" tabindex="-1" aria-labelledby="verifikasiTiketLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-550px">
+        <div class="modal-content shadow-lg border-0 rounded-3 overflow-hidden">
+            <div class="modal-header py-4 bg-primary bg-opacity-10 border-0">
+                <div class="d-flex align-items-center w-100 justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="symbol symbol-40px bg-primary bg-opacity-25">
+                            <i data-lucide="check-square" class="text-primary fs-2"></i>
                         </div>
-                        <div class="col-md-6">
-                            <label class="fw-semibold text-gray-700">Kategori</label>
-                            <div id="tiket-kategori" class="text-dark"></div>
-                        </div>
-
-                        <div class="col-12">
-                            <label class="fw-semibold text-gray-700">Deskripsi</label>
-                            <div id="tiket-deskripsi" class="text-muted"></div>
-                        </div>
-
-                        <div class="col-12">
-                            <label class="fw-semibold text-gray-700">Lampiran</label>
-                            <div id="tiket-lampiran" class="border p-3 rounded bg-light"></div>
+                        <div>
+                            <h2 class="fw-bold mb-0 text-primary">Verifikasi Tiket</h2>
+                            <small class="text-muted">Tentukan prioritas & agent penanggung jawab</small>
                         </div>
                     </div>
-
-                    <hr class="my-5">
-
-                    <!-- Pilih Prioritas -->
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <label class="fw-semibold text-gray-700">Prioritas</label>
-                            <select id="prioritas" class="form-select form-select-solid">
-                                <option value="low">Low</option>
-                                <option value="medium" selected>Medium</option>
-                                <option value="high">High</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="fw-semibold text-gray-700">Pilih Agent</label>
-                            <select id="agent_id" class="form-select form-select-solid">
-                                <option value="">-- Pilih Agent --</option>
-                                @foreach ($agents as $agent)
-                                <option value="{{ $agent->id }}">{{ $agent->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                    <div class="btn btn-icon btn-sm btn-light" data-bs-dismiss="modal" aria-label="Close">
+                        {!! getIcon('cross', 'fs-2 text-gray-600') !!}
                     </div>
                 </div>
             </div>
 
-            <!-- Footer -->
-            <div class="modal-footer border-0 d-flex justify-content-between px-5 pb-4">
-                <button type="button" class="btn btn-light-danger" id="btn-return">
-                    <i data-lucide="rotate-ccw" class="me-1"></i> Kembalikan ke Pengguna
+            <div class="modal-body py-5 px-6">
+                <div class="card border-0 shadow-sm bg-light-subtle p-4 rounded-3 mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i data-lucide="flag" class="me-2 text-warning"></i>
+                        <h5 class="fw-semibold mb-0 text-gray-800">Prioritas Tiket</h5>
+                    </div>
+                    <select id="prioritas" class="form-select form-select-solid" data-control="select2" data-hide-search="true" data-placeholder="Pilih Prioritas">
+                        <option></option>
+                        <option value="low" class="text-success">🟢 Rendah</option>
+                        <option value="medium" class="text-warning">🟡 Sedang</option>
+                        <option value="high" class="text-danger">🔴 Tinggi</option>
+                    </select>
+                </div>
+
+                <div class="card border-0 shadow-sm bg-light-subtle p-4 rounded-3">
+                    <div class="d-flex align-items-center mb-3">
+                        <i data-lucide="user-check" class="me-2 text-primary"></i>
+                        <h5 class="fw-semibold mb-0 text-gray-800">Pilih Agent</h5>
+                    </div>
+                    <select id="agent_id" class="form-select form-select-solid" data-control="select2" data-hide-search="true" data-placeholder="Pilih Agent">
+                        <option></option>
+                        @foreach ($agents as $agent)
+                            <option value="{{ $agent->id }}">{{ $agent->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-footer border-0 py-4 px-6 d-flex justify-content-between bg-light">
+                <button type="button" class="btn btn-flex btn-light-danger px-5 fw-semibold" id="btn-return">
+                    <i data-lucide="rotate-ccw" class="me-2"></i> Kembalikan ke Pengguna
                 </button>
 
-                <button type="button" class="btn btn-light-success" id="btn-verifikasi-final">
-                    <i data-lucide="check-circle" class="me-1"></i> Verifikasi & Tugaskan
+                <button type="button" class="btn btn-flex btn-success px-5 fw-semibold" id="btn-verifikasi-final">
+                    <i data-lucide="check-circle" class="me-2"></i> Verifikasi & Tugaskan
                 </button>
             </div>
         </div>
@@ -498,45 +481,52 @@
 </div>
 
 <div class="modal fade" id="responModal" tabindex="-1" aria-labelledby="responModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 850px;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="responModalLabel">Diskusi terkait tiket dengan agen Anda</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        
+        <!-- Header -->
+        <div class="modal-header bg-primary text-white py-3 px-4">
+            <div class="d-flex align-items-center gap-3">
+            <div class="rounded-circle bg-light text-primary fw-bold d-flex align-items-center justify-content-center" 
+                style="width: 38px; height: 38px;">💬</div>
+            <h5 class="modal-title mb-0 text-white" id="responModalLabel">Diskusi Permasalahan dengan Agen Anda</h5>
             </div>
-            <div class="modal-body p-0">
-                <!-- Card Chat -->
-                <div class="card border-0" style="height: 500px;">
-                    <div class="card-body d-flex flex-column p-0">
-                        <!-- Area pesan -->
-                        <div id="chatArea" class="flex-grow-1 overflow-auto p-4" style="background: #f8f9fa;"></div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
 
-                        <div class="border-top p-3 bg-white d-flex align-items-center justify-content-between gap-2 input-chat-wrapper">
-                            <div class="flex-grow-1"">
-                                <input
-                                    type="text"
-                                    id="chatInput"
-                                    class="form-control px-3 py-2"
-                                    placeholder="Ketik pesan..."
-                                    style="border-radius: 30px; border: 1px solid #ddd;"
-                                />
-                            </div>
-
-                            <button
-                                id="sendBtn"
-                                class="btn btn-chat-send d-flex align-items-center justify-content-center"
-                                style="width: 38px; height: 38px; border-radius: 50%; color: white;">
-                                <i class="fa-solid fa-paper-plane" style="font-size: 1.1rem; color: inherit;"></i>
-                            </button>
-                        </div>
-
-                    </div>
+        <!-- Body -->
+        <div class="modal-body p-0 bg-light">
+            <div class="d-flex flex-column" style="height: 520px;">
+            
+                <!-- Chat Area -->
+                <div id="chatArea" class="flex-grow-1 overflow-auto p-4" 
+                    style="background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%); scroll-behavior: smooth;">
                 </div>
+
+                <!-- Input Chat -->
+                <div class="border-top p-3 bg-white d-flex align-items-center gap-2 shadow-sm">
+                    <div class="position-relative flex-grow-1">
+                        <input
+                            type="text"
+                            id="chatInput"
+                            class="form-control ps-4 pe-5 py-2 border-0 shadow-sm"
+                            placeholder="Ketik pesan..."
+                            style="border-radius: 30px; background-color: #f1f3f5;"
+                        />
+                    </div>
+                    <button
+                        id="sendBtn"
+                        class="btn btn-primary d-flex align-items-center justify-content-center shadow-sm"
+                        style="width: 44px; height: 44px; border-radius: 50%;">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+
             </div>
+        </div>
         </div>
     </div>
 </div>
-
 
 @push('scripts')
     <script src="{{ asset('assets/js/custom-js/helpdesk.js') }}"></script>

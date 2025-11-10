@@ -212,10 +212,12 @@ class ApitiketController extends BaseController
                 ';
             })
             ->addColumn('pj', function($row) {
+                $agent = $row->agent;
+                $agent = e($agent->name ?? 'Agent');
                 return '
                     <span class="d-inline-flex align-items-center gap-2">
-                        <span class="profile-circle bg-brown text-white fw-semibold">AF</span>
-                        <span>-</span>
+                        <i data-lucide="shield-user" class="text-dark" style="width:1.4rem;"></i>
+                        <span>'.$agent.'</span>
                     </span>
                 ';
             })
@@ -253,16 +255,22 @@ class ApitiketController extends BaseController
                             <i data-lucide="ellipsis" class="icon-action"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu-fixed">
-                            <a href="javascript:void(0)" class="dropdown-item btn-detail" data-id="'.$row->id.'" data-status="'.$row->status.'" data-bs-toggle="modal" data-bs-target="#createTiketModal">Detail</a>';
+                            <a class="dropdown-item btn-edit" href="#" data-id="' . $row->id . '" data-bs-toggle="modal" data-bs-target="#createTiketModal">
+                                <i data-lucide="eye" class="me-2 text-warning"></i> Detail
+                            </a>';
 
                 if ($row->status === 'draft') {
                     $dropdown .= '
-                        <a href="javascript:void(0)" class="dropdown-item btn-edit" data-id="'.$row->id.'" data-bs-toggle="modal" data-bs-target="#createTiketModal">Edit</a>';
+                        <a class="dropdown-item btn-edit" href="#" data-id="' . $row->id . '" data-bs-toggle="modal" data-bs-target="#createTiketModal">
+                            <i data-lucide="eyen" class="me-2 text-warning"></i> Detail
+                        </a>';
                 }
 
                 if ($row->status === 'draft' ||$row->status === 'open') {
                     $dropdown .= '
-                            <a href="#" class="dropdown-item btn-delete" data-id="'.$row->id.'">Hapus</a>';
+                            <a class="dropdown-item btn-delete" href="#" data-id="' . $row->id . '">
+                                <i data-lucide="trash" class="me-2 text-danger"></i> Hapus
+                            </a>';
                 }
 
                 $isAdmin = auth()->user()->role->id;

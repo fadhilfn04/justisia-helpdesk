@@ -1,12 +1,24 @@
 <!--begin::Navbar-->
 <div class="app-navbar flex-shrink-0">
     <!--begin::Notifications-->
-	{{-- <div class="app-navbar-item ms-1 ms-md-4">
-        <!--begin::Menu- wrapper-->
-		<div class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px" data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end" id="kt_menu_item_wow">{!! getIcon('notification-status', 'fs-2') !!}</div>
+	<div class="app-navbar-item ms-1 ms-md-4">
+        <!--begin::Menu wrapper-->
+        <div class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px position-relative"
+            data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+            data-kt-menu-attach="parent"
+            data-kt-menu-placement="bottom-end"
+            id="kt_menu_item_notifications">
+
+            {!! getIcon('notification-status', 'fs-2') !!}
+
+            @if (auth()->user()->notifications->where('is_read', false)->count() > 0)
+                <span class="pulse-ring"></span>
+            @endif
+        </div>
+
         @include('partials/menus/_notifications-menu')
         <!--end::Menu wrapper-->
-    </div> --}}
+    </div>
     <!--end::Notifications-->
     {{-- <!--begin::Chat-->
 	<div class="app-navbar-item ms-1 ms-md-4">
