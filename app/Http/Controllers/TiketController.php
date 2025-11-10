@@ -9,6 +9,7 @@ use App\Models\Ticket;
 use App\Models\TicketCategory;
 use App\Models\TicketFile;
 use App\Models\TicketMessage;
+use App\Models\TicketTimeline;
 use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
@@ -288,5 +289,26 @@ class TiketController extends Controller
         ]);
 
         return response()->json($msg);
+    }
+
+    public function getTimeline($id)
+    {
+        $timelines = TicketTimeline::with('actor')
+            ->where('ticket_id', $id)
+            ->orderBy('created_at', 'asc')
+            ->get()
+            ->map(function ($t) {
+                return [
+                    'action' => $t->action,
+                    'description' => $t->description,
+                    'actor' => $t->actor ? ['name' => $t->actor->name] : null,
+                    'created_at_human' => $t->created_at->diffForHumans(),
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'timelines' => $timelines,
+        ]);
     }
 }

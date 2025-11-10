@@ -46,6 +46,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/delete', [TiketController::class, 'delete'])->name('tiket.destroy');
         Route::post('/{id}/verification', [TiketController::class, 'verification'])->name('verification');
         Route::post('/{id}/return', [TiketController::class, 'return'])->name('return');
+        Route::get('/{id}/timeline', [TiketController::class, 'getTimeline']);
 
         // tiket message
         Route::get('/getAllChat/{ticketId}', [TiketController::class, 'getAllChat']);
@@ -64,16 +65,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('laporan', LaporanController::class);
     // Route::resource('settings', SettingsController::class);
 
-    Route::name('user-management.')->group(function () {
-        Route::resource('/user-management/users', UserManagementController::class);
-        Route::resource('/user-management/roles', RoleManagementController::class);
-        Route::resource('/user-management/permissions', PermissionManagementController::class);
-    });
-
     Route::prefix('help')->group(function () {
         Route::get('/faq', [HelpController::class, 'index'])->name('help.index');
         Route::get('/guide', [HelpController::class, 'guide'])->name('help.guide');
         Route::get('/kontak', [HelpController::class, 'kontak'])->name('help.kontak');
+    });
+
+    Route::name('user-management.')->prefix('user-management')->group(function () {
+        Route::resource('users', UserManagementController::class);
     });
 
     Route::prefix('settings')->name('settings.')->group(function () {
@@ -89,3 +88,4 @@ Route::get('/error', function () {
 Route::get('/auth/redirect/{provider}', [SocialiteController::class, 'redirect']);
 
 require __DIR__ . '/auth.php';
+
