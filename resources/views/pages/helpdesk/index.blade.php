@@ -468,9 +468,9 @@
                                         </div>
 
                                         <div class="card-body py-0 mb-2">
-                                            <div class="priority-option text-danger fs-6 fw-semibold" data-value="tinggi">Tinggi</div>
-                                            <div class="priority-option text-warning fs-6 fw-semibold active" data-value="sedang">Sedang</div>
-                                            <div class="priority-option text-success fs-6 fw-semibold" data-value="rendah">Rendah</div>
+                                            <div class="priority-option text-danger fs-6 fw-semibold" data-value="high">Tinggi</div>
+                                            <div class="priority-option text-warning fs-6 fw-semibold active" data-value="medium">Sedang</div>
+                                            <div class="priority-option text-success fs-6 fw-semibold" data-value="low">Rendah</div>
                                         </div>
                                     </div>
 

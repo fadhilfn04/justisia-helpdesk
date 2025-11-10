@@ -909,8 +909,20 @@ document.addEventListener('DOMContentLoaded', function() {
             $('.tiket-id').val(res.id);
             setSelect2Value('#kategori', res.category_id, res.category_name);
 
-            const fileList = res.file_ticket?.filter(url => !!url);
+            if(roleUserLogin != "3")
+            {
+                // prioritas
+                const priorityValue = res.priority;
+                document.querySelectorAll('.priority-option').forEach(option => {
+                    option.classList.remove('active');
+                    if (option.dataset.value === priorityValue) {
+                        option.classList.add('active');
+                    }
+                });
+            }
 
+            // file preview
+            const fileList = res.file_ticket?.filter(url => !!url);
             if (fileList.length > 0) {
                 pond.setOptions({
                     disabled: true,
@@ -1219,15 +1231,7 @@ document.addEventListener('DOMContentLoaded', function() {
         table.ajax.reload();
     });
 
-        // helpdesk create js
-        document.querySelectorAll('.priority-option').forEach(option => {
-            option.addEventListener('click', () => {
-            document.querySelectorAll('.priority-option').forEach(o => o.classList.remove('active'));
-            option.classList.add('active');
-            console.log("Prioritas dipilih:", option.dataset.value);
-            });
-        });
-
+    // helpdesk create js
     $(document).on('click', '.btn-verifikasi', function (e) {
         e.preventDefault();
 
