@@ -15,6 +15,7 @@
     <link rel="canonical" href="{{ url()->current() }}"/>
     <link rel="stylesheet" href="{{ asset('assets/css/fontawesome/font-awesome.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/custom-css/sidebarHeader.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/custom-css/chatbot.css') }}">
 
     <!-- FilePond core -->
     <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
@@ -45,7 +46,6 @@
         {!! sprintf('<link rel="stylesheet" href="%s">', asset($path)) !!}
     @endforeach
     <!--end::Custom Stylesheets-->
-
     @livewireStyles
 </head>
 <!--end::Head-->
@@ -62,6 +62,32 @@
 @include('partials/theme-mode/_init')
 <div class="mt-8"></div>
 @yield('content')
+
+{{-- chatbot --}}
+
+{{-- sembuyikan jika di halaman login --}}
+@if (!Request::is('login'))
+    <div id="chatButton" class="chat-button">
+        <i data-lucide="bot-message-square" width="25" height="25"></i>
+    </div>
+
+    <!-- Kotak Chat -->
+    <div id="chatBox" class="chat-box shadow">
+        <div class="chat-header d-flex justify-content-between align-items-center">
+            <span><strong>Chat Bot</strong></span>
+            <button class="btn-close btn-sm" id="closeChat"></button>
+        </div>
+
+        <div class="chat-body">
+            {{-- body isi chatbot --}}
+        </div>
+
+        <div class="chat-footer d-flex">
+            <input type="text" class="form-control" placeholder="Ketik pesan..." />
+            <button class="btn btn-dark ms-2">Kirim</button>
+        </div>
+    </div>
+@endif
 
 <!--begin::Javascript-->
 <!--begin::Global Javascript Bundle(mandatory for all pages)-->
@@ -83,6 +109,7 @@
 <!--end::Custom Javascript-->
 <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+<script src="{{ asset('assets/js/custom-js/chatbot.js') }}"></script>
 
 {{-- data lucide icon --}}
 <script src="{{ asset('assets/js/lucide/lucide.js') }}"></script>

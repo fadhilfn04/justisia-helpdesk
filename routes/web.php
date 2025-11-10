@@ -46,19 +46,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/delete', [TiketController::class, 'delete'])->name('tiket.destroy');
         Route::post('/{id}/verification', [TiketController::class, 'verification'])->name('verification');
         Route::post('/{id}/return', [TiketController::class, 'return'])->name('return');
-        Route::get('/{id}/timeline', [TiketController::class, 'getTimeline']);
+
+        // tiket message
+        Route::get('/getAllChat/{ticketId}', [TiketController::class, 'getAllChat']);
+        Route::post('/sendChat', [TiketController::class, 'sendChat']);
 
         // api
         Route::prefix('api')->group(function () {
             Route::get('/getKategori', [ApitiketController::class, 'getKategori'])->name('tiket.getKategori');
             Route::get('/getTiket', [ApitiketController::class, 'getTiket'])->name('tiket.getTiket');
             Route::get('/getDetailTiket/{id}', [ApitiketController::class, 'getDetailTiket'])->name('tiket.getDetailTiket');
-            Route::get('/status-summary', [ApitiketController::class, 'statusSummary']);
+            Route::get('/status-summary', [ApitiketController::class, 'statusSummary'])->name('tiket.statusSummary');
+            Route::get('/checkDuplicateTiket/{id}/{title}', [ApitiketController::class, 'checkDuplicateTiket'])->name('tiket.checkDuplicateTiket');
         });
     });
 
     Route::resource('laporan', LaporanController::class);
     // Route::resource('settings', SettingsController::class);
+
+    Route::name('user-management.')->group(function () {
+        Route::resource('/user-management/users', UserManagementController::class);
+        Route::resource('/user-management/roles', RoleManagementController::class);
+        Route::resource('/user-management/permissions', PermissionManagementController::class);
+    });
 
     Route::prefix('help')->group(function () {
         Route::get('/faq', [HelpController::class, 'index'])->name('help.index');
@@ -66,15 +76,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/kontak', [HelpController::class, 'kontak'])->name('help.kontak');
     });
 
-    Route::name('user-management.')->prefix('user-management')->group(function () {
-        Route::resource('users', UserManagementController::class);
-    });
-
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::resource('faq', FaqController::class);
         Route::resource('ticket-category', TicketCategoryController::class);
-        Route::resource('/roles', RoleManagementController::class);
-        Route::resource('/permissions', PermissionManagementController::class);
     });
 });
 

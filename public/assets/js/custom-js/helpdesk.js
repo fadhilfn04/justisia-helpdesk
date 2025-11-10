@@ -2,24 +2,120 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // helpdesk index js
     let cardStatus = '';
+    const userId = $('#formTiket input[name="userPelaporId"]').val();
+
+    // select2
+    const statusSelect = $('#statusSelect');
+    const prioritasSelect = $('#prioritasSelect');
+
+    const options = [
+    { value: '', text: 'Semua Status' },
+    { value: 'terbuka', text: 'Terbuka' },
+    { value: 'proses', text: 'Proses' },
+    { value: 'selesai', text: 'Selesai' },
+    { value: 'draft', text: 'Draft' },
+    { value: 'revisi', text: 'Perlu Revisi' }
+    ];
+
+    const optionsPrioritas = [
+    { value: '', text: 'Semua Prioritas' },
+    { value: 'rendah', text: 'Rendah' },
+    { value: 'sedang', text: 'Sedang' },
+    { value: 'tinggi', text: 'Tinggi' },
+    ];
+
+    options.forEach(opt => {
+        statusSelect.append(new Option(opt.text, opt.value));
+    });
+
+    optionsPrioritas.forEach(opt => {
+        prioritasSelect.append(new Option(opt.text, opt.value));
+    });
+
+    statusSelect.select2({
+        placeholder: 'Semua Status',
+        allowClear: true,
+        width: '100%'
+    });
+
+    prioritasSelect.select2({
+        placeholder: 'Semua Prioritas',
+        allowClear: true,
+        width: '100%'
+    });
+
+    statusSelect.on('change', function () {
+        cardStatus = '';
+        $('.card-index-helpdesk').removeClass('border-primary');
+        table.ajax.reload();
+    });
+
+    prioritasSelect.on('change', function () {
+        table.ajax.reload();
+    });
+
+    // live search
+    $('#searchTiket').on('keyup', function () {
+        table.search(this.value).draw();
+    });
+
+    // datatable
+    const table = $('#tabel-tiket').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '/tiket/api/getTiket',
+            data: function (d) {
+                d.status = cardStatus || statusSelect.val();
+                d.prioritas = prioritasSelect.val();
+            }
+        },
+        columns: [
+            { data: 'id', name: 'id' },
+            { data: 'judul', name: 'title' },
+            { data: 'status', name: 'status' },
+            { data: 'prioritas', name: 'priority' },
+            { data: 'pelapor', name: 'pelapor' },
+            { data: 'pj', name: 'pj' },
+            { data: 'wilayah', name: 'wilayah' },
+            { data: 'sla', name: 'sla' },
+            { data: 'respon', name: 'respon' },
+            { data: 'aksi', orderable: false, searchable: false },
+        ],
+        columnDefs: [
+            { targets: [1,2,3,4,5,6,7,8], className: 'text-start align-middle' },
+            { targets: [0,9], className: 'text-end align-middle' }
+        ],
+        createdRow: function (row, data, dataIndex) {
+            const colorClass = getStatusColor(data.status);
+            const td = $('td', row).eq(0);
+            td.addClass('td-id-wrapper').html(`
+                <span class="status-indicator ${colorClass}"></span>
+                ${data.id}
+            `);
+        },
+        drawCallback: function () {
+            lucide.createIcons();
+        }
+    });
 
     FilePond.registerPlugin(FilePondPluginImagePreview);
     const inputElement = document.querySelector('#fileUpload');
 
     const pond = FilePond.create(inputElement, {
-    allowMultiple: true,
-    acceptedFileTypes: ['image/*', 'application/pdf'],
-    instantUpload: false,
-    allowProcess: false,
-    allowRevert: false,
-    credits: false,
-    labelIdle: `
-        <div style="display: flex; cursor: pointer; flex-direction: column; align-items: center; padding-top: 1.5rem; padding-bottom: 1.5rem;">
-            <i data-lucide="download" class="mb-3" width="35" height="35"></i>
-            <span>Drag & drop files atau <span class="filepond--label-action">Pilih File</span></span>
-        </div>
-    `,
-    fileValidateTypeDetectType: (source, type) => new Promise((resolve) => resolve(type))
+        allowMultiple: true,
+        acceptedFileTypes: ['image/*', 'application/pdf'],
+        instantUpload: false,
+        allowProcess: false,
+        allowRevert: false,
+        credits: false,
+        labelIdle: `
+            <div style="display: flex; cursor: pointer; flex-direction: column; align-items: center; padding-top: 1.5rem; padding-bottom: 1.5rem;">
+                <i data-lucide="download" class="mb-3" width="35" height="35"></i>
+                <span>Drag & drop files atau <span class="filepond--label-action">Pilih File</span></span>
+            </div>
+        `,
+        fileValidateTypeDetectType: (source, type) => new Promise((resolve) => resolve(type))
     });
 
     pond.on('init', () => {
@@ -83,11 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .trigger('change.select2');
     }
 
-
-    $('#createTiketModal').on('shown.bs.modal', function (event) {
-        const button = $(event.relatedTarget);
-        const tiketId = button.data('id');
-
+    $('#createTiketModal').on('shown.bs.modal', function () {
         $('#btnCreateTiket').on('click', function (e) {
             e.preventDefault();
 
@@ -105,71 +197,95 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            Swal.fire({
-                title: 'Konfirmasi',
-                text: 'Yakin semua data tiket sudah sesuai dan ingin melanjutkan proses ini?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, simpan',
-                cancelButtonText: 'Batal',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let formData = new FormData($('#formTiket')[0]);
-                    let maxSize = 10 * 1024 * 1024;
-                    let oversizedFiles = [];
-
-                    pond.getFiles().forEach((fileItem, index) => {
-                        if (fileItem.file.size > maxSize) {
-                            oversizedFiles.push(fileItem.file.name);
-                        }
+            const userId = $('#formTiket input[name="userPelaporId"]').val();
+            $.get(`/tiket/api/checkDuplicateTiket/${userId}/${encodeURIComponent(title)}`, function (res) {
+                if (res.exists) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Tiket sudah tersedia',
+                        text: 'Tiket dengan judul yang sama telah tercatat sebelumnya.'
                     });
-
-                    if (oversizedFiles.length > 0) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Ukuran file tidak boleh lebih dari 10MB'
-                        });
-                        return;
-                    }
-
-                    pond.getFiles().forEach((fileItem, index) => {
-                        formData.append(`fileTiket[${index}]`, fileItem.file);
-                    });
-
-                    formData.append('status', 'open');
-
-                    $('#loaderTiket').show();
-
-                    $.ajax({
-                        url: '/tiket/store',
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil!',
-                                text: 'Tiket berhasil dibuat.',
-                            });
-                            pond.removeFiles();
-                            $('#loaderTiket').hide();
-                            $("#createTiketModal").modal('hide');
-                            $('#formTiket')[0].reset();
-                            table.ajax.reload(null, false);
-                        },
-                        error: function (xhr) {
-                            console.error(xhr.responseText);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal!',
-                                text: 'Terjadi kesalahan saat membuat tiket.',
-                            });
-                            $('#loaderTiket').hide();
-                        }
-                    });
+                    return;
                 }
+
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Yakin semua data tiket sudah sesuai dan ingin melanjutkan proses ini?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, ajukan',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let formData = new FormData($('#formTiket')[0]);
+                        let maxSize = 10 * 1024 * 1024;
+                        let oversizedFiles = [];
+
+                        pond.getFiles().forEach((fileItem, index) => {
+                            if (fileItem.file.size > maxSize) {
+                                oversizedFiles.push(fileItem.file.name);
+                            }
+                        });
+
+                        if (oversizedFiles.length > 0) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Ukuran file tidak boleh lebih dari 10MB'
+                            });
+                            return;
+                        }
+
+                        pond.getFiles().forEach((fileItem, index) => {
+                            formData.append(`fileTiket[${index}]`, fileItem.file);
+                        });
+
+                        formData.append('status', 'open');
+
+                        $('#loaderTiket').show();
+
+                        $.ajax({
+                            url: '/tiket/store',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: 'Tiket berhasil diajukan.',
+                                });
+                                pond.removeFiles();
+                                $('#loaderTiket').hide();
+                                $("#createTiketModal").modal('hide');
+                                $('#formTiket')[0].reset();
+                                table.ajax.reload(null, false);
+                                refreshStatusSummary();
+                            },
+                            error: function (xhr) {
+                                // console.error(xhr.responseText);
+                                if (xhr.status === 422 && xhr.responseJSON?.duplicate) {
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Tiket sudah tersedia.',
+                                        text: xhr.responseJSON.message
+                                    });
+                                    $('#loaderTiket').hide();
+                                    return;
+                                }
+
+                                console.error(xhr.responseText);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal!',
+                                    text: 'Terjadi kesalahan saat mengajukan tiket.',
+                                });
+                                $('#loaderTiket').hide();
+                            }
+                        });
+                    }
+                });
             });
         });
 
@@ -190,71 +306,94 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            Swal.fire({
-                title: 'Konfirmasi',
-                text: 'Apakah kamu yakin semua data tiket sudah terisi dengan benar dan ingin menyimpannya sebagai draft?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, simpan',
-                cancelButtonText: 'Batal',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let formData = new FormData($('#formTiket')[0]);
-                    let maxSize = 10 * 1024 * 1024;
-                    let oversizedFiles = [];
-
-                    pond.getFiles().forEach((fileItem, index) => {
-                        if (fileItem.file.size > maxSize) {
-                            oversizedFiles.push(fileItem.file.name);
-                        }
+            $.get(`/tiket/api/checkDuplicateTiket/${userId}/${encodeURIComponent(title)}`, function (res) {
+                if (res.exists) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Tiket sudah tersedia',
+                        text: 'Tiket dengan judul yang sama telah tercatat sebelumnya.'
                     });
-
-                    if (oversizedFiles.length > 0) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Ukuran file tidak boleh lebih dari 10MB'
-                        });
-                        return;
-                    }
-
-                    pond.getFiles().forEach((fileItem, index) => {
-                        formData.append(`fileTiket[${index}]`, fileItem.file);
-                    });
-
-                    formData.append('status', 'draft');
-
-                    $('#loaderTiket').show();
-
-                    $.ajax({
-                        url: '/tiket/store',
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil!',
-                                text: 'Tiket berhasil disimpan sebagai draft.',
-                            });
-                            pond.removeFiles();
-                            $('#loaderTiket').hide();
-                            $("#createTiketModal").modal('hide');
-                            $('#formTiket')[0].reset();
-                            table.ajax.reload(null, false);
-                        },
-                        error: function (xhr) {
-                            console.error(xhr.responseText);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal!',
-                                text: 'Terjadi kesalahan saat membuat tiket.',
-                            });
-                            $('#loaderTiket').hide();
-                        }
-                    });
+                    return;
                 }
+
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah kamu yakin semua data tiket sudah terisi dengan benar dan ingin menyimpannya sebagai draft?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, simpan',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let formData = new FormData($('#formTiket')[0]);
+                        let maxSize = 10 * 1024 * 1024;
+                        let oversizedFiles = [];
+
+                        pond.getFiles().forEach((fileItem, index) => {
+                            if (fileItem.file.size > maxSize) {
+                                oversizedFiles.push(fileItem.file.name);
+                            }
+                        });
+
+                        if (oversizedFiles.length > 0) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Ukuran file tidak boleh lebih dari 10MB'
+                            });
+                            return;
+                        }
+
+                        pond.getFiles().forEach((fileItem, index) => {
+                            formData.append(`fileTiket[${index}]`, fileItem.file);
+                        });
+
+                        formData.append('status', 'draft');
+
+                        $('#loaderTiket').show();
+
+                        $.ajax({
+                            url: '/tiket/store',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: 'Tiket berhasil disimpan sebagai draft.',
+                                });
+                                pond.removeFiles();
+                                $('#loaderTiket').hide();
+                                $("#createTiketModal").modal('hide');
+                                $('#formTiket')[0].reset();
+                                table.ajax.reload(null, false);
+                                refreshStatusSummary();
+                            },
+                            error: function (xhr) {
+                                // console.error(xhr.responseText);
+
+                                if (xhr.status === 422 && xhr.responseJSON?.duplicate) {
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Tiket sudah tersedia.',
+                                        text: xhr.responseJSON.message
+                                    });
+                                    $('#loaderTiket').hide();
+                                    return;
+                                }
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal!',
+                                    text: 'Terjadi kesalahan saat membuat tiket.',
+                                });
+                                $('#loaderTiket').hide();
+                            }
+                        });
+                    }
+                });
             });
         });
 
@@ -308,6 +447,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         formData.append(`fileTiket[${index}]`, fileItem.file);
                     });
 
+                    formData.append('isAjukan', 0);
+
                     $('#loaderTiket').show();
 
                     $.ajax({
@@ -326,6 +467,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             $('#loaderTiket').hide();
                             $("#createTiketModal").modal('hide');
                             $('#formTiket')[0].reset();
+                            table.ajax.reload(null, false);
+                            refreshStatusSummary();
                         },
                         error: function (xhr) {
                             console.error(xhr.responseText);
@@ -341,9 +484,57 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        if (tiketId) {
-            loadTimeline(tiketId);
-        }
+        $("#btnAjukanTiket").on('click', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Setelah tiket diajukan, kamu tidak bisa mengedit data lagi. Yakin ingin melanjutkan proses ini?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, ajukan',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let formData = new FormData($('#formTiket')[0]);
+                    formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+                    formData.append('isAjukan', 1);
+
+                    $('#loaderTiket').show();
+
+                    $.ajax({
+                        url: '/tiket/update',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Tiket berhasil diajukan.',
+                            });
+                            pond.removeFiles();
+                            $('#loaderTiket').hide();
+                            $("#createTiketModal").modal('hide');
+                            $('#formTiket')[0].reset();
+                            table.ajax.reload(null, false);
+                            refreshStatusSummary();
+                        },
+                        error: function (xhr) {
+                            // console.error(xhr.responseText);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan saat mengajukan tiket.',
+                            });
+                            $('#loaderTiket').hide();
+                        }
+                    });
+                }
+            });
+        });
     });
 
     $('#createTiketModal').on('hidden.bs.modal', function () {
@@ -385,16 +576,159 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 50);
     });
 
+    // btn buka respon modal
+    $(document).on('click', '.btn-respon', function () {
+        const ticketId = $(this).data('id');
+        const ticketStatus = $(this).data('status');
+        const adminRoleId = $(this).data('admin-role-id');
+        const chatArea = $('#chatArea');
+        const chatInput = $('#chatInput');
+
+        if(ticketStatus == "draft")
+        {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Status tiket kamu masih dalam tahap draft. Silakan ajukan tiket terlebih dahulu untuk memulai diskusi dengan agen.',
+            });
+            return;
+        }
+
+        $('#responModal').modal('show');
+        if (adminRoleId == 1) {
+            $("#responModalLabel").html("Diskusi terkait <strong>tiket user</strong> dengan agen");
+            $('.input-chat-wrapper').addClass('d-none');
+        } else {
+            $('.input-chat-wrapper').removeClass('d-none');
+        }
+
+        chatArea.html('<div class="text-center text-muted mt-4">Memuat pesan...</div>');
+
+        let isFirstLoad = true;
+
+        function loadChat() {
+            if (isFirstLoad) {
+                chatArea.html(`
+                    <div class="p-3">
+                        <div class="skeleton mb-3" style="width: 60%; height: 40px;"></div>
+                        <div class="skeleton mb-3 ms-auto" style="width: 45%; height: 40px;"></div>
+                        <div class="skeleton mb-3" style="width: 70%; height: 40px;"></div>
+                        <div class="skeleton mb-3 ms-auto" style="width: 50%; height: 40px;"></div>
+                    </div>
+                `);
+            }
+
+            $.ajax({
+                url: `/tiket/getAllChat/${ticketId}`,
+                method: 'GET',
+                success: function (data) {
+                    chatArea.empty();
+                    isFirstLoad = false;
+
+                    if (!data || data.length === 0) {
+                        chatArea.html('<div class="text-center text-muted mt-4">Belum ada pesan.</div>');
+                        return;
+                    }
+
+                    data.forEach(msg => {
+                        let isRight;
+
+                        if (adminRoleId == 1) {
+                            const senderIds = [...new Set(data.map(m => m.sender_id))];
+                            const leftId = senderIds[0];
+                            isRight = msg.sender_id !== leftId;
+                        } else {
+                            isRight = msg.sender_id == userId;
+                        }
+
+                        const waktu = new Date(msg.created_at).toLocaleString('id-ID', {
+                            day: '2-digit',
+                            month: 'long',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+
+                        let senderName;
+                        if (adminRoleId == 1) {
+                            senderName = msg.sender?.name || 'Agen';
+                        } else {
+                            senderName = isRight ? 'Anda' : (msg.sender?.name || 'Agen');
+                        }
+
+                        const messageHTML = `
+                            <div class="d-flex ${isRight ? 'justify-content-end' : ''} mb-3">
+                                <div class="${isRight ? 'bg-primary text-white' : 'bg-white border'} rounded-3 p-3 shadow-sm" style="max-width: 70%; position: relative;">
+                                    <strong>${senderName}:</strong><br>
+                                    ${msg.message}
+                                    <div class="text-end mt-1" style="font-size: 0.75rem; opacity: 0.7;">${waktu}</div>
+                                </div>
+                            </div>
+                        `;
+                        chatArea.append(messageHTML);
+                    });
+
+
+                    chatArea.scrollTop(chatArea[0].scrollHeight);
+                },
+                error: function () {
+                    chatArea.html('<div class="text-center text-danger mt-4">Gagal memuat chat.</div>');
+                }
+            });
+        }
+
+        loadChat();
+        const chatInterval = setInterval(loadChat, 2000);
+
+        $('#responModal').on('hidden.bs.modal', function () {
+            clearInterval(chatInterval);
+        });
+
+        $('#sendBtn').off('click').on('click', function () {
+            const message = chatInput.val().trim();
+            if (!message) return;
+
+            const formData = new FormData();
+            formData.append('ticket_id', ticketId);
+            formData.append('sender_id', userId);
+            formData.append('message', message);
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+            $.ajax({
+                url: `/tiket/sendChat`,
+                method: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function () {
+                    chatInput.val('');
+                    loadChat();
+                    table.ajax.reload(null, false);
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseJSON);
+                    alert('Gagal mengirim pesan.');
+                }
+            });
+        });
+    });
+
     // btn buka detail modal
     $(document).on('click', '.btn-detail', function () {
         const id = $(this).data('id');
+        const StatusTiket = $(this).data('status');
 
-        // Setup UI untuk mode detail
+        $("#btnAjukanTiket").addClass('d-none');
+        if(StatusTiket == "draft")
+        {
+            $("#btnAjukanTiket").removeClass('d-none');
+        }
+
         $('#createTiketModalLabel').text('Detail Tiket');
         $('#btnCreateTiket').hide();
         $('#btnDraftTiket').hide();
         $('#btnEditTiket').addClass('d-none');
-        $('#formTiket :input').prop('disabled', true);
+        $('#formTiket :input').not('.tiket-id').not('.user-pelapor-id').prop('disabled', true);
 
         pond.removeFiles();
         const previewArea = $('#previewArea');
@@ -405,6 +739,7 @@ document.addEventListener('DOMContentLoaded', function() {
             $('#judul').val(res.title);
             $('#deskripsi').val(res.description);
             $('#wilayah').val(res.wilayah_id);
+            $('.tiket-id').val(res.id);
             setSelect2Value('#kategori', res.category_id, res.category_name);
 
             const fileList = res.file_ticket?.filter(url => !!url);
@@ -465,7 +800,7 @@ document.addEventListener('DOMContentLoaded', function() {
         $('#btnDraftTiket').hide();
         $('#btnEditTiket').removeClass('d-none');
 
-        $('#formTiket :input').prop('disabled', false);
+        $('#formTiket :input:not(#nama_lengkap):not(#email):not(#no_telepon)').prop('disabled', false);
 
         pond.removeFiles();
         $('#previewArea').html('');
@@ -508,46 +843,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    $(document).on('click', '.btn-tolak', function () {
-        const id = $(this).data('id');
-
-        Swal.fire({
-            title: 'Tolak Tiket?',
-            text: 'Tindakan ini akan menolak tiket yang diajukan. Lanjutkan?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, hapus',
-            cancelButtonText: 'Batal',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '/tiket/reject',
-                    type: 'POST',
-                    data: {
-                        id: id,
-                        _token: $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (res) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: res.message,
-                        });
-                        table.ajax.reload(null, false);
-                    },
-                    error: function (xhr) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal!',
-                            text: 'Tiket tidak berhasil ditolak.',
-                        });
-                    }
-                });
-            }
-        });
-    });
-
     $(document).on('click', '.btn-delete', function () {
         const id = $(this).data('id');
 
@@ -574,6 +869,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             title: 'Berhasil!',
                             text: res.message,
                         });
+                        refreshStatusSummary();
                         table.ajax.reload(null, false);
                     },
                     error: function (xhr) {
@@ -716,32 +1012,36 @@ document.addEventListener('DOMContentLoaded', function() {
         return 'bg-secondary';
     }
 
-    $.get('/tiket/api/status-summary', function (data) {
+    function refreshStatusSummary() {
+        $.get('/tiket/api/status-summary', function (data) {
             const container = $('.row-status-summary');
             container.empty();
 
             data.forEach(item => {
                 container.append(`
-                <div class="col-md-2 col-6">
-                    <div class="card h-100 card-index-helpdesk rounded border p-12 text-center"
-                    data-status="${item.key}">
-                    <div class="fw-bold fs-1 ${item.color}">${item.count}</div>
-                    <div class="fs-7 small">${item.label}</div>
+                    <div class="col-md-2 col-6">
+                        <div class="card h-100 card-index-helpdesk rounded border p-12 text-center"
+                            data-status="${item.key}">
+                            <div class="fw-bold fs-1 ${item.color}">${item.count}</div>
+                            <div class="fs-7 small">${item.label}</div>
+                        </div>
                     </div>
-                </div>
                 `);
             });
+        });
+    }
+    refreshStatusSummary();
 
-        $(document).on('click', '.card-index-helpdesk', function () {
-            const selected = $(this).data('status') || '';
+    $(document).on('click', '.card-index-helpdesk', function () {
+        const selected = $(this).data('status') || '';
 
             $('.card-index-helpdesk').removeClass('border-primary');
             $(this).addClass('border-primary');
 
-            cardStatus = selected === 'semua tiket' ? '' : selected;
+        cardStatus = selected === 'semua tiket' ? '' : selected;
 
-            table.ajax.reload();
-        });
+        table.ajax.reload();
+    });
 
         // helpdesk create js
         document.querySelectorAll('.priority-option').forEach(option => {
@@ -752,242 +1052,91 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        $(document).on('click', '.btn-verifikasi', function (e) {
-            e.preventDefault();
+    $(document).on('click', '.btn-verifikasi', function (e) {
+        e.preventDefault();
 
-            const id = $(this).data('id');
+        const id = $(this).data('id');
 
-            $.ajax({
-                url: `/tiket/${id}`,
-                type: 'GET',
-                success: function (response) {
-                    const tiket = response.data;
+        $.ajax({
+            url: `/tiket/${id}`,
+            type: 'GET',
+            success: function (response) {
+                const tiket = response.data;
 
-                    $('#tiket-judul').text(tiket.title);
-                    $('#tiket-kategori').text(tiket.category.description);
-                    $('#tiket-deskripsi').text(tiket.description);
+                $('#tiket-judul').text(tiket.title);
+                $('#tiket-kategori').text(tiket.category.description);
+                $('#tiket-deskripsi').text(tiket.description);
 
-                    if (tiket.lampiran) {
-                        $('#tiket-lampiran').html(
-                            `<a href="/storage/${tiket.lampiran}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                Lihat Lampiran
-                            </a>`
-                        );
-                    } else {
-                        $('#tiket-lampiran').html('<span class="text-muted">Tidak ada lampiran</span>');
-                    }
-
-                    $('#modalDetailTiket').modal('show');
-                    $('#btn-verifikasi-final').data('id', id);
-                    $('#btn-return').data('id', id);
-                },
-                error: function () {
-                    Swal.fire('Gagal!', 'Tidak dapat memuat detail tiket.', 'error');
+                if (tiket.lampiran) {
+                    $('#tiket-lampiran').html(
+                        `<a href="/storage/${tiket.lampiran}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            Lihat Lampiran
+                        </a>`
+                    );
+                } else {
+                    $('#tiket-lampiran').html('<span class="text-muted">Tidak ada lampiran</span>');
                 }
-            });
-        });
 
-        $('#btn-verifikasi-final').click(function () {
-            const id = $(this).data('id');
-            const priority = $('#prioritas').val();
-            const agent_id = $('#agent_id').val();
-
-            if (!agent_id) {
-                Swal.fire('Peringatan', 'Silakan pilih agent terlebih dahulu.', 'warning');
-                return;
-            }
-
-            Swal.fire({
-                title: 'Verifikasi & Tugaskan Tiket',
-                text: `Yakin ingin memverifikasi tiket #${id}?`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Verifikasi',
-                cancelButtonText: 'Batal',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: `/tiket/${id}/verification`,
-                        type: 'POST',
-                        data: {
-                            _token: $('meta[name="csrf-token"]').attr('content'),
-                            priority,
-                            agent_id
-                        },
-                        success: function () {
-                            Swal.fire({
-                                title: 'Berhasil!',
-                                text: 'Tiket berhasil diverifikasi dan ditugaskan.',
-                                icon: 'success',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-                            $('#modalDetailTiket').modal('hide');
-                            // $('#tabel-tiket').DataTable().ajax.reload(null, false);
-                        },
-                        error: function () {
-                            Swal.fire('Gagal!', 'Terjadi kesalahan saat verifikasi tiket.', 'error');
-                        }
-                    });
-                }
-            });
-        });
-
-        $('#btn-return').click(function () {
-            const id = $(this).data('id');
-            console.log('Verifikasi Data untuk tiket:', id);
-            // contoh: buka modal atau redirect
-            // window.location.href = `/helpdesk/verifikasi/${id}`;
-        });
-
-        // select2
-        const statusSelect = $('#statusSelect');
-        const prioritasSelect = $('#prioritasSelect');
-
-        const options = [
-        { value: '', text: 'Semua Status' },
-        { value: 'terbuka', text: 'Terbuka' },
-        { value: 'proses', text: 'Proses' },
-        { value: 'selesai', text: 'Selesai' },
-        { value: 'draft', text: 'Draft' },
-        { value: 'revisi', text: 'Perlu Revisi' }
-        ];
-
-        const optionsPrioritas = [
-        { value: '', text: 'Semua Prioritas' },
-        { value: 'rendah', text: 'Rendah' },
-        { value: 'sedang', text: 'Sedang' },
-        { value: 'tinggi', text: 'Tinggi' },
-        ];
-
-        options.forEach(opt => {
-        statusSelect.append(new Option(opt.text, opt.value));
-        });
-
-        optionsPrioritas.forEach(opt => {
-        prioritasSelect.append(new Option(opt.text, opt.value));
-        });
-
-        statusSelect.select2({
-        placeholder: 'Semua Status',
-        allowClear: true,
-        width: '100%'
-        });
-
-        prioritasSelect.select2({
-        placeholder: 'Semua Prioritas',
-        allowClear: true,
-        width: '100%'
-        });
-
-        statusSelect.on('change', function () {
-            cardStatus = '';
-            $('.card-index-helpdesk').removeClass('border-primary');
-            table.ajax.reload();
-        });
-
-        prioritasSelect.on('change', function () {
-            table.ajax.reload();
-        });
-
-        $('#searchTiket').on('keyup', function () {
-            table.search(this.value).draw();
-        });
-
-        // datatable
-        const table = $('#tabel-tiket').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: '/tiket/api/getTiket',
-                data: function (d) {
-                    d.status = cardStatus || statusSelect.val();
-                    d.prioritas = prioritasSelect.val();
-                }
+                $('#modalDetailTiket').modal('show');
+                $('#btn-verifikasi-final').data('id', id);
+                $('#btn-return').data('id', id);
             },
-            columns: [
-                { data: 'id', name: 'id' },
-                { data: 'judul', name: 'title' },
-                { data: 'status', name: 'status' },
-                { data: 'prioritas', name: 'priority' },
-                { data: 'pelapor', name: 'pelapor' },
-                { data: 'pj', name: 'pj' },
-                { data: 'wilayah', name: 'wilayah' },
-                { data: 'sla', name: 'sla' },
-                { data: 'respon', name: 'respon' },
-                { data: 'aksi', orderable: false, searchable: false }
-            ],
-            columnDefs: [
-                { targets: [1,2,3,4,5,6,7,8], className: 'text-start align-middle' },
-                { targets: [0,9], className: 'text-end align-middle' }
-            ],
-            createdRow: function (row, data, dataIndex) {
-                const colorClass = getStatusColor(data.status);
-                const td = $('td', row).eq(0);
-                td.addClass('td-id-wrapper').html(`
-                    <span class="status-indicator ${colorClass}"></span>
-                    ${data.id}
-                `);
-            },
-            drawCallback: function () {
-                lucide.createIcons();
+            error: function () {
+                Swal.fire('Gagal!', 'Tidak dapat memuat detail tiket.', 'error');
             }
         });
     });
 
-    function loadTimeline(ticketId) {
-        const timelineCard = document.querySelector('.timeline-card');
-        const container = document.getElementById('timelineContainer');
-        if (!timelineCard) return;
+    $('#btn-verifikasi-final').click(function () {
+        const id = $(this).data('id');
+        const priority = $('#prioritas').val();
+        const agent_id = $('#agent_id').val();
 
-        timelineCard.classList.remove('d-none');
-        container.innerHTML = '<div class="text-muted small">Memuat data...</div>';
+        if (!agent_id) {
+            Swal.fire('Peringatan', 'Silakan pilih agent terlebih dahulu.', 'warning');
+            return;
+        }
 
-        fetch(`/tiket/${ticketId}/timeline`)
-            .then(res => res.json())
-            .then(data => {
-                if (!data.success || data.timelines.length === 0) {
-                    container.innerHTML = '<div class="text-muted small">Belum ada aktivitas</div>';
-                    return;
-                }
+        Swal.fire({
+            title: 'Verifikasi & Tugaskan Tiket',
+            text: `Yakin ingin memverifikasi tiket #${id}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Verifikasi',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/tiket/${id}/verification`,
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        priority,
+                        agent_id
+                    },
+                    success: function () {
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Tiket berhasil diverifikasi dan ditugaskan.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        $('#modalDetailTiket').modal('hide');
+                        // $('#tabel-tiket').DataTable().ajax.reload(null, false);
+                    },
+                    error: function () {
+                        Swal.fire('Gagal!', 'Terjadi kesalahan saat verifikasi tiket.', 'error');
+                    }
+                });
+            }
+        });
+    });
 
-                container.innerHTML = data.timelines.map(item => {
-                    const colors = {
-                        'Ticket Created': 'bg-success',
-                        'Status Updated': 'bg-info',
-                        'Reopened': 'bg-warning',
-                        'Closed': 'bg-danger',
-                    };
-                    const icons = {
-                        'Ticket Created': 'plus-circle',
-                        'Status Updated': 'refresh-ccw',
-                        'Reopened': 'rotate-ccw',
-                        'Closed': 'check-circle',
-                    };
-                    const color = colors[item.action] || 'bg-secondary';
-                    const icon = icons[item.action] || 'clock';
-
-                    return `
-                        <div class="timeline-item">
-                            <div class="timeline-dot ${color} d-flex align-items-center justify-content-center">
-                                <i data-lucide="${icon}" class="text-white" style="width: 0.75rem;"></i>
-                            </div>
-                            <div class="ms-4">
-                                <div class="fw-semibold">${item.action}</div>
-                                <div class="text-muted small mb-1">
-                                    oleh ${item.actor?.name ?? 'Sistem'} • ${item.created_at_human}
-                                </div>
-                                ${item.description ? `<div class="text-gray-700">${item.description}</div>` : ''}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-
-                lucide.createIcons();
-            })
-            .catch(err => {
-                container.innerHTML = '<div class="text-danger small">Gagal memuat timeline</div>';
-                console.error(err);
-            });
-    }
+    $('#btn-return').click(function () {
+        const id = $(this).data('id');
+        console.log('Verifikasi Data untuk tiket:', id);
+        // contoh: buka modal atau redirect
+        // window.location.href = `/helpdesk/verifikasi/${id}`;
+    });
 });
