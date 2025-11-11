@@ -321,4 +321,41 @@ class TiketController extends Controller
             'timelines' => $timelines,
         ]);
     }
+
+    public function actionTiketAgent(Request $request)
+    {
+        $tiket = Ticket::findOrFail($request->tiketId);
+        if($request->isAction == "0")
+        {
+            $tiket->status = "agent_rejected";
+            $tiket->assigned_to = null;
+
+            NotificationService::send(
+                $tiket->user_id,
+                "Tiket #{$tiket->id} ditolak oleh agent",
+                $request->message,
+                "info",
+            );
+
+            $tiket->save();
+        }
+
+        if($request->isAction == "1")
+        {
+            $tiket->status = "in_progress";
+
+            NotificationService::send(
+                $tiket->user_id,
+                'Tiket berhasil diterima agent',
+                "Tiket #{$tiket->id} telah diterima oleh agen. Silakan klik icon respon pada tabel sesuai id tiket anda untuk memulai diskusi. Proses akan selesai setelah agen menginput penyelesaian tiket.",
+                "info",
+            );
+
+            $tiket->save();
+        }
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
 }

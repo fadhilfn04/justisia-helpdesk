@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller as BaseController;
+use App\Models\CategoryAgent;
 use App\Models\Ticket;
 use App\Models\TicketCategory;
 use App\Models\User;
@@ -55,13 +56,34 @@ class ApitiketController extends BaseController
             $query = Ticket::where('user_id', $userId)->latest();
         }
 
+        if(auth()->user()->role->id == '2')
+        {
+            $isAgentTeknis = CategoryAgent::where('user_id', $userId)->get();
+            $categories = $isAgentTeknis->pluck('category');
+
+            $categoryTiketAgent = TicketCategory::whereIn('name', $categories)->get();
+            $categoryIds = $categoryTiketAgent->pluck('id');
+
+            $query = Ticket::where('assigned_to', $userId)
+                ->whereIn('status', ['assignee', 'in_progress', 'closed'])
+                ->whereIn('category_id', $categoryIds)
+                ->latest();
+        }
+
+        if(auth()->user()->role->id == '1')
+        {
+            $query = Ticket::whereNotIn('status', ['draft', 'need_revision'])->latest();
+        }
+
         // filter status
         if ($request->filled('status')) {
             $statusMap = [
                 'terbuka' => 'open',
                 'proses' => 'in_progress',
+                'diverifikasi' => 'assignee',
                 'selesai' => 'closed',
                 'draft' => 'draft',
+                'ditolak' => 'agent_rejected',
                 'revisi' => 'need_revision'
             ];
 
@@ -99,8 +121,10 @@ class ApitiketController extends BaseController
                     $statusMap = [
                         'draft' => 'draft',
                         'proses' => 'in_progress',
+                        'diverifikasi' => 'assignee',
                         'terbuka' => 'open',
                         'selesai' => 'closed',
+                        'ditolak agent' => 'agent_rejected',
                         'perlu revisi' => 'need_revision'
                     ];
 
@@ -161,18 +185,24 @@ class ApitiketController extends BaseController
 
                 switch ($status) {
                     case 'draft':
-                        $color = 'badge-bg-primary'; $icon = 'clock'; $textColor = 'text-primary'; break;
+                        $color = 'badge-bg-secondary'; $icon = 'file'; $textColor = 'text-info'; break;
                     case 'in_progress':
                         $status = 'proses';
                         $color = 'badge-bg-warning'; $icon = 'clock'; $textColor = 'text-warning'; break;
+                    case 'assignee':
+                        $status = 'diverifikasi';
+                        $color = 'badge-bg-success'; $icon = 'circle-check-big'; $textColor = 'text-success'; break;
                     case 'open':
                         $status = 'terbuka';
                         $color = 'badge-bg-dark-blue'; $icon = 'clock'; $textColor = 'text-dark-blue'; break;
                     case 'closed':
                         $status = 'selesai';
-                        $color = 'badge-bg-success'; $icon = 'circle-check-big'; $textColor = 'text-success'; break;
+                        $color = 'badge-bg-primary'; $icon = 'circle-check-big'; $textColor = 'text-primary'; break;
                     case 'need_revision':
                         $status = 'Perlu Revisi';
+                        $color = 'badge-bg-danger'; $icon = 'triangle-alert'; $textColor = 'text-danger'; break;
+                    case 'agent_rejected':
+                        $status = 'Ditolak Agent';
                         $color = 'badge-bg-danger'; $icon = 'triangle-alert'; $textColor = 'text-danger'; break;
                 }
 
@@ -212,12 +242,21 @@ class ApitiketController extends BaseController
                 ';
             })
             ->addColumn('pj', function($row) {
-                $agent = $row->agent;
-                $agent = e($agent->name ?? 'Agent');
+                $pj = $row->agent->name ?? '-';
+
+                 $initials = '-';
+
+                if ($row->agent && $row->agent->name) {
+                    $words = explode(' ', trim($row->agent->name));
+                    $words = array_slice($words, 0, 2);
+
+                    $initials = strtoupper(implode('', array_map(fn($w) => mb_substr($w, 0, 1), $words)));
+                }
+
                 return '
                     <span class="d-inline-flex align-items-center gap-2">
-                        <i data-lucide="shield-user" class="text-dark" style="width:1.4rem;"></i>
-                        <span>'.$agent.'</span>
+                        <span class="profile-circle bg-brown text-white fw-semibold">'.$initials.'</span>
+                        <span>'.$pj.'</span>
                     </span>
                 ';
             })
@@ -232,8 +271,8 @@ class ApitiketController extends BaseController
             ->addColumn('sla', fn() => '-')
             ->addColumn('respon', function ($row) use ($userId) {
                 $countResponMessage = $row->messages->count();
-                $admin = User::where('id', $userId)->first();
-
+                $roleIdUser = User::where('id', $userId)->first();
+                $agentId = $row->agent->id ?? null;
                 if(auth()->user()->role->id != '1')
                 {
                     $countResponMessage = $row->messages->where('sender_id', '!=', $userId)->count();
@@ -243,49 +282,62 @@ class ApitiketController extends BaseController
                             class="btn-respon text-dark"
                             data-id="' . $row->id . '"
                             data-status="' . $row->status . '"
-                            data-admin-role-id="' . $admin->role_id . '">
+                            data-user-role-id="' . $roleIdUser->role_id . '"
+                            data-pj="' . ($agentId ?? '') . '">
                             <i data-lucide="message-square" class="text-dark" style="width:1.1rem;cursor:pointer;"></i>
                             '. $countResponMessage .'
                         </a>';
             })
             ->addColumn('aksi', function ($row) {
+                $roleUserLogin = auth()->user()->role->id;
+
                 $dropdown = '
                     <div class="dropdown position-relative">
                         <button class="btn btn-icon btn-sm btn-hover-primary" data-bs-toggle="dropdown">
                             <i data-lucide="ellipsis" class="icon-action"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu-fixed">
-                            <a class="dropdown-item btn-edit" href="#" data-id="' . $row->id . '" data-bs-toggle="modal" data-bs-target="#createTiketModal">
-                                <i data-lucide="eye" class="me-2 text-warning"></i> Detail
+                            <a href="javascript:void(0)" class="dropdown-item btn-detail" data-id="'.$row->id.'" data-status="'.$row->status.'" data-role-user="'.$roleUserLogin.'" data-bs-toggle="modal" data-bs-target="#createTiketModal">
+                            <i data-lucide="eye" class="me-2 text-warning" width="18" height="18"></i> Detail
                             </a>';
 
-                if ($row->status === 'draft') {
+                if ($roleUserLogin == '3' && ($row->status === 'draft' || $row->status === 'need_revision')) {
                     $dropdown .= '
-                        <a class="dropdown-item btn-edit" href="#" data-id="' . $row->id . '" data-bs-toggle="modal" data-bs-target="#createTiketModal">
-                            <i data-lucide="eyen" class="me-2 text-warning"></i> Detail
+                        <a href="javascript:void(0)" class="dropdown-item btnAjukanTiket" data-id="'.$row->id.'" data-user-pelapor="'.$row->user_id.'">
+                            <i data-lucide="send" class="me-2 text-info" width="18" height="18"></i> Ajukan Tiket
+                        </a>
+                        <a href="javascript:void(0)" class="dropdown-item btn-edit" data-id="'.$row->id.'" data-role-user="'.$roleUserLogin.'" data-bs-toggle="modal" data-bs-target="#createTiketModal">
+                            <i data-lucide="pencil" class="me-2 text-primary" width="18" height="18"></i> Edit
                         </a>';
                 }
 
-                if ($row->status === 'draft' ||$row->status === 'open') {
+                if ($roleUserLogin == '3' && ($row->status === 'draft' ||$row->status === 'open')) {
                     $dropdown .= '
-                            <a class="dropdown-item btn-delete" href="#" data-id="' . $row->id . '">
-                                <i data-lucide="trash" class="me-2 text-danger"></i> Hapus
+                            <a href="#" class="dropdown-item btn-delete" data-id="'.$row->id.'">
+                                <i data-lucide="trash" class="me-2 text-danger" width="18" height="18"></i> Hapus
                             </a>';
                 }
 
-                $isAdmin = auth()->user()->role->id;
 
-                if ( $isAdmin == '1' && ($row->status === 'open')) {
+                if ($roleUserLogin == '1' && ($row->status === 'open' || $row->status === 'need_revision' || $row->status == 'agent_rejected')) {
                     $dropdown .= '
                             <a class="dropdown-item btn-verifikasi" href="#" data-id="' . $row->id . '">
-                                <i data-lucide="check-circle" class="me-2 text-success"></i> Verifikasi
+                                <i data-lucide="check-circle" class="me-2 text-success" width="18" height="18"></i> Verifikasi
                             </a>';
                 }
 
-                if ($row->status === 'in_progress') {
+                if ($roleUserLogin != '2' && $row->status === 'closed') {
                     $dropdown .= '
                             <a class="dropdown-item btn-tutup" href="#" data-id="' . $row->id . '">
-                                <i data-lucide="x-circle" class="me-2 text-danger"></i> Tutup Tiket
+                                <i data-lucide="x-circle" class="me-2 text-danger" width="18" height="18"></i> Tutup Tiket
+                            </a>';
+                }
+
+                if($roleUserLogin == '2' && $row->status == 'in_progress')
+                {
+                    $dropdown .= '
+                            <a class="dropdown-item btn-tutup" href="#" data-id="' . $row->id . '">
+                                <i data-lucide="bookmark-check" class="me-2 text-success" width="18" height="18"></i> Input Penyelesaian
                             </a>';
                 }
 

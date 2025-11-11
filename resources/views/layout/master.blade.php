@@ -54,10 +54,9 @@
 <body {!! printHtmlClasses('body') !!} {!! printHtmlAttributes('body') !!}>
 
 {{-- loader --}}
-<div id="loaderTiket" style="display: none !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.6); z-index: 9999; display: flex; justify-content: center; align-items: center;">
+<div id="loaderTiket" style="display: none;">
   <div class="loader-spinner"></div>
 </div>
-
 
 @include('partials/theme-mode/_init')
 <div class="mt-8"></div>

@@ -48,6 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/{id}/return', [TiketController::class, 'return'])->name('return');
         Route::post('/{id}/close', [TiketController::class, 'close'])->name('return');
         Route::get('/{id}/timeline', [TiketController::class, 'getTimeline']);
+        Route::post('/actionTiketAgent', [TiketController::class, 'actionTiketAgent'])->name('tiket.actionTiketAgent');
 
         // tiket message
         Route::get('/getAllChat/{ticketId}', [TiketController::class, 'getAllChat']);
