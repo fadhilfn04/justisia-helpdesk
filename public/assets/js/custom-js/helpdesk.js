@@ -1217,9 +1217,8 @@ document.addEventListener("DOMContentLoaded", function () {
                             timer: 1500,
                             showConfirmButton: false,
                         });
-                        $('#modalDetailTiket').modal('hide');
+                        $('#modalVerifikasiTiket').modal('hide');
                         table.ajax.reload(null, false);
-                        // $('#tabel-tiket').DataTable().ajax.reload(null, false);
                     },
                     error: function () {
                         Swal.fire(
@@ -1263,9 +1262,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         $("#prioritas").val("medium").trigger("change");
                         $("#modalVerifikasiTiket").modal("hide");
                         table.ajax.reload(null, false);
-                        $('#modalDetailTiket').modal('hide');
-                        table.ajax.reload(null, false);
-                        // $('#tabel-tiket').DataTable().ajax.reload(null, false);
                     },
                     error: function () {
                         Swal.fire(
@@ -1403,67 +1399,5 @@ document.addEventListener("DOMContentLoaded", function () {
                 );
             },
         });
-    });
-
-    $("#btn-verifikasi-final").click(function () {
-        const id = $(this).data("id");
-        const priority = $("#prioritas").val();
-        const agent_id = $("#agent_id").val();
-
-        if (!agent_id) {
-            Swal.fire(
-                "Peringatan",
-                "Silakan pilih agent terlebih dahulu.",
-                "warning"
-            );
-            return;
-        }
-
-        Swal.fire({
-            title: "Verifikasi & Tugaskan Tiket",
-            text: `Yakin ingin memverifikasi tiket #${id}?`,
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "Ya, Verifikasi",
-            cancelButtonText: "Batal",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: `/tiket/${id}/verification`,
-                    type: "POST",
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr("content"),
-                        priority,
-                        agent_id,
-                    },
-                    success: function () {
-                        Swal.fire({
-                            title: "Berhasil!",
-                            text: "Tiket berhasil diverifikasi dan ditugaskan.",
-                            icon: "success",
-                            timer: 1500,
-                            showConfirmButton: false,
-                        });
-                        $('#modalDetailTiket').modal('hide');
-                        table.ajax.reload(null, false);
-                        // $('#tabel-tiket').DataTable().ajax.reload(null, false);
-                    },
-                    error: function () {
-                        Swal.fire(
-                            "Gagal!",
-                            "Terjadi kesalahan saat verifikasi tiket.",
-                            "error"
-                        );
-                    },
-                });
-            }
-        });
-    });
-
-    $("#btn-return").click(function () {
-        const id = $(this).data("id");
-        console.log("Verifikasi Data untuk tiket:", id);
-        // contoh: buka modal atau redirect
-        // window.location.href = `/helpdesk/verifikasi/${id}`;
     });
 });

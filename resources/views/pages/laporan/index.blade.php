@@ -73,7 +73,7 @@
                         </div>
 
                         <div class="col-md-4 mb-6">
-                            @include('partials.dashboard.charts._distribusi_kategori')
+                            @include('partials.dashboard.charts._distribusi-kategori')
                         </div>
                     </div>
 

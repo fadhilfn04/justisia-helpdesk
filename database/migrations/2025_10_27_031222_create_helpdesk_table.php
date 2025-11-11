@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->datetime('last_login_at')->nullable();
             $table->string('last_login_ip')->nullable();
+            $table->timestamp('last_seen')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

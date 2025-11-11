@@ -30,6 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [DashboardController::class, 'index']);
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/agen-online', [DashboardController::class, 'getAgenOnline'])->name('dashboard.agenOnline');
 
     Route::prefix('notifications')->group(function () {
         Route::get('/partial', [NotificationController::class, 'partial'])->name('notifications.partial');

@@ -77,13 +77,13 @@
                             <div class="col-xl-8">
                                 @include('partials.dashboard.tables._tiket-terbaru')
                             </div>
-                            <div class="col-xl-4">
+                            {{-- <div class="col-xl-4">
                                 @include('partials.dashboard.cards._distribusi-regional')
-                            </div>
+                            </div> --}}
                         </div>
                     @endif
 
-                    <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card shadow-sm border-0 rounded-4 mb-4">
                         <div class="card-body py-4">
                             <h5 class="fw-bold">Aksi Cepat</h5>
                             <p class="text-muted mb-4">Akses fitur utama dengan cepat</p>
@@ -165,4 +165,26 @@
             </div>
         {{-- </div>
     </div> --}}
+
+@push('scripts')
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const agenOnlineUrl = "{{ route('dashboard.agenOnline') }}";
+
+        function updateAgenOnline() {
+            fetch(agenOnlineUrl)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('agen-online-count').innerText = data.agen_online;
+                    document.getElementById('total-agen-text').innerText = `dari ${data.total_agen} total agen`;
+                })
+                .catch(error => console.error('Error fetching agen online data:', error));
+        }
+
+        updateAgenOnline();
+        setInterval(updateAgenOnline, 60000);
+    });
+    </script>
+@endpush
+
 </x-default-layout>
