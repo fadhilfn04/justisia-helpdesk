@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CategoryAgent;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -20,9 +21,7 @@ class TiketController extends Controller
     public function index()
     {
         $ticket = Ticket::all();
-        $agents = User::whereHas('role', function ($query) {
-            $query->where('name', 'Agent');
-        })->get();
+        $agents = CategoryAgent::with('user')->get();
         return view('pages.helpdesk.index', compact('ticket', 'agents'));
     }
 

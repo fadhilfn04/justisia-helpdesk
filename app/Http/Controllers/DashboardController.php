@@ -60,6 +60,10 @@ class DashboardController extends Controller
         $tiketProses = (clone $query)->where('status', 'in_progress')->count();
         $tiketOpen = (clone $query)->where('status', 'open')->count();
 
+        $tiketHariIni = (clone $query)
+            ->whereDate('created_at', Carbon::today())
+            ->count();
+
         $rataRataSlaJam = (clone $query)
             ->where('status', 'closed')
             ->get()
@@ -109,25 +113,29 @@ class DashboardController extends Controller
             'tiket_selesai' => $tiketSelesai,
             'tiket_proses' => $tiketProses,
             'tiket_open' => $tiketOpen,
-            'rata_rata_sla' => round($rataRataSlaJam / 24, 2)   ,
+            'tiket_hari_ini' => $tiketHariIni,
+            'rata_rata_sla' => round($rataRataSlaJam / 24, 2),
             'rata_rata_waktu_respon' => round($rataRataWaktuResponJam, 2),
             'tingkat_penyelesaian' => $tingkatPenyelesaian,
             'sla_compliance' => $slaCompliancePersen,
         ];
     }
 
-    public function getAgenOnline(): JsonResponse
+    public function getRealtimeData()
     {
-        $onlineThreshold = now()->subMinutes(5);
-
-        $totalAgen = User::where('role_id', 2)->count();
-        $agenOnline = User::where('role_id', 2)
-            ->where('last_seen', '>=', $onlineThreshold)
-            ->count();
+        $statusTiket = $this->getStatusTiket();
+        $onlineAgents = $this->getAgenOnlineStats();
+        $recentActivities = $this->getRecentActivities();
+        $ticketDailyTrends = $this->getDailyTrends();
+        $slaMonitoring = $this->getSlaMonitoring();
 
         return response()->json([
-            'agen_online' => $agenOnline,
-            'total_agen' => $totalAgen,
+            'ticket_status' => $statusTiket,
+            'online_agents' => $onlineAgents,
+            'recent_activities' => $recentActivities,
+            'ticket_daily_trends' => $ticketDailyTrends,
+            'sla_monitoring' => $slaMonitoring,
+            'last_update' => now()->format('H:i:s'),
         ]);
     }
 
@@ -177,6 +185,29 @@ class DashboardController extends Controller
         ];
     }
 
+    public function getDailyTrends()
+    {
+        $today = now()->toDateString();
+
+        $dailyData = Ticket::select(
+                DB::raw('HOUR(created_at) as hour'),
+                DB::raw("SUM(CASE WHEN status != 'Selesai' THEN 1 ELSE 0 END) as masuk"),
+                DB::raw("SUM(CASE WHEN status = 'Selesai' THEN 1 ELSE 0 END) as selesai")
+            )
+            ->whereDate('created_at', $today)
+            ->groupBy('hour')
+            ->orderBy('hour')
+            ->get();
+
+        $hours = collect(range(0, 23))->map(fn($h) => str_pad($h, 2, '0', STR_PAD_LEFT) . ':00');
+
+        return [
+            'categories' => $hours,
+            'masuk' => $hours->map(fn($h) => $dailyData->firstWhere('hour', (int) substr($h, 0, 2))->masuk ?? 0),
+            'selesai' => $hours->map(fn($h) => $dailyData->firstWhere('hour', (int) substr($h, 0, 2))->selesai ?? 0),
+        ];
+    }
+
     private function getDisputeByCategory()
     {
         $query = Ticket::query();
@@ -218,7 +249,7 @@ class DashboardController extends Controller
             ->get();
     }
 
-    private function getRecentActivities()
+    public function getRecentActivities()
     {
         return DB::table('ticket_timelines')
             ->join('tickets', 'ticket_timelines.ticket_id', '=', 'tickets.id')

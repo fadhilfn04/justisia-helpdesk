@@ -128,9 +128,9 @@
                                 <div class="d-flex align-items-center">
                                     <span class="badge bg-success me-2"></span>
                                     <span class="fw-semibold">Status: Online</span>
-                                    <span class="text-muted ms-2">Terakhir update: 14.04.37</span>
+                                    <span class="text-muted ms-2" id="last-update-text">Terakhir update: --:--:--</span>
                                 </div>
-                                <button class="btn btn-light btn-sm">
+                                <button id="refresh-realtime-btn" class="btn btn-light btn-sm">
                                     <i class="bi bi-arrow-repeat me-2"></i>Refresh Data
                                 </button>
                             </div>
@@ -144,7 +144,7 @@
 
                     {{-- Real-Time Activity + Chart --}}
                     <div class="row g-5 mb-5">
-                        <div class="col-xl-6">
+                        <div class="col-xl-6" id="realtime-activity-container">
                             @include('partials.dashboard.tables._aktivitas-real-time')
                         </div>
 
@@ -168,21 +168,106 @@
 
 @push('scripts')
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const agenOnlineUrl = "{{ route('dashboard.agenOnline') }}";
+    document.addEventListener("DOMContentLoaded", () => {
+        const realtimeUrl = "{{ route('dashboard.realtime') }}";
+        const refreshBtn = document.getElementById("refresh-realtime-btn");
+        const lastUpdateText = document.getElementById("last-update-text");
 
-        function updateAgenOnline() {
-            fetch(agenOnlineUrl)
-                .then(response => response.json())
+        let chart;
+
+        const options = {
+            chart: {
+                type: 'line',
+                height: 350,
+                toolbar: { show: false },
+                zoom: { enabled: false }
+            },
+            stroke: { width: 2, curve: 'smooth' },
+            markers: { size: 4, hover: { sizeOffset: 4 } },
+            series: [
+                { name: 'Tiket Masuk', data: [] },
+                { name: 'Tiket Selesai', data: [] }
+            ],
+            xaxis: {
+                categories: [],
+                labels: { rotate: -45 }
+            },
+            yaxis: {
+                min: 0,
+                tickAmount: 5,
+                labels: { formatter: val => parseInt(val) }
+            },
+            colors: ['#3b82f6', '#10b981'],
+            legend: { position: 'top', horizontalAlign: 'left' },
+            grid: { borderColor: '#e5e7eb', strokeDashArray: 4 }
+        };
+
+        chart = new ApexCharts(document.querySelector("#trenTiketHarian"), options);
+        chart.render();
+
+        function updateRealtimeData() {
+            fetch(realtimeUrl)
+                .then(res => res.json())
                 .then(data => {
-                    document.getElementById('agen-online-count').innerText = data.agen_online;
-                    document.getElementById('total-agen-text').innerText = `dari ${data.total_agen} total agen`;
+                    const s = data.ticket_status ?? {};
+
+                    document.getElementById('total-tiket').textContent = s.total_tiket ?? '-';
+                    document.getElementById('waktu-respon').textContent = s.rata_rata_waktu_respon ?? '-';
+                    document.getElementById('sla-compliance').textContent = s.sla_compliance ?? '-';
+
+                    if (data.ticket_daily_trends) {
+                        chart.updateOptions({
+                            xaxis: { categories: data.ticket_daily_trends.categories },
+                            series: [
+                                { name: 'Tiket Masuk', data: data.ticket_daily_trends.masuk },
+                                { name: 'Tiket Selesai', data: data.ticket_daily_trends.selesai }
+                            ]
+                        });
+                    }
+
+                    const now = new Date();
+                    lastUpdateText.textContent = `Terakhir update: ${now.toLocaleTimeString('id-ID', { hour12: false })}`;
                 })
-                .catch(error => console.error('Error fetching agen online data:', error));
+                .catch(err => console.error('[Realtime Error]', err));
         }
 
-        updateAgenOnline();
-        setInterval(updateAgenOnline, 60000);
+        function updateOnlineAgent() {
+            fetch(realtimeUrl)
+                .then(res => res.json())
+                .then(data => {
+                    const onlineAgent = data.online_agents ?? {};
+
+                    document.getElementById('agen-online').textContent = onlineAgent.agen_online;
+                    document.getElementById('total-agen').textContent = `dari ${onlineAgent.total_agen} total agen`;
+                })
+                .catch(err => console.error('[AgenOnline Error]', err));
+        }
+        
+        function recentActivities() {
+            fetch(realtimeUrl)
+                .then(res => res.json())
+                .then(data => {
+                    const recentActivities = data.recent_activities ?? {};
+
+                    document.getElementById('realtime-activity-container').innerHTML = data.html;
+                })
+                .catch(err => console.error('[recentActivities Error]', err));
+        }
+
+        updateRealtimeData();
+        updateOnlineAgent();
+        recentActivities();
+
+        const POLL_INTERVAL = 60000;
+        setInterval(() => {
+            if (document.querySelector('#tab_realtime').classList.contains('active')) {
+                updateRealtimeData();
+                updateOnlineAgent();
+                recentActivities();
+            }
+        }, POLL_INTERVAL);
+
+        refreshBtn.addEventListener('click', updateRealtimeData);
     });
     </script>
 @endpush

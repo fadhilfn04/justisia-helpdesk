@@ -311,6 +311,9 @@ class ApitiketController extends BaseController
                     $dropdown .= '
                         <a href="#" class="dropdown-item f" data-id="'.$row->id.'">
                             <i data-lucide="notebook" class="me-2 text-primary" width="18" height="18"></i> Detail Penyelesaian
+                        </a>
+                        <a class="dropdown-item btn-tutup" href="#" data-id="' . $row->id . '">
+                            <i data-lucide="check-check" class="me-2 text-success" width="18" height="18"></i> Tutup Tiket
                         </a>';
                 }
 

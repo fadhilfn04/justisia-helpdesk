@@ -19,9 +19,9 @@
 		</div>
 		<!--end::Actions-->
 		<!--begin::Illustration-->
-		<div class="text-center px-4">
+		{{-- <div class="text-center px-4">
 			<img src="{{ asset('illustrations/sketchy-1/9.png') }}" alt="" class="mww-100 mh-350px" />
-		</div>
+		</div> --}}
 		<!--end::Illustration-->
 	</div>
 </div>

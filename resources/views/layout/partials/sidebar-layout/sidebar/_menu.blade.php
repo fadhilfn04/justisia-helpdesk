@@ -25,7 +25,7 @@
 				<!--begin:Menu link-->
 				<a class="menu-link {{ request()->routeIs('tiket.index') ? 'active' : '' }}" href="{{ route('tiket.index') }}">
 					<i data-lucide="ticket" class="menu-icon" width="18" height="18"></i>
-					<span class="menu-title">Helpdesk</span>
+					<span class="menu-title">Tiket</span>
 				</a>
 				<!--end:Menu link-->
 			</div>
