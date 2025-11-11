@@ -8,21 +8,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const prioritasSelect = $("#prioritasSelect");
 
     const options = [
-    { value: '', text: 'Semua Status' },
-    { value: 'terbuka', text: 'Terbuka' },
-    { value: 'proses', text: 'Proses' },
-    { value: 'diverifikasi', text: 'Diverifikasi' },
-    { value: 'selesai', text: 'Selesai' },
-    { value: 'draft', text: 'Draft' },
-    { value: 'revisi', text: 'Perlu Revisi' },
-    { value: 'ditolak', text: 'Ditolak Agent' }
+        { value: '', text: 'Semua Status' },
+        { value: 'terbuka', text: 'Terbuka' },
+        { value: 'proses', text: 'Proses' },
+        { value: 'diverifikasi', text: 'Diverifikasi' },
+        { value: 'selesai', text: 'Selesai' },
+        { value: 'ditutup', text: 'Ditutup' },
+        { value: 'draft', text: 'Draft' },
+        { value: 'revisi', text: 'Perlu Revisi' },
+        { value: 'ditolak', text: 'Ditolak Agent' }
     ];
 
     const optionsPrioritas = [
-        { value: "", text: "Semua Prioritas" },
-        { value: "rendah", text: "Rendah" },
-        { value: "sedang", text: "Sedang" },
-        { value: "tinggi", text: "Tinggi" },
+        { value: '', text: 'Semua Prioritas' },
+        { value: 'rendah', text: 'Rendah' },
+        { value: 'sedang', text: 'Sedang' },
+        { value: 'tinggi', text: 'Tinggi' },
     ];
 
     options.forEach((opt) => {
@@ -111,11 +112,12 @@ document.addEventListener("DOMContentLoaded", function () {
     })
 
     FilePond.registerPlugin(FilePondPluginImagePreview);
-    const inputElement = document.querySelector("#fileUpload");
+    const inputElement = document.querySelector('#fileUpload');
+    const inputElementPenyelesaian = document.querySelector('#fileUploadPenyelesaian');
 
     const pond = FilePond.create(inputElement, {
         allowMultiple: true,
-        acceptedFileTypes: ["image/*", "application/pdf"],
+        acceptedFileTypes: ['image/*', 'application/pdf'],
         instantUpload: false,
         allowProcess: false,
         allowRevert: false,
@@ -126,11 +128,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 <span>Drag & drop files atau <span class="filepond--label-action">Pilih File</span></span>
             </div>
         `,
-        fileValidateTypeDetectType: (source, type) =>
-            new Promise((resolve) => resolve(type)),
+        fileValidateTypeDetectType: (source, type) => new Promise((resolve) => resolve(type))
     });
 
-    pond.on("init", () => {
+    const pondPenyelesaian = FilePond.create(inputElementPenyelesaian, {
+        allowMultiple: false,
+        acceptedFileTypes: ['image/*', 'application/pdf'],
+        instantUpload: false,
+        allowProcess: false,
+        allowRevert: false,
+        credits: false,
+        labelIdle: `
+            <div style="display: flex; cursor: pointer; flex-direction: column; align-items: center; padding-top: 1.5rem; padding-bottom: 1.5rem;">
+                <i data-lucide="download" class="mb-3" width="35" height="35"></i>
+                <span>Drag & drop files atau <span class="filepond--label-action">Pilih File</span></span>
+            </div>
+        `,
+        fileValidateTypeDetectType: (source, type) => new Promise((resolve) => resolve(type))
+    });
+
+    pond.on('init', () => {
+        lucide.createIcons();
+    });
+
+    pondPenyelesaian.on('init', () => {
         lucide.createIcons();
     });
 
@@ -139,25 +160,51 @@ document.addEventListener("DOMContentLoaded", function () {
         updatePdfPreviewArea(pond);
     });
 
+    pondPenyelesaian.on('addfile', () => {
+        updatePdfPreviewAreaPenyelesaian(pondPenyelesaian);
+    });
+
     // Update preview setiap kali file dihapus
     pond.on("removefile", () => {
         updatePdfPreviewArea(pond);
     });
 
-    function updatePdfPreviewArea(pondInstance) {
-        const previewArea = document.getElementById("previewArea");
-        previewArea.innerHTML = "";
+    pondPenyelesaian.on('removefile', () => {
+        updatePdfPreviewAreaPenyelesaian(pondPenyelesaian);
+    });
 
-        pondInstance.getFiles().forEach((fileItem) => {
+    function updatePdfPreviewArea(pondInstance) {
+        const previewArea = document.getElementById('previewArea');
+        previewArea.innerHTML = '';
+
+        pondInstance.getFiles().forEach(fileItem => {
             const file = fileItem.file;
-            if (file && file.type === "application/pdf") {
-                const iframe = document.createElement("iframe");
+            if (file && file.type === 'application/pdf') {
+                const iframe = document.createElement('iframe');
                 iframe.src = URL.createObjectURL(file);
-                iframe.width = "100%";
-                iframe.height = "500px";
-                iframe.style.border = "1px solid #ccc";
-                iframe.classList.add("mb-3");
+                iframe.width = '100%';
+                iframe.height = '500px';
+                iframe.style.border = '1px solid #ccc';
+                iframe.classList.add('mb-3');
                 previewArea.appendChild(iframe);
+            }
+        });
+    }
+
+    function updatePdfPreviewAreaPenyelesaian(pondInstance) {
+        const previewAreaPenyelesaian = document.getElementById('previewAreaPenyelesaian');
+        previewAreaPenyelesaian.innerHTML = '';
+
+        pondInstance.getFiles().forEach(fileItem => {
+            const file = fileItem.file;
+            if (file && file.type === 'application/pdf') {
+                const iframe = document.createElement('iframe');
+                iframe.src = URL.createObjectURL(file);
+                iframe.width = '100%';
+                iframe.height = '500px';
+                iframe.style.border = '1px solid #ccc';
+                iframe.classList.add('mb-3');
+                previewAreaPenyelesaian.appendChild(iframe);
             }
         });
     }
@@ -345,19 +392,18 @@ document.addEventListener("DOMContentLoaded", function () {
                         return;
                     }
 
-                    Swal.fire({
-                        title: "Konfirmasi",
-                        text: "Apakah kamu yakin semua data tiket sudah terisi dengan benar dan ingin menyimpannya sebagai draft?",
-                        icon: "question",
-                        showCancelButton: true,
-                        confirmButtonText: "Ya, simpan",
-                        cancelButtonText: "Batal",
-                        reverseButtons: true,
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            let formData = new FormData($("#formTiket")[0]);
-                            let maxSize = 10 * 1024 * 1024;
-                            let oversizedFiles = [];
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah kamu yakin semua data tiket sudah terisi dengan benar dan ingin menyimpannya sebagai draft?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, simpan',
+                    cancelButtonText: 'Batal',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let formData = new FormData($('#formTiket')[0]);
+                        let maxSize = 10 * 1024 * 1024;
+                        let oversizedFiles = [];
 
                             pond.getFiles().forEach((fileItem, index) => {
                                 if (fileItem.file.size > maxSize) {
@@ -730,9 +776,11 @@ document.addEventListener("DOMContentLoaded", function () {
             $("#kategori").val(null).trigger("change");
             $("#createTiketModalLabel").text("Buat Tiket Baru");
 
-            $("#btnCreateTiket").show();
-            $("#btnDraftTiket").show();
-            $("#btnEditTiket").addClass("d-none");
+        $('#btnCreateTiket').show();
+        $('#btnDraftTiket').show();
+        $('#btnEditTiket').addClass('d-none');
+        $('#btnTerimaTiket').addClass('d-none');
+        $('#btnTolakTiket').addClass('d-none');
 
             $(
                 "#formTiket :input:not(#nama_lengkap):not(#email):not(#no_telepon)"
@@ -1321,8 +1369,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (text.includes('draft')) return 'bg-secondary';
         if (text.includes('proses')) return 'bg-warning';
         if (text.includes('diverifikasi')) return 'bg-success';
-        if (text.includes('terbuka')) return 'bg-dark-blue';
         if (text.includes('selesai')) return 'bg-primary';
+        if (text.includes('terbuka')) return 'bg-dark-blue';
+        if (text.includes('ditutup')) return 'bg-dark';
         if (text.includes('perlu revisi')) return 'bg-danger';
         if (text.includes('ditolak agent')) return 'bg-danger';
         return 'bg-secondary';
@@ -1362,6 +1411,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // helpdesk create js
     $(document).on('click', '.btn-verifikasi', function (e) {
         e.preventDefault();
+        $('.select-pilih-agent').show();
+        $('.select-prioritas').show();
+        $('#btn-verifikasi-final').show();
+        $('#btn-return').show();
+        $('.input-pesan-penyelesaian').hide();
+        $('.input-file-penyelesaian').hide();
+        $('#btn-penyelesaian').hide();
 
         const id = $(this).data("id");
 
@@ -1392,12 +1448,247 @@ document.addEventListener("DOMContentLoaded", function () {
                 $("#btn-return").data("id", id);
             },
             error: function () {
-                Swal.fire(
-                    "Gagal!",
-                    "Tidak dapat memuat detail tiket.",
-                    "error"
-                );
-            },
+                Swal.fire('Gagal!', 'Tidak dapat memuat detail tiket.', 'error');
+            }
         });
+    });
+
+    $(document).on('click', '.btn-penyelesaian', function (e) {
+        e.preventDefault();
+        $('.select-pilih-agent').hide();
+        $('.select-prioritas').hide();
+        $('#btn-verifikasi-final').hide();
+        $('#btn-return').hide();
+        $('.input-pesan-penyelesaian').show();
+        $('.input-file-penyelesaian').show();
+        $('#btn-penyelesaian').show();
+
+        const id = $(this).data('id');
+
+        $.ajax({
+            url: `/tiket/${id}`,
+            type: 'GET',
+            success: function (response) {
+                const tiket = response.data;
+                console.log(tiket);
+
+                $('#tiket-judul').text(tiket.title);
+                $('#tiket-kategori').text(tiket.category.description);
+                $('#tiket-deskripsi').text(tiket.description);
+
+                if (tiket.lampiran) {
+                    $('#tiket-lampiran').html(
+                        `<a href="/storage/${tiket.lampiran}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            Lihat Lampiran
+                        </a>`
+                    );
+                } else {
+                    $('#tiket-lampiran').html('<span class="text-muted">Tidak ada lampiran</span>');
+                }
+
+                $('#modalDetailTiket').modal('show');
+                $('#btn-penyelesaian').data('id', id);
+            },
+            error: function () {
+                Swal.fire('Gagal!', 'Tidak dapat memuat detail tiket.', 'error');
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-detail-penyelesaian', function (e) {
+        e.preventDefault();
+        $('.select-pilih-agent').hide();
+        $('.select-prioritas').hide();
+        $('#btn-verifikasi-final').hide();
+        $('#btn-return').hide();
+        $('.input-pesan-penyelesaian').show();
+        $('.text-area-input-penyelesaian').show().prop('disabled', true);
+        $('.input-file-penyelesaian').show();
+        $('#btn-penyelesaian').show();
+        $('#btn-penyelesaian').hide();
+
+        const id = $(this).data('id');
+        pondPenyelesaian.removeFiles();
+        const previewArea = $('#previewAreaPenyelesaian');
+        previewArea.html('');
+
+        $.ajax({
+            url: `/tiket/${id}`,
+            type: 'GET',
+            success: function (response) {
+                const tiket = response.data;
+                console.log(tiket);
+
+                $('#tiket-judul').text(tiket.title);
+                $('#tiket-kategori').text(tiket.category.description);
+                $('#tiket-deskripsi').text(tiket.description);
+                $('.text-area-input-penyelesaian').text(tiket.ticket_resolution_message);
+
+                if (tiket.lampiran) {
+                    $('#tiket-lampiran').html(
+                        `<a href="/storage/${tiket.lampiran}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            Lihat Lampiran
+                        </a>`
+                    );
+                } else {
+                    $('#tiket-lampiran').html('<span class="text-muted">Tidak ada lampiran</span>');
+                }
+
+                const fileList = tiket.completion_ticket_file
+                    ? [tiket.completion_ticket_file]
+                    : [];
+                console.log(fileList);
+
+                if (fileList.length > 0) {
+                    pondPenyelesaian.setOptions({
+                        disabled: true,
+                        allowBrowse: false,
+                        allowDrop: false,
+                        allowPaste: false,
+                        labelIdle: ''
+                    });
+
+                    setTimeout(() => lucide.createIcons(), 50);
+
+                    fileList.forEach(fileUrl => {
+                        const fullUrl = `/storage/${fileUrl}`;
+                        pondPenyelesaian.addFile(fullUrl)
+                            .then(() => console.log('Preview file lama ditampilkan:', fullUrl))
+                            .catch(err => console.warn('File gagal dimuat:', err));
+                    });
+
+                } else {
+                    previewArea.html(`
+                        <div class="d-flex flex-column align-items-center justify-content-center text-muted py-4">
+                            <i data-lucide="file-x" class="mb-2" style="width:2.5rem;height:2.5rem;"></i>
+                            <div class="fw-semibold">File tidak ditemukan</div>
+                            <small class="text-secondary">Dokumen belum tersedia untuk tiket ini</small>
+                        </div>
+                    `);
+                    lucide.createIcons();
+
+                    pondPenyelesaian.setOptions({
+                        disabled: true,
+                        allowBrowse: false,
+                        allowDrop: false,
+                        allowPaste: false,
+                        labelIdle: ''
+                    });
+                }
+
+                $('#modalDetailTiket').modal('show');
+            },
+            error: function () {
+                Swal.fire('Gagal!', 'Tidak dapat memuat detail tiket.', 'error');
+            }
+        });
+    });
+
+    $('#btn-verifikasi-final').click(function () {
+        const id = $(this).data('id');
+        const priority = $('#prioritas').val();
+        const agent_id = $('#agent_id').val();
+
+        if (!agent_id) {
+            Swal.fire('Peringatan', 'Silakan pilih agent terlebih dahulu.', 'warning');
+            return;
+        }
+
+        Swal.fire({
+            title: 'Verifikasi & Tugaskan Tiket',
+            text: `Yakin ingin memverifikasi tiket #${id}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Verifikasi',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/tiket/${id}/verification`,
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        priority,
+                        agent_id
+                    },
+                    success: function () {
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Tiket berhasil diverifikasi dan ditugaskan.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        $('#modalDetailTiket').modal('hide');
+                        table.ajax.reload(null, false);
+                        // $('#tabel-tiket').DataTable().ajax.reload(null, false);
+                    },
+                    error: function () {
+                        Swal.fire('Gagal!', 'Terjadi kesalahan saat verifikasi tiket.', 'error');
+                    }
+                });
+            }
+        });
+    });
+
+    $("#btn-penyelesaian").click(function(e) {
+        e.preventDefault();
+
+        const id = $(this).data('id');
+        const pesanPenyelesaian = $('#inputPesanPenyelesaian').val()?.trim();
+
+        const files = pondPenyelesaian ? pondPenyelesaian.getFiles() : [];
+        const fileInput = files.length > 0 ? files[0].file : null;
+
+        if (!pesanPenyelesaian) {
+            Swal.fire('Peringatan', 'Harap isi resolusi penyelesaian terlebih dahulu!', 'warning');
+            return;
+        }
+
+        Swal.fire({
+            title: 'Selesaikan Tiket',
+            text: `Yakin ingin menyelesaikan tiket #${id}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Selesaikan',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const formData = new FormData();
+                formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+                formData.append('id', id);
+                formData.append('pesanPenyelesaian', pesanPenyelesaian);
+                if (fileInput) formData.append('fileTiketPenyelesaian', fileInput);
+
+                $.ajax({
+                    url: `/tiket/ticketResolution`,
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function() {
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Tiket berhasil diselesaikan.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        $('#modalDetailTiket').modal('hide');
+                        $('#tabel-tiket').DataTable().ajax.reload(null, false);
+                    },
+                    error: function() {
+                        Swal.fire('Gagal!', 'Terjadi kesalahan saat menyelesaikan tiket.', 'error');
+                    }
+                });
+            }
+        });
+    });
+
+    $('#btn-return').click(function () {
+        const id = $(this).data('id');
+        console.log('Verifikasi Data untuk tiket:', id);
+        // contoh: buka modal atau redirect
+        // window.location.href = `/helpdesk/verifikasi/${id}`;
     });
 });

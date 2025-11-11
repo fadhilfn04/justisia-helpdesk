@@ -18,10 +18,10 @@
     <link rel="stylesheet" href="{{ asset('assets/css/custom-css/chatbot.css') }}">
 
     <!-- FilePond core -->
-    <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('assets/css/file-preview/filepond.css') }}">
 
     <!-- Plugin preview (gambar) -->
-    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('assets/css/file-preview/filePreviwImg.css') }}">
 
     {!! includeFavicon() !!}
 
@@ -106,8 +106,8 @@
     {!! sprintf('<script src="%s"></script>', asset($path)) !!}
 @endforeach
 <!--end::Custom Javascript-->
-<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
-<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+<script src="{{ asset('assets/js/file-preview/filepond-plugin-image-preview.js') }}"></script>
+<script src="{{ asset('assets/js/file-preview/filepond.js') }}"></script>
 <script src="{{ asset('assets/js/custom-js/chatbot.js') }}"></script>
 
 {{-- data lucide icon --}}

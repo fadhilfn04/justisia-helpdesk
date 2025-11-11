@@ -282,6 +282,18 @@
                         <i data-lucide="flag" class="me-2 text-warning"></i>
                         <h5 class="fw-semibold mb-0 text-gray-800">Prioritas Tiket</h5>
                     </div>
+
+                    <hr class="my-5">
+
+                    <div class="row g-4">
+                        <div class="col-md-6 select-prioritas">
+                            <label class="fw-semibold text-gray-700">Prioritas</label>
+                            <select id="prioritas" class="form-select form-select-solid">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
                     <select id="prioritas" class="form-select form-select-solid" data-control="select2" data-hide-search="true" data-placeholder="Pilih Prioritas">
                         <option></option>
                         <option value="low">Rendah</option>
@@ -290,27 +302,59 @@
                     </select>
                 </div>
 
-                <div class="card border-0 shadow-sm bg-light-subtle p-4 rounded-3">
-                    <div class="d-flex align-items-center mb-3">
-                        <i data-lucide="user-check" class="me-2 text-primary"></i>
-                        <h5 class="fw-semibold mb-0 text-gray-800">Pilih Agent</h5>
+                        <div class="col-md-6 select-pilih-agent">
+                            <label class="fw-semibold text-gray-700">Pilih Agent</label>
+                            <select id="agent_id" class="form-select form-select-solid">
+                                <option value="">-- Pilih Agent --</option>
+                                @foreach ($agents as $agent)
+                                <option value="{{ $agent->id }}">{{ $agent->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- input pesan penyelesaian --}}
+                        <div class="col-md-12 input-pesan-penyelesaian">
+                            <label class="fw-semibold text-gray-700">Resolusi Pesan Penyelesain *</label>
+                            <textarea id="inputPesanPenyelesaian" class="form-control fs-6 text-area-input-penyelesaian" name="inputPesanPenyelesaian" rows="4" placeholder="Jelaskan resolusi penyelesaian untuk tiket ini disini..." required></textarea>
+                        </div>
+
+                        {{-- input file --}}
+                        <div class="col-md-12 input-file-penyelesaian">
+                            <div class="card mb-5 border border-gray-300">
+                                <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">
+                                    <span class="card-title fs-6 p-0 d-flex align-items-center">
+                                        Lampiran Dokumen Penyelesaian
+                                    </span>
+                                    <p class="py-0 fs-7">
+                                        Upload dokumen penyelesaian (maksimal 10MB per file). Format: JPG, JPEG, PNG, PDF.
+                                    </p>
+                                </div>
+                                <div class="card-body py-3 mb-5">
+                                    <div class="filepond-wrapper" style="padding: 2rem 1rem;">
+                                        <input type="file" id="fileUploadPenyelesaian" name="fileTiketPenyelesaian" accept=".jpg,.jpeg,.png,.pdf"/>
+                                        <div id="previewAreaPenyelesaian" class="mt-5"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-                    <select id="agent_id" class="form-select form-select-solid" data-control="select2" data-hide-search="true" data-placeholder="Pilih Agent">
-                        <option></option>
-                        @foreach ($agents as $agent)
-                            <option value="{{ $agent->id }}">{{ $agent->name }}</option>
-                        @endforeach
-                    </select>
                 </div>
             </div>
 
-            <div class="modal-footer border-0 py-4 px-6 d-flex justify-content-between bg-light">
-                <button type="button" class="btn btn-flex btn-light-danger px-5 fw-semibold" id="btn-return">
-                    <i data-lucide="rotate-ccw" class="me-2"></i> Kembalikan ke Pengguna
+            <!-- Footer -->
+            <div class="modal-footer border-0 d-flex justify-content-between px-5 pb-4 mt-3">
+                <button type="button" class="btn btn-light-danger" id="btn-return">
+                    <i data-lucide="rotate-ccw" class="me-1"></i> Kembalikan ke Pengguna
                 </button>
 
-                <button type="button" class="btn btn-flex btn-success px-5 fw-semibold" id="btn-verifikasi-final">
-                    <i data-lucide="check-circle" class="me-2"></i> Verifikasi & Tugaskan
+                <button type="button" class="btn btn-light-success" id="btn-verifikasi-final">
+                    <i data-lucide="check-circle" class="me-1"></i> Verifikasi & Tugaskan
+                </button>
+
+                <button type="button" class="btn btn-light-success" id="btn-penyelesaian"
+                    style="position: absolute; bottom: 10px; right: 10px; z-index: 10;">
+                    <i data-lucide="check-circle" class="me-1"></i> Tiket Selesai
                 </button>
             </div>
         </div>
