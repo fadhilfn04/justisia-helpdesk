@@ -26,6 +26,16 @@ class TiketController extends Controller
         return view('pages.helpdesk.index', compact('ticket', 'agents'));
     }
 
+    public function show($id)
+    {
+        $tiket = Ticket::with(['user', 'category'])->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $tiket
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -67,7 +77,7 @@ class TiketController extends Controller
                 $request->userPelaporId,
                 'success',
                 'Tiket berhasil diajukan',
-                'Tiket #{$ticket->id} Anda telah berhasil diajukan. Mohon tunggu, admin akan segera melakukan verifikasi.'
+                'Tiket Anda dengan ID #{$ticket->id} telah berhasil diajukan. Mohon tunggu, admin akan segera melakukan verifikasi.'
             );
         }
 
@@ -108,7 +118,7 @@ class TiketController extends Controller
                 $request->userPelaporId,
                 'success',
                 'Tiket berhasil diperbarui',
-                "Tiket #{$ticket->id} Anda telah berhasil diperbarui. Mohon tunggu, admin akan segera melakukan verifikasi."
+                "Tiket Anda dengan ID #{$ticket->id} telah berhasil diperbarui. Mohon tunggu, admin akan segera melakukan verifikasi."
             );
 
             return response()->json([
@@ -169,7 +179,7 @@ class TiketController extends Controller
         NotificationService::send(
             $ticket->user_id,
             'Tiket Dihapus',
-            "Tiket #{$ticket->id} telah berhasil dihapus."
+            "Tiket Anda dengan ID #{$ticket->id} telah berhasil dihapus."
         );
 
         foreach ($ticket->file as $file) {
@@ -191,13 +201,13 @@ class TiketController extends Controller
             $tiket = Ticket::findOrFail($id);
             $tiket->assigned_to = $request->agent_id;
             $tiket->priority = $request->priority;
-            $tiket->status = 'in_progress';
+            $tiket->status = 'assignee';
             $tiket->save();
 
             NotificationService::send(
                 $tiket->user_id,
                 'Tiket Diverifikasi',
-                "Tiket #{$tiket->id} telah diverifikasi dan sedang diproses."
+                "Tiket Anda dengan ID #{$tiket->id} telah diverifikasi dan sedang diproses."
             );
 
             return response()->json([
@@ -223,7 +233,7 @@ class TiketController extends Controller
             NotificationService::send(
                 $tiket->user_id,
                 'Tiket Dikembalikan',
-                "Tiket #{$tiket->id} telah dikembalikan dikarenakan informasi yang diterima kurang."
+                "Tiket Anda dengan ID #{$tiket->id} telah dikembalikan dikarenakan informasi yang diterima kurang."
             );
 
             return response()->json([
@@ -249,7 +259,7 @@ class TiketController extends Controller
             NotificationService::send(
                 $tiket->user_id,
                 'Tiket Ditutup',
-                "Tiket #{$tiket->id} telah ditutup dikarenakan permasalahan sudah selesai."
+                "Tiket Anda dengan ID #{$tiket->id} telah ditutup dikarenakan permasalahan sudah selesai."
             );
 
             return response()->json([

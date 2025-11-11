@@ -252,14 +252,14 @@
 <div class="modal fade" id="modalVerifikasiTiket" tabindex="-1" aria-labelledby="verifikasiTiketLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered mw-550px">
         <div class="modal-content shadow-lg border-0 rounded-3 overflow-hidden">
-            <div class="modal-header py-4 bg-primary bg-opacity-10 border-0">
+            <div class="modal-header py-4 border-0" style="background-color: #05339C">
                 <div class="d-flex align-items-center w-100 justify-content-between">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="symbol symbol-40px bg-primary bg-opacity-25">
-                            <i data-lucide="check-square" class="text-primary fs-2"></i>
+                        <div class="symbol symbol-40px">
+                            <i data-lucide="check-square" class="text-white fs-2"></i>
                         </div>
                         <div>
-                            <h2 class="fw-bold mb-0 text-primary">Verifikasi Tiket</h2>
+                            <h2 class="fw-bold mb-0 text-white">Verifikasi Tiket</h2>
                             <small class="text-muted">Tentukan prioritas & agent penanggung jawab</small>
                         </div>
                     </div>
@@ -277,9 +277,9 @@
                     </div>
                     <select id="prioritas" class="form-select form-select-solid" data-control="select2" data-hide-search="true" data-placeholder="Pilih Prioritas">
                         <option></option>
-                        <option value="low" class="text-success">🟢 Rendah</option>
-                        <option value="medium" class="text-warning">🟡 Sedang</option>
-                        <option value="high" class="text-danger">🔴 Tinggi</option>
+                        <option value="low">Rendah</option>
+                        <option value="medium">Sedang</option>
+                        <option value="high">Tinggi</option>
                     </select>
                 </div>
 

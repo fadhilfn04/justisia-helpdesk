@@ -25,13 +25,8 @@
 					<!--begin::Section-->
 					<div class="d-flex align-items-center">
 						<!--begin::Symbol-->
-						<div class="symbol symbol-35px me-4 position-relative">
-							<span class="symbol-label bg-light-primary">
-								{!! getIcon('abstract-28', 'fs-2 text-primary') !!}
-							</span>
-							@if (!$notification->is_read)
-								<span class="position-absolute top-0 start-100 translate-middle p-1 bg-primary border border-light rounded-circle"></span>
-							@endif
+						<div class="me-4 position-relative">
+							<i data-lucide="message-square-dot" class="me-2 text-primary"></i>
 						</div>
 						<!--end::Symbol-->
 

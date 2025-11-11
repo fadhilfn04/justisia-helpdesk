@@ -275,7 +275,7 @@ class ApitiketController extends BaseController
 
                 $isAdmin = auth()->user()->role->id;
 
-                if ( $isAdmin == '1' && ($row->status === 'open' || $row->status === 'need_revision')) {
+                if ( $isAdmin == '1' && ($row->status === 'open')) {
                     $dropdown .= '
                             <a class="dropdown-item btn-verifikasi" href="#" data-id="' . $row->id . '">
                                 <i data-lucide="check-circle" class="me-2 text-success"></i> Verifikasi
