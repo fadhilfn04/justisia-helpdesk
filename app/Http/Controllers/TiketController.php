@@ -348,4 +348,33 @@ class TiketController extends Controller
             'success' => true,
         ]);
     }
+
+    public function ticketResolution(Request $request)
+    {
+        $tiket = Ticket::findOrFail($request->id);
+
+        $tiket->status = "resolved";
+        $tiket->ticket_resolution_message = $request->pesanPenyelesaian;
+
+        if ($request->hasFile('fileTiketPenyelesaian')) {
+            $file = $request->file('fileTiketPenyelesaian');
+
+            $path = $file->store('ticket_resolution', 'public');
+            $tiket->completion_ticket_file = $path;
+        }
+
+        NotificationService::send(
+            $tiket->user_id,
+            'Tiket berhasil diselesaikan oleh agent',
+            "Tiket #{$tiket->id} telah diselesaikan oleh agen. Silakan periksa dan tutup tiket jika penyelesaian sudah sesuai.",
+            "success",
+        );
+
+        $tiket->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Tiket berhasil diselesaikan.',
+        ]);
+    }
 }

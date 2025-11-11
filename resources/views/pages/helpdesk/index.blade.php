@@ -296,9 +296,8 @@
 
                     <hr class="my-5">
 
-                    <!-- Pilih Prioritas -->
                     <div class="row g-4">
-                        <div class="col-md-6">
+                        <div class="col-md-6 select-prioritas">
                             <label class="fw-semibold text-gray-700">Prioritas</label>
                             <select id="prioritas" class="form-select form-select-solid">
                                 <option value="low">Low</option>
@@ -307,7 +306,7 @@
                             </select>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 select-pilih-agent">
                             <label class="fw-semibold text-gray-700">Pilih Agent</label>
                             <select id="agent_id" class="form-select form-select-solid">
                                 <option value="">-- Pilih Agent --</option>
@@ -316,18 +315,50 @@
                                 @endforeach
                             </select>
                         </div>
+
+                        {{-- input pesan penyelesaian --}}
+                        <div class="col-md-12 input-pesan-penyelesaian">
+                            <label class="fw-semibold text-gray-700">Resolusi Pesan Penyelesain *</label>
+                            <textarea id="inputPesanPenyelesaian" class="form-control fs-6 text-area-input-penyelesaian" name="inputPesanPenyelesaian" rows="4" placeholder="Jelaskan resolusi penyelesaian untuk tiket ini disini..." required></textarea>
+                        </div>
+
+                        {{-- input file --}}
+                        <div class="col-md-12 input-file-penyelesaian">
+                            <div class="card mb-5 border border-gray-300">
+                                <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">
+                                    <span class="card-title fs-6 p-0 d-flex align-items-center">
+                                        Lampiran Dokumen Penyelesaian
+                                    </span>
+                                    <p class="py-0 fs-7">
+                                        Upload dokumen penyelesaian (maksimal 10MB per file). Format: JPG, JPEG, PNG, PDF.
+                                    </p>
+                                </div>
+                                <div class="card-body py-3 mb-5">
+                                    <div class="filepond-wrapper" style="padding: 2rem 1rem;">
+                                        <input type="file" id="fileUploadPenyelesaian" name="fileTiketPenyelesaian" accept=".jpg,.jpeg,.png,.pdf"/>
+                                        <div id="previewAreaPenyelesaian" class="mt-5"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
 
             <!-- Footer -->
-            <div class="modal-footer border-0 d-flex justify-content-between px-5 pb-4">
+            <div class="modal-footer border-0 d-flex justify-content-between px-5 pb-4 mt-3">
                 <button type="button" class="btn btn-light-danger" id="btn-return">
                     <i data-lucide="rotate-ccw" class="me-1"></i> Kembalikan ke Pengguna
                 </button>
 
                 <button type="button" class="btn btn-light-success" id="btn-verifikasi-final">
                     <i data-lucide="check-circle" class="me-1"></i> Verifikasi & Tugaskan
+                </button>
+
+                <button type="button" class="btn btn-light-success" id="btn-penyelesaian"
+                    style="position: absolute; bottom: 10px; right: 10px; z-index: 10;">
+                    <i data-lucide="check-circle" class="me-1"></i> Tiket Selesai
                 </button>
             </div>
         </div>

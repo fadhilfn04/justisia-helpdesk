@@ -76,6 +76,8 @@ return new class extends Migration
             $table->integer('wilayah_id')->nullable();
             $table->string('title');
             $table->text('description');
+            $table->text('ticket_resolution_message')->nullable();
+            $table->string('completion_ticket_file')->nullable();
             $table->string('status')->default('open');
             $table->string('priority')->default('medium');
             $table->timestamps();

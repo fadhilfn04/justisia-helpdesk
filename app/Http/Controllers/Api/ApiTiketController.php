@@ -65,7 +65,7 @@ class ApitiketController extends BaseController
             $categoryIds = $categoryTiketAgent->pluck('id');
 
             $query = Ticket::where('assigned_to', $userId)
-                ->whereIn('status', ['assignee', 'in_progress', 'closed'])
+                ->whereIn('status', ['assignee', 'in_progress', 'closed', 'resolved'])
                 ->whereIn('category_id', $categoryIds)
                 ->latest();
         }
@@ -81,9 +81,10 @@ class ApitiketController extends BaseController
                 'terbuka' => 'open',
                 'proses' => 'in_progress',
                 'diverifikasi' => 'assignee',
-                'selesai' => 'closed',
+                'ditutup' => 'closed',
                 'draft' => 'draft',
                 'ditolak' => 'agent_rejected',
+                'selesai' => 'resolved',
                 'revisi' => 'need_revision'
             ];
 
@@ -123,7 +124,8 @@ class ApitiketController extends BaseController
                         'proses' => 'in_progress',
                         'diverifikasi' => 'assignee',
                         'terbuka' => 'open',
-                        'selesai' => 'closed',
+                        'ditutup' => 'closed',
+                        'selesai' => 'resolved',
                         'ditolak agent' => 'agent_rejected',
                         'perlu revisi' => 'need_revision'
                     ];
@@ -196,6 +198,9 @@ class ApitiketController extends BaseController
                         $status = 'terbuka';
                         $color = 'badge-bg-dark-blue'; $icon = 'clock'; $textColor = 'text-dark-blue'; break;
                     case 'closed':
+                        $status = 'ditutup';
+                        $color = 'badge-bg-dark'; $icon = 'circle-check-big'; $textColor = 'text-dark'; break;
+                    case 'resolved':
                         $status = 'selesai';
                         $color = 'badge-bg-primary'; $icon = 'circle-check-big'; $textColor = 'text-primary'; break;
                     case 'need_revision':
@@ -301,6 +306,14 @@ class ApitiketController extends BaseController
                             <i data-lucide="eye" class="me-2 text-warning" width="18" height="18"></i> Detail
                             </a>';
 
+                if ($roleUserLogin == '3' && $row->status === 'resolved')
+                {
+                    $dropdown .= '
+                        <a href="#" class="dropdown-item f" data-id="'.$row->id.'">
+                            <i data-lucide="notebook" class="me-2 text-primary" width="18" height="18"></i> Detail Penyelesaian
+                        </a>';
+                }
+
                 if ($roleUserLogin == '3' && ($row->status === 'draft' || $row->status === 'need_revision')) {
                     $dropdown .= '
                         <a href="javascript:void(0)" class="dropdown-item btnAjukanTiket" data-id="'.$row->id.'" data-user-pelapor="'.$row->user_id.'">
@@ -336,7 +349,7 @@ class ApitiketController extends BaseController
                 if($roleUserLogin == '2' && $row->status == 'in_progress')
                 {
                     $dropdown .= '
-                            <a class="dropdown-item btn-tutup" href="#" data-id="' . $row->id . '">
+                            <a class="dropdown-item btn-penyelesaian" href="#" data-id="' . $row->id . '">
                                 <i data-lucide="bookmark-check" class="me-2 text-success" width="18" height="18"></i> Input Penyelesaian
                             </a>';
                 }
