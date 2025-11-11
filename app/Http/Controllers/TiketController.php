@@ -70,6 +70,13 @@ class TiketController extends Controller
             'status' => $request->status,
         ]);
 
+        $ticketTimeline = TicketTimeline::create([
+            'ticket_id' => $ticket->id,
+            'actor_id' => $request->userPelaporId,
+            'action' => 'Tiket Dibuat',
+            'description' => $request->deskripsi,
+        ]);
+
         if($request->status != 'draft')
         {
             NotificationService::send(
@@ -362,7 +369,7 @@ class TiketController extends Controller
     {
         $tiket = Ticket::findOrFail($request->id);
 
-        $tiket->status = "resolved";
+        $tiket->status = "solved";
         $tiket->ticket_resolution_message = $request->pesanPenyelesaian;
 
         if ($request->hasFile('fileTiketPenyelesaian')) {

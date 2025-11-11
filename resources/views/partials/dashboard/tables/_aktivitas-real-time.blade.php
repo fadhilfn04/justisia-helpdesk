@@ -1,7 +1,7 @@
 <div class="card shadow-sm border-0 h-100">
     <div class="card-header">
         <div class="card-title">
-            <h2>Aktivitas Real Time</h2>
+            <h2>Aktivitas Tiket Terbaru</h2>
         </div>
     </div>
 
@@ -14,7 +14,7 @@
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
                         <div>
                             <div class="fw-semibold">
-                                {{ ucfirst($activity->action ?? 'Aktivitas') }}: {{ $activity->ticket_title }}
+                                {{ $activity->ticket_title }}
                             </div>
                             <div class="text-muted small">oleh {{ $activity->actor_name }}</div>
                         </div>

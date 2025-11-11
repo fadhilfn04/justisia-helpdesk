@@ -27,23 +27,18 @@ class UserManagementController extends Controller
             }])
             ->get()
             ->map(function ($user) {
-                $departemenList = ['IT Support', 'Customer Service', 'Finance', 'Marketing', 'HR'];
-                $wilayahList = ['Jakarta', 'Bandung', 'Surabaya', 'Medan', 'Makassar'];
-
-                $departemen = $departemenList[array_rand($departemenList)];
-                $wilayah = $wilayahList[array_rand($wilayahList)];
-                $status = fake()->boolean ? 'Aktif' : 'Nonaktif';
+                $status = !$user->deleted_at ? 'Aktif' : 'Nonaktif';
 
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
                     'role' => $user->role,
                     'phone' => $user->phone,
-                    'departemen' => $departemen,
-                    'wilayah' => $wilayah,
+                    'departemen' => '-',
+                    'wilayah' => '-',
                     'status' => $status,
-                    'tiket_ditangani' => $user->role?->name === 'Agent' ? $user->tiket_ditangani : '-',
-                    'terakhir_login' => $user->created_at->diffForHumans(),
+                    'tiket_ditangani' => $user->role?->id === 2 ? $user->tiket_ditangani : '-',
+                    'terakhir_login' => optional($user->last_seen)->diffForHumans() ?? '-',
                     'email' => $user->email,
                 ];
             });

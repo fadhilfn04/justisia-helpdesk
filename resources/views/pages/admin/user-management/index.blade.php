@@ -18,7 +18,7 @@
         </div>
 
         <div class="card mb-7 border-0 shadow-sm">
-            <div class="card-body d-flex flex-wrap align-items-center gap-3">
+            <div class="card-body">
                 <div class="position-relative">
                     {!! getIcon('magnifier', 'fs-3 position-absolute ms-5 top-50 translate-middle-y text-gray-500') !!}
                     <input type="text" data-kt-user-table-filter="search" class="form-control form-control-solid ps-13" placeholder="Cari Pengguna..." id="userSearch"/>

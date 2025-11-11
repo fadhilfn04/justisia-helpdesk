@@ -65,7 +65,7 @@ class ApitiketController extends BaseController
             $categoryIds = $categoryTiketAgent->pluck('id');
 
             $query = Ticket::where('assigned_to', $userId)
-                ->whereIn('status', ['assignee', 'in_progress', 'closed', 'resolved'])
+                ->whereIn('status', ['assignee', 'in_progress', 'closed', 'solved'])
                 ->whereIn('category_id', $categoryIds)
                 ->latest();
         }
@@ -84,7 +84,7 @@ class ApitiketController extends BaseController
                 'ditutup' => 'closed',
                 'draft' => 'draft',
                 'ditolak' => 'agent_rejected',
-                'selesai' => 'resolved',
+                'selesai' => 'solved',
                 'revisi' => 'need_revision'
             ];
 
@@ -125,7 +125,7 @@ class ApitiketController extends BaseController
                         'diverifikasi' => 'assignee',
                         'terbuka' => 'open',
                         'ditutup' => 'closed',
-                        'selesai' => 'resolved',
+                        'selesai' => 'solved',
                         'ditolak agent' => 'agent_rejected',
                         'perlu revisi' => 'need_revision'
                     ];
@@ -200,7 +200,7 @@ class ApitiketController extends BaseController
                     case 'closed':
                         $status = 'ditutup';
                         $color = 'badge-bg-dark'; $icon = 'circle-check-big'; $textColor = 'text-dark'; break;
-                    case 'resolved':
+                    case 'solved':
                         $status = 'selesai';
                         $color = 'badge-bg-primary'; $icon = 'circle-check-big'; $textColor = 'text-primary'; break;
                     case 'need_revision':
@@ -306,7 +306,7 @@ class ApitiketController extends BaseController
                             <i data-lucide="eye" class="me-2 text-warning" width="18" height="18"></i> Detail
                             </a>';
 
-                if ($roleUserLogin == '3' && $row->status === 'resolved')
+                if ($roleUserLogin == '3' && $row->status === 'solved')
                 {
                     $dropdown .= '
                         <a href="#" class="dropdown-item f" data-id="'.$row->id.'">

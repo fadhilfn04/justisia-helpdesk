@@ -12,74 +12,132 @@ $(document).ready(function () {
         columns: [
             {
                 data: null,
-                render: function (data, type, row, meta) {
-                    return meta.row + 1;
-                },
+                render: (data, type, row, meta) => `
+                    <div class="text-gray-700 fw-semibold">${meta.row + 1}</div>
+                `,
                 className: 'text-center',
                 orderable: false,
                 searchable: false
             },
             {
                 data: 'name',
+                render: data => `
+                    <div class="fw-bold text-gray-900">${data}</div>
+                `
             },
             { 
                 data: 'role',
-                render: data => data ? data.name : '-'
+                render: data => {
+                    if (!data) {
+                        return `<span class="badge bg-light text-muted">-</span>`;
+                    }
+
+                    let role = data.id;
+                    let colorClass = 'bg-light-warning text-warning';
+
+                    switch (role) {
+                        case 1:
+                            colorClass = 'bg-light-primary text-primary';
+                            break;
+                        case 2:
+                            colorClass = 'bg-light-success text-success';
+                            break;
+                        case 3:
+                            colorClass = 'bg-light-warning text-warning';
+                            break;
+                        default:
+                            colorClass = 'bg-light text-muted';
+                    }
+
+                    return `
+                        <span class="badge ${colorClass} fw-semibold px-3 py-2 rounded-pill text-capitalize">
+                            ${data.name}
+                        </span>
+                    `;
+                }
             },
             { 
-            data: 'phone',
-                render: function (data, type, row) {
-                    return data
-                        ? `<div class="text-gray-700">${data}</div><div class="text-muted fs-7">${row.email}</div>`
-                        : `<div class="text-muted">${row.email}</div>`;
-                }
+                data: 'phone',
+                render: (data, type, row) => `
+                    <div>
+                        <div class="fw-semibold text-gray-800">${data ?? '-'}</div>
+                        <div class="text-muted fs-7">${row.email}</div>
+                    </div>
+                `
             },
             {
                 data: 'departemen',
+                render: data => `
+                    <span class="text-gray-700">${data ?? '-'}</span>
+                `
             },
             {
                 data: 'wilayah',
+                render: data => `
+                    <span class="text-gray-700">${data ?? '-'}</span>
+                `
             },
             {
                 data: 'status',
+                render: data => {
+                    let badgeClass = 'bg-secondary';
+                    let text = 'Tidak diketahui';
+
+                    if (data === 'Aktif') {
+                        badgeClass = 'bg-success bg-opacity-10 text-success';
+                        text = 'Aktif';
+                    } else if (data === 'Nonaktif') {
+                        badgeClass = 'bg-danger bg-opacity-10 text-danger';
+                        text = 'Nonaktif';
+                    }
+
+                    return `
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-semibold ${badgeClass} px-2 py-1 rounded">${text}</span>
+                        </div>
+                    `;
+                }
             },
             {
                 data: 'tiket_ditangani',
+                render: data => `
+                    <span class="text-gray-800 fw-semibold">${data ?? '-'}</span>
+                `
             },
             {
                 data: 'terakhir_login',
+                render: data => `
+                    <div class="text-gray-700">${data ?? '-'}</div>
+                `
             },
             {
                 data: null,
                 orderable: false,
                 searchable: false,
-                render: function (data, type, row) {
-                    return `
-                        <div class="dropdown">
-                            <button
-                                type="button"
+                render: (data, type, row) => `
+                    <div class="dropdown text-center">
+                        <button type="button" 
                                 class="btn btn-light btn-sm btn-active-light-primary"
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false">
-                                <i class="ki-outline ki-dots-vertical fs-2"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                                <li>
-                                    <a class="dropdown-item btn-edit" href="#" data-id="${row.id}">
-                                        <i class="ki-outline ki-pencil fs-5 me-2 text-warning"></i>
-                                        Edit
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item text-danger btn-delete" href="#" data-id="${row.id}">
-                                        <i class="ki-outline ki-trash fs-5 me-2 text-danger"></i>
-                                        Hapus
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    `;
-                }
+                            <i class="bi bi-three-dots-vertical fs-5"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                            <li>
+                                <a class="dropdown-item btn-edit" href="#" data-id="${row.id}">
+                                    <i class="bi bi-pencil-square text-warning me-2"></i>
+                                    Edit
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-danger btn-delete" href="#" data-id="${row.id}">
+                                    <i class="bi bi-trash3-fill text-danger me-2"></i>
+                                    Hapus
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                `
             }
         ],
         drawCallback: function () {

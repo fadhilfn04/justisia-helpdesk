@@ -64,6 +64,27 @@ class DashboardController extends Controller
             ->whereDate('created_at', Carbon::today())
             ->count();
 
+        $bulanIni = Carbon::now()->month;
+        $tahunIni = Carbon::now()->year;
+        $bulanLalu = Carbon::now()->subMonth()->month;
+        $tahunLalu = Carbon::now()->subMonth()->year;
+
+        $tiketBulanIni = (clone $query)
+            ->whereYear('created_at', $tahunIni)
+            ->whereMonth('created_at', $bulanIni)
+            ->count();
+
+        $tiketBulanLalu = (clone $query)
+            ->whereYear('created_at', $tahunLalu)
+            ->whereMonth('created_at', $bulanLalu)
+            ->count();
+
+        if ($tiketBulanLalu > 0) {
+            $persentaseKenaikan = round((($tiketBulanIni - $tiketBulanLalu) / $tiketBulanLalu) * 100, 2);
+        } else {
+            $persentaseKenaikan = $tiketBulanIni > 0 ? 100 : 0;
+        }
+
         $rataRataSlaJam = (clone $query)
             ->where('status', 'closed')
             ->get()
@@ -77,7 +98,7 @@ class DashboardController extends Controller
             ->get()
             ->map(function ($ticket) {
                 $firstResponse = TicketTimeline::where('ticket_id', $ticket->id)
-                    ->where('action', '!=', 'Ticket Created')
+                    ->where('action', '!=', 'Ticket Dibuat')
                     ->orderBy('created_at', 'asc')
                     ->first();
 
@@ -92,7 +113,7 @@ class DashboardController extends Controller
             ? round(($tiketSelesai / $totalTiket) * 100, 2)
             : 0;
 
-        $slaBatasJam = 72;
+        $slaBatasJam = 48;
         $slaCompliance = (clone $query)
             ->where('status', 'closed')
             ->get()
@@ -118,6 +139,9 @@ class DashboardController extends Controller
             'rata_rata_waktu_respon' => round($rataRataWaktuResponJam, 2),
             'tingkat_penyelesaian' => $tingkatPenyelesaian,
             'sla_compliance' => $slaCompliancePersen,
+            'kenaikan_tiket_bulan_ini' => $persentaseKenaikan,
+            'tiket_bulan_ini' => $tiketBulanIni,
+            'tiket_bulan_lalu' => $tiketBulanLalu,
         ];
     }
 
@@ -132,10 +156,10 @@ class DashboardController extends Controller
         return response()->json([
             'ticket_status' => $statusTiket,
             'online_agents' => $onlineAgents,
-            'recent_activities' => $recentActivities,
             'ticket_daily_trends' => $ticketDailyTrends,
             'sla_monitoring' => $slaMonitoring,
             'last_update' => now()->format('H:i:s'),
+            'html' => view('partials.dashboard.tables._aktivitas-real-time', compact('recentActivities'))->render(),
         ]);
     }
 
