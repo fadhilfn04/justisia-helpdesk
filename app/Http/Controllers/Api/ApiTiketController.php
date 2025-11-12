@@ -7,6 +7,7 @@ use App\Models\CategoryAgent;
 use App\Models\Ticket;
 use App\Models\TicketCategory;
 use App\Models\User;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -273,7 +274,23 @@ class ApitiketController extends BaseController
                     </span>
                 ';
             })
-            ->addColumn('sla', fn() => '-')
+            ->addColumn('sla', function($row) {
+                $sla_due_at = $row->sla_due_at;
+                $verified_at = $row->verified_at;
+
+                $datetimeSla = new DateTime($sla_due_at);
+                $datetimeVerified = new DateTime($verified_at);
+                $interval = $datetimeVerified->diff($datetimeSla);
+
+                $waktuSla = $interval->format('%d hari, %h jam, %i menit');
+
+                if($sla_due_at === null)
+                {
+                    return $waktuSla = "-";
+                } else {
+                    return $waktuSla;
+                }
+            })
             ->addColumn('respon', function ($row) use ($userId) {
                 $countResponMessage = $row->messages->count();
                 $roleIdUser = User::where('id', $userId)->first();

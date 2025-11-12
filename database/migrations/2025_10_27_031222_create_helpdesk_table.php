@@ -78,7 +78,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('category_id')->constrained('ticket_categories')->onDelete('cascade');
             $table->foreignId('assigned_to')->nullable()->constrained('users')->onDelete('set null');
-            $table->integer('wilayah_id')->nullable();
+            $table->string('wilayah_id')->nullable();
             $table->string('title');
             $table->text('description');
             $table->text('ticket_resolution_message')->nullable();

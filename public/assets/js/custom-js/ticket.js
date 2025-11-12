@@ -1662,4 +1662,316 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+
+    // export data tiket
+    flatpickr("#dariTanggal", {
+        enableTime: true,
+        dateFormat: "Y-m-d",
+        time_24hr: true,
+        defaultDate: new Date(),
+        locale: "id"
+    });
+
+    flatpickr("#sampaiTanggal", {
+        enableTime: true,
+        dateFormat: "Y-m-d",
+        time_24hr: true,
+        defaultDate: new Date(),
+        locale: "id"
+    });
+
+    const optionsStatusExport = [
+        { value: "", text: "Semua Tiket" },
+        { value: "open", text: "Terbuka" },
+        { value: "in_progress", text: "Proses" },
+        { value: "assignee", text: "Diverifikasi" },
+        { value: "closed", text: "Ditutup" },
+        { value: "draft", text: "Draft" },
+        { value: "need_revision", text: "Perlu Revisi" },
+        { value: "agent_rejected", text: "Ditolak Agent" },
+    ];
+
+    const optionsPrioritasExport = [
+        { value: "", text: "Semua Prioritas" },
+        { value: "low", text: "Rendah" },
+        { value: "medium", text: "Sedang" },
+        { value: "high", text: "Tinggi" },
+    ];
+
+    const statusSelectImport = $("#selectStatusImport");
+    const prioritasSelectImport = $("#statusSelectPrioritas");
+
+    optionsStatusExport.forEach((opt) => {
+        statusSelectImport.append(new Option(opt.text, opt.value));
+    });
+
+    optionsPrioritasExport.forEach((opt) => {
+        prioritasSelectImport.append(new Option(opt.text, opt.value));
+    });
+
+    statusSelectImport.select2({
+        placeholder: "Semua Status",
+        allowClear: true,
+        width: "100%",
+    });
+
+    prioritasSelectImport.select2({
+        placeholder: "Semua Prioritas",
+        allowClear: true,
+        width: "100%",
+    });
+
+    $(document).on("click", "#exportExcel", function(e) {
+        $("#exportExcel").val("excel");
+        $("#innerFormatTiket").html("EXCEL");
+        $("#btnExportData").html("Export EXCEL");
+    });
+
+    $(document).on("click", "#exportPdf", function(e) {
+        $("#exportExcel").val("pdf");
+        $("#innerFormatTiket").html("PDF");
+        $("#btnExportData").html("Export PDF");
+    });
+
+    // export tiket
+    $(document).on("click", "#btnExportData", function(e) {
+        e.preventDefault();
+
+        let exportFormat = $('input[name="exportFormat"]:checked').attr('id') === 'exportExcel' ? 'excel' : 'pdf';
+
+        let dariTanggal = $('#dariTanggal').val();
+        let sampaiTanggal = $('#sampaiTanggal').val();
+
+        let statusImport = $('#selectStatusImport').val();
+        let prioritas = $('#statusSelectPrioritas').val();
+
+        let wilayah = $('.form-select:eq(2)').val();
+
+        let dataDisertakan = [];
+        if ($('#dataDasar').is(':checked')) dataDisertakan.push('dataDasar');
+        if ($('#dataRespon').is(':checked')) dataDisertakan.push('dataRespon');
+        if ($('#dataAktivitas').is(':checked')) dataDisertakan.push('dataAktivitas');
+        if ($('#dataLampiran').is(':checked')) dataDisertakan.push('dataLampiran');
+
+        let formData = {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            format: exportFormat,
+            dariTanggal: dariTanggal,
+            sampaiTanggal: sampaiTanggal,
+            status: statusImport,
+            prioritas: prioritas,
+            wilayah: wilayah,
+            dataDisertakan: dataDisertakan
+        };
+
+        $("#loaderTiket").show();
+
+        $.ajax({
+            url: "/tiket/exportTiket",
+            type: "POST",
+            data: formData,
+            success: function(response) {
+                $("#loaderTiket").hide();
+
+                if (!response.data || response.data.length === 0) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Tidak Ada Data",
+                        text: "Tidak ada tiket yang ditemukan untuk diekspor.",
+                    });
+                    return;
+                }
+                const data = response.data;
+
+                const rows = data.map(t => {
+                    const createdAt = new Date(t.created_at);
+                    const tahun = createdAt.getFullYear();
+                    const idTiket = t.id ? `TKT-${tahun}-${t.id}` : "-";
+                    let slaDate = t.sla_due_at;
+                    let verifiedAt = t.verified_at;
+
+                    const datetimeSla = new Date(slaDate);
+                    const datetimeVerified = new Date(verifiedAt);
+                    const diffMs = datetimeSla.getTime() - datetimeVerified.getTime();
+                    const MS_PER_SECOND = 1000;
+                    const MS_PER_MINUTE = 60 * MS_PER_SECOND;
+                    const MS_PER_HOUR = 60 * MS_PER_MINUTE;
+                    const MS_PER_DAY = 24 * MS_PER_HOUR;
+
+                    let remainingMs = diffMs;
+                    const days = Math.floor(remainingMs / MS_PER_DAY);
+                    remainingMs %= MS_PER_DAY;
+                    const hours = Math.floor(remainingMs / MS_PER_HOUR);
+                    remainingMs %= MS_PER_HOUR;
+                    const minutes = Math.floor(remainingMs / MS_PER_MINUTE);
+                    remainingMs %= MS_PER_MINUTE;
+                    let waktuSla = `${days} hari, ${hours} jam, ${minutes} menit`;
+
+                    if(slaDate === null)
+                    {
+                        waktuSla = "-";
+                    }
+
+                    $statusTiket = "";
+                    $prioritasTiket = "";
+
+                    switch(t.status)
+                    {
+                        case "open":
+                            statusTiket = "Terbuka";
+                            break;
+                        case "assignee":
+                            statusTiket = "Diverifikasi"
+                            break;
+                        case "need_revision":
+                            statusTiket = "Perlu Revisi";
+                            break;
+                        case "agent_rejected":
+                            statusTiket = "Ditolak Agent";
+                            break;
+                        case "draft":
+                            statusTiket = "Draft";
+                            break;
+                        case "closed":
+                            statusTiket = "Ditutup";
+                            break;
+                        case "in_progress":
+                            statusTiket = "Proses";
+                            break;
+                    }
+
+                    switch(t.priority)
+                    {
+                        case "low":
+                            $prioritasTiket = "Rendah";
+                            break;
+                        case "medium":
+                            $prioritasTiket = "Sedang";
+                            break;
+                        case "high":
+                            $prioritasTiket = "Tinggi";
+                            break;
+                    }
+
+                    return {
+                        "ID Tiket": idTiket,
+                        "Judul": t.title || "-",
+                        "Status": statusTiket || "-",
+                        "Prioritas": $prioritasTiket || "-",
+                        "Pelapor": t.user?.name || "-",
+                        "Penanggung Jawab": t.agent?.name || "-",
+                        "Wilayah": t.wilayah?.name || "-",
+                        "Kategori": t.category?.name || "-",
+                        "SLA": waktuSla,
+                        "Tanggal Dibuat": t.created_at ? createdAt.toLocaleString("id-ID") : "-",
+                        "Update Terakhir": t.updated_at ? new Date(t.updated_at).toLocaleString("id-ID") : "-"
+                    };
+                });
+
+                if (exportFormat === 'excel') {
+                    const ws = XLSX.utils.json_to_sheet(rows);
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, "Tiket");
+
+                    const tanggal = new Date().toISOString().split("T")[0];
+                    const fileName = `tiket_export_${tanggal}.xlsx`;
+
+                    XLSX.writeFile(wb, fileName);
+                }
+                else if (exportFormat === 'pdf') {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF('l', 'mm', 'a4');
+
+                    const tanggal = new Date().toISOString().split("T")[0];
+                    const fileName = `tiket_export_${tanggal}.pdf`;
+
+                    doc.setFontSize(16);
+                    doc.setFont("helvetica", "bold");
+                    doc.text("Laporan Data Helpdesk", 148.5, 15, { align: "center" });
+
+                    doc.setFontSize(12);
+                    doc.setFont("helvetica", "normal");
+                    doc.text("Aplikasi Justisia - Kementerian Agraria dan Tata Ruang/BPN", 148.5, 22, { align: "center" });
+
+                    doc.setLineWidth(0.5);
+                    doc.line(14, 25, 283, 25);
+
+                    let posisiY = 35;
+
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(13);
+                    doc.text("Ringkasan Data", 14, posisiY);
+
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(10);
+                    doc.text(`Tanggal Export: ${new Date().toLocaleString("id-ID")}`, 14, posisiY + 7);
+
+                    const tableColumn = [
+                        "ID Tiket",
+                        "Judul",
+                        "Status",
+                        "Prioritas",
+                        "Pelapor",
+                        "Penanggung Jawab",
+                        "Wilayah",
+                        "Kategori",
+                        "SLA",
+                        "Tanggal Dibuat",
+                        "Update Terakhir"
+                    ];
+
+                    const tableRows = rows.map(r => [
+                        r["ID Tiket"],
+                        r["Judul"],
+                        r["Status"],
+                        r["Prioritas"],
+                        r["Pelapor"],
+                        r["Penanggung Jawab"],
+                        r["Wilayah"],
+                        r["Kategori"],
+                        r["SLA"],
+                        r["Tanggal Dibuat"],
+                        r["Update Terakhir"]
+                    ]);
+
+                    doc.autoTable({
+                        startY: posisiY + 14,
+                        head: [tableColumn],
+                        body: tableRows,
+                        theme: 'grid',
+                        styles: {
+                            fontSize: 8,
+                            cellPadding: 2,
+                        },
+                        headStyles: {
+                            fillColor: [41, 128, 185],
+                            textColor: [255, 255, 255],
+                            fontStyle: 'bold',
+                        },
+                    });
+
+                    doc.save(fileName);
+
+
+                }
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Export Berhasil",
+                    text: "File berhasil di donwload.",
+                });
+            },
+            error: function(xhr) {
+                // console.error(xhr.responseText);
+                $("#loaderTiket").hide();
+                Swal.fire({
+                    icon: "error",
+                    title: "Gagal Export",
+                    text: "Terjadi kesalahan saat mendonwload file.",
+                });
+            }
+        });
+    });
+
+
 });
