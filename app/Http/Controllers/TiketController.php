@@ -113,7 +113,7 @@ class TiketController extends Controller
     {
         $ticket = Ticket::findOrFail($request->tiketId);
 
-        if($request->isAjukan == 1 && $ticket->status == "draft")
+        if($request->isAjukan == 1 && ($ticket->status == "draft" || $ticket->status == "need_revision"))
         {
             $ticket->update([
                 'status' => 'open',

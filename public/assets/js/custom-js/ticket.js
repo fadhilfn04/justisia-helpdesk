@@ -243,7 +243,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     $("#createTiketModal").on("shown.bs.modal", function () {
-        $("#btnCreateTiket").on("click", function (e) {
+        $("#btnCreateTiket").off("click").on("click", function (e) {
             e.preventDefault();
 
             const title = $('#formTiket input[name="title"]').val()?.trim();
@@ -365,7 +365,7 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         });
 
-        $("#btnDraftTiket").on("click", function (e) {
+        $("#btnDraftTiket").off("click").on("click", function (e) {
             e.preventDefault();
 
             const title = $('#formTiket input[name="title"]').val()?.trim();
@@ -405,6 +405,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         showCancelButton: true,
                         confirmButtonText: "Ya, simpan",
                         cancelButtonText: "Batal",
+                        reverseButtons: true,
                     }).then((result) => {
                         if (result.isConfirmed) {
                             let formData = new FormData($("#formTiket")[0]);
@@ -485,7 +486,7 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         });
 
-        $("#btnEditTiket").on("click", function (e) {
+        $("#btnEditTiket").off("click").on("click", function (e) {
             e.preventDefault();
 
             const tiketId = $('#formTiket input[name="tiketId"]').val()?.trim();
@@ -579,8 +580,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         });
+
         // btn toal tiket agent
-        $("#btnTolakTiket").on("click", function (e) {
+        $("#btnTolakTiket").off("click").on("click", function (e) {
             e.preventDefault();
 
             const tiketId = $('#formTiket input[name="tiketId"]').val()?.trim();
@@ -654,7 +656,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         // btn terima tiket agent
-        $("#btnTerimaTiket").on("click", function (e) {
+        $("#btnTerimaTiket").off("click").on("click", function (e) {
             e.preventDefault();
 
             const tiketId = $('#formTiket input[name="tiketId"]').val()?.trim();
@@ -820,54 +822,77 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     // btn buka respon modal
-    $(document).on("click", ".btn-respon", function () {
-        const ticketId = $(this).data("id");
-        const ticketStatus = $(this).data("status");
-        const userRoleId = $(this).data("user-role-id");
-        const pj = $(this).data("pj");
-        const chatArea = $("#chatArea");
-        const chatInput = $("#chatInput");
+    $(document).on('click', '.btn-respon', function () {
+        const ticketId = $(this).data('id');
+        const ticketStatus = $(this).data('status');
+        const userRoleId = $(this).data('user-role-id');
+        const pj = $(this).data('pj');
+        const chatArea = $('#chatArea');
+        const chatInput = $('#chatInput');
 
-        if (ticketStatus == "draft") {
+        console.log(ticketStatus);
+
+        if(ticketStatus == "draft")
+        {
             Swal.fire({
-                icon: "warning",
-                title: "Peringatan!",
-                text: "Status tiket kamu masih dalam tahap draft. Silakan ajukan tiket terlebih dahulu untuk memulai diskusi dengan agen.",
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Status tiket kamu masih dalam tahap draft. Silakan ajukan tiket terlebih dahulu untuk memulai diskusi dengan agen.',
             });
             return;
         }
 
-        if (userRoleId == "2" && ticketStatus == "assignee") {
+        if(ticketStatus == "open" || ticketStatus == "assignee" || ticketStatus == "need_revision" || ticketStatus == "agent_rejected")
+        {
+            let nameTiketTranslate = "";
+            let textPesan = "";
+            switch(ticketStatus)
+            {
+                case "open":
+                    nameTiketTranslate = "Terbuka";
+                    textPesan = "Status tiket ini adalah Terbuka. Mohon menunggu proses verifikasi oleh admin dan penugasan agen yang akan menangani tiket ini.";
+                    break;
+                case "assignee":
+                    nameTiketTranslate = "Diverifikasi"
+                    textPesan = "Status tiket ini adalah Verifikasi. Mohon menunggu proses selanjutnya hingga penugasan agen yang akan menangani tiket ini.";
+                    break;
+                case "need_revision":
+                    nameTiketTranslate = "Perlu Revisi";
+                    textPesan = "Status tiket ini memerlukan Revisi. Silakan revisi tiket dan ajukan kembali untuk verifikasi ulang. admin akan menugaskan agen setelah tiket diverifikasi.";
+                    break;
+                case "agent_rejected":
+                    nameTiketTranslate = "Ditolak Agent";
+                    textPesan = "Status tiket ini adalah Ditolak oleh Agen. Mohon menunggu proses penugasan kembali tiket kepada agen yang akan dilakukan oleh admin.";
+                    break;
+            }
+
             Swal.fire({
-                icon: "warning",
-                title: "Peringatan!",
-                text: "Status tiket kamu masih dalam tahap verifikasi. Silakan terima tiket terlebih dahulu untuk memulai diskusi dengan user.",
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: textPesan,
             });
             return;
         }
 
-        if (!pj) {
+        if(!pj)
+        {
             Swal.fire({
-                icon: "warning",
-                title: "Peringatan!",
-                text: "Tiket Anda belum diverifikasi dan belum ditugaskan kepada agen oleh admin. Mohon tunggu sebentar sebelum memulai diskusi dengan agen.",
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Tiket Anda belum diverifikasi dan belum ditugaskan kepada agen oleh admin. Mohon tunggu sebentar sebelum memulai diskusi dengan agen.',
             });
             return;
         }
 
-        $("#responModal").modal("show");
+        $('#responModal').modal('show');
         if (userRoleId == 1) {
-            $("#responModalLabel").html(
-                "Diskusi terkait <strong>tiket user</strong> dengan agen"
-            );
-            $(".input-chat-wrapper").addClass("d-none");
+            $("#responModalLabel").html("Diskusi terkait <strong>tiket user</strong> dengan agen");
+            $('.input-chat-wrapper').addClass('d-none');
         } else {
-            $(".input-chat-wrapper").removeClass("d-none");
+            $('.input-chat-wrapper').removeClass('d-none');
         }
 
-        chatArea.html(
-            '<div class="text-center text-muted mt-4">Memuat pesan...</div>'
-        );
+        chatArea.html('<div class="text-center text-muted mt-4">Memuat pesan...</div>');
 
         let isFirstLoad = true;
 
@@ -885,60 +910,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
             $.ajax({
                 url: `/tiket/getAllChat/${ticketId}`,
-                method: "GET",
+                method: 'GET',
                 success: function (data) {
                     chatArea.empty();
                     isFirstLoad = false;
 
                     if (!data || data.length === 0) {
-                        chatArea.html(
-                            '<div class="text-center text-muted mt-4">Belum ada pesan.</div>'
-                        );
+                        chatArea.html('<div class="text-center text-muted mt-4">Belum ada pesan.</div>');
                         return;
                     }
 
-                    data.forEach((msg) => {
+                    data.forEach(msg => {
                         let isRight;
 
                         if (userRoleId == 1) {
-                            const senderIds = [
-                                ...new Set(data.map((m) => m.sender_id)),
-                            ];
+                            const senderIds = [...new Set(data.map(m => m.sender_id))];
                             const leftId = senderIds[0];
                             isRight = msg.sender_id !== leftId;
                         } else {
                             isRight = msg.sender_id == userId;
                         }
 
-                        const waktu = new Date(msg.created_at).toLocaleString(
-                            "id-ID",
-                            {
-                                day: "2-digit",
-                                month: "long",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                            }
-                        );
+                        const waktu = new Date(msg.created_at).toLocaleString('id-ID', {
+                            day: '2-digit',
+                            month: 'long',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
 
                         let senderName;
                         if (userRoleId == 1) {
-                            senderName = msg.sender?.name || "Agen";
+                            senderName = msg.sender?.name || 'Agen';
                         } else {
-                            senderName = isRight
-                                ? "Anda"
-                                : msg.sender?.name || "Agen";
+                            senderName = isRight ? 'Anda' : (msg.sender?.name || 'Agen');
                         }
 
                         const messageHTML = `
-                            <div class="d-flex ${
-                                isRight ? "justify-content-end" : ""
-                            } mb-3">
-                                <div class="${
-                                    isRight
-                                        ? "bg-primary text-white"
-                                        : "bg-white border"
-                                } rounded-3 p-3 shadow-sm" style="max-width: 70%; position: relative;">
+                            <div class="d-flex ${isRight ? 'justify-content-end' : ''} mb-3">
+                                <div class="${isRight ? 'bg-primary text-white' : 'bg-white border'} rounded-3 p-3 shadow-sm" style="max-width: 70%; position: relative;">
                                     <strong>${senderName}:</strong><br>
                                     ${msg.message}
                                     <div class="text-end mt-1" style="font-size: 0.75rem; opacity: 0.7;">${waktu}</div>
@@ -948,61 +958,48 @@ document.addEventListener("DOMContentLoaded", function () {
                         chatArea.append(messageHTML);
                     });
 
+
                     chatArea.scrollTop(chatArea[0].scrollHeight);
                 },
                 error: function () {
-                    chatArea.html(
-                        '<div class="text-center text-danger mt-4">Gagal memuat chat.</div>'
-                    );
-                },
+                    chatArea.html('<div class="text-center text-danger mt-4">Gagal memuat chat.</div>');
+                }
             });
         }
 
         loadChat();
-        const chatInterval = setInterval(loadChat, 5000);
+        const chatInterval = setInterval(loadChat, 2000);
 
-        $("#responModal").on("hidden.bs.modal", function () {
+        $('#responModal').on('hidden.bs.modal', function () {
             clearInterval(chatInterval);
         });
 
-        $("#sendBtn")
-            .off("click")
-            .on("click", function () {
-                const message = chatInput.val().trim();
-                if (!message) return;
+        $('#sendBtn').off('click').on('click', function () {
+            const message = chatInput.val().trim();
+            if (!message) return;
 
-                const formData = new FormData();
-                formData.append("ticket_id", ticketId);
-                formData.append("sender_id", userId);
-                formData.append("message", message);
-                formData.append(
-                    "_token",
-                    $('meta[name="csrf-token"]').attr("content")
-                );
+            const formData = new FormData();
+            formData.append('ticket_id', ticketId);
+            formData.append('sender_id', userId);
+            formData.append('message', message);
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
-                $.ajax({
-                    url: `/tiket/sendChat`,
-                    method: "POST",
-                    processData: false,
-                    contentType: false,
-                    data: formData,
-                    success: function () {
-                        chatInput.val("");
-                        loadChat();
-                        table.ajax.reload(null, false);
-                    },
-                    error: function (xhr) {
-                        console.error(xhr.responseJSON);
-                        alert("Gagal mengirim pesan.");
-                    },
-                });
+            $.ajax({
+                url: `/tiket/sendChat`,
+                method: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function () {
+                    chatInput.val('');
+                    loadChat();
+                    table.ajax.reload(null, false);
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseJSON);
+                    alert('Gagal mengirim pesan.');
+                }
             });
-
-        $("#chatInput").on("keypress", function (e) {
-            if (e.which === 13 && !e.shiftKey) {
-                e.preventDefault();
-                $("#sendBtn").click();
-            }
         });
     });
 

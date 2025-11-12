@@ -259,7 +259,7 @@
 <div class="modal fade" id="modalVerifikasiTiket" tabindex="-1" aria-labelledby="detailTiketLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered mw-700px">
         <div class="modal-content shadow-lg rounded-4 border-0">
-            
+
             <div class="modal-header bg-light border-0 rounded-top-4 px-5 py-4">
                 <div class="d-flex align-items-center">
                     <i data-lucide="ticket" class="text-primary me-2" style="width: 22px; height: 22px;"></i>
@@ -304,7 +304,7 @@
                             <label class="fw-semibold text-gray-700 mb-2">
                                 <i data-lucide="message-square" class="me-1 text-primary" style="width: 16px;"></i> Resolusi / Pesan Penyelesaian <span class="text-danger">*</span>
                             </label>
-                            <textarea id="inputPesanPenyelesaian" class="form-control form-control-solid fs-6" rows="4" placeholder="Jelaskan resolusi penyelesaian untuk tiket ini..." required></textarea>
+                            <textarea id="inputPesanPenyelesaian" class="form-control form-control-solid fs-6 text-area-input-penyelesaian" rows="4" placeholder="Jelaskan resolusi penyelesaian untuk tiket ini..." required></textarea>
                         </div>
 
                         <div class="col-md-12 input-file-penyelesaian">

@@ -306,10 +306,10 @@ class ApitiketController extends BaseController
                             <i data-lucide="eye" class="me-2 text-warning" width="18" height="18"></i> Detail
                             </a>';
 
-                if ($roleUserLogin == '3' && $row->status === 'solved')
+                if ($roleUserLogin == '3' && $row->status === 'closed')
                 {
                     $dropdown .= '
-                        <a href="#" class="dropdown-item f" data-id="'.$row->id.'">
+                        <a href="#" class="dropdown-item btn-detail-penyelesaian" data-id="'.$row->id.'">
                             <i data-lucide="notebook" class="me-2 text-primary" width="18" height="18"></i> Detail Penyelesaian
                         </a>';
                 }
@@ -339,7 +339,7 @@ class ApitiketController extends BaseController
                         </a>';
                 }
 
-                if ($roleUserLogin == '2' && $row->status === 'solved') {
+                if ($roleUserLogin != '2' && $row->status === 'in_progress') {
                     $dropdown .= '
                         <a class="dropdown-item btn-tutup" href="#" data-id="' . $row->id . '">
                             <i data-lucide="x-circle" class="me-2 text-danger" width="18" height="18"></i> Tutup Tiket
