@@ -47,8 +47,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/update', [TiketController::class, 'update'])->name('tiket.update');
         Route::post('/delete', [TiketController::class, 'delete'])->name('tiket.destroy');
         Route::post('/{id}/verification', [TiketController::class, 'verification'])->name('verification');
-        Route::post('/{id}/return', [TiketController::class, 'return'])->name('return');
-        Route::post('/{id}/close', [TiketController::class, 'close'])->name('return');
+        Route::post('/{id}/return', [TiketController::class, 'return'])->name('tiket.return');
+        Route::post('/{id}/close', [TiketController::class, 'close'])->name('tiket.close');
         Route::get('/{id}/timeline', [TiketController::class, 'getTimeline']);
         Route::post('/actionTiketAgent', [TiketController::class, 'actionTiketAgent'])->name('tiket.actionTiketAgent');
         Route::post('/ticketResolution', [TiketController::class, 'ticketResolution'])->name('tiket.ticketResolution');

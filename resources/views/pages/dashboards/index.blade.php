@@ -181,7 +181,9 @@
                         </div>
                     </div>
 
-                    {{-- @include('partials.dashboard.tables._monitoring-sla') --}}
+                    <div id="sla-monitoring-container">
+                        @include('partials.dashboard.tables._monitoring-sla')
+                    </div>
                 </div>
 
                 <div class="tab-pane fade" id="tab_notifikasi" role="tabpanel">
@@ -227,6 +229,7 @@
                 updateRealtimeData(data);
                 updateOnlineAgent(data);
                 updateRecentActivities(data);
+                updateMonitoringSLA(data);
 
                 const now = new Date();
                 lastUpdateText.textContent = `Terakhir update: ${now.toLocaleTimeString('id-ID', { hour12: false })}`;
@@ -260,7 +263,11 @@
         }
 
         function updateRecentActivities(data) {
-            document.getElementById('realtime-activity-container').innerHTML = data.html ?? '<div class="text-center text-muted py-5">Belum ada aktivitas.</div>';
+            document.getElementById('realtime-activity-container').innerHTML = data.htmlActivities ?? '<div class="text-center text-muted py-5">Belum ada aktivitas.</div>';
+        }
+
+        function updateMonitoringSLA(data) {
+            document.getElementById('sla-monitoring-container').innerHTML = data.htmlSLA ?? '<div class="text-center text-muted py-5">Belum ada data SLA.</div>';
         }
 
         fetchRealtimeData();

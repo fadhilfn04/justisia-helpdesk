@@ -113,18 +113,28 @@ class DashboardController extends Controller
             ? round(($tiketSelesai / $totalTiket) * 100, 2)
             : 0;
 
-        $slaBatasJam = 48;
         $slaCompliance = (clone $query)
             ->where('status', 'closed')
             ->get()
-            ->filter(function ($ticket) use ($slaBatasJam) {
+            ->filter(function ($ticket) {
+                $batasJam = match ($ticket->priority) {
+                    'high'   => 24,
+                    'medium' => 48,
+                    'low'    => 72,
+                    default  => 48,
+                };
+
                 $durasi = Carbon::parse($ticket->created_at)
                     ->diffInHours(Carbon::parse($ticket->updated_at));
-                return $durasi <= $slaBatasJam;
+
+                return $durasi <= $batasJam;
             })
             ->count();
 
-        $totalClosed = (clone $query)->where('status', 'closed')->count();
+        $totalClosed = (clone $query)
+            ->where('status', 'closed')
+            ->count();
+
         $slaCompliancePersen = $totalClosed > 0
             ? round(($slaCompliance / $totalClosed) * 100, 2)
             : 0;
@@ -159,7 +169,8 @@ class DashboardController extends Controller
             'ticket_daily_trends' => $ticketDailyTrends,
             'sla_monitoring' => $slaMonitoring,
             'last_update' => now()->format('H:i:s'),
-            'html' => view('partials.dashboard.tables._aktivitas-real-time', compact('recentActivities'))->render(),
+            'htmlActivities' => view('partials.dashboard.tables._aktivitas-real-time', compact('recentActivities'))->render(),
+            'htmlSLA' => view('partials.dashboard.tables._monitoring-sla', compact('slaMonitoring'))->render(),
         ]);
     }
 
@@ -286,12 +297,29 @@ class DashboardController extends Controller
 
     private function getSlaMonitoring()
     {
-        return Ticket::select('id', 'title', 'status', 'created_at')
-            ->orderByDesc('created_at')
+        return Ticket::select('id', 'title', 'status', 'priority', 'created_at', 'verified_at', 'sla_due_at')
+            ->orderByDesc('verified_at')
             ->limit(10)
             ->get()
             ->map(function ($ticket) {
-                $deadline = Carbon::parse($ticket->created_at)->addHours(48);
+                if (!$ticket->verified_at) {
+                    return [
+                        'id' => 'TKT-' . str_pad($ticket->id, 5, '0', STR_PAD_LEFT),
+                        'title' => $ticket->title,
+                        'status' => 'Menunggu Verifikasi',
+                        'badge' => 'bg-secondary',
+                        'created_at' => $ticket->created_at,
+                        'deadline' => null,
+                    ];
+                }
+
+                $deadline = $ticket->sla_due_at ?? match ($ticket->priority) {
+                    'high' => Carbon::parse($ticket->verified_at)->addHours(24),
+                    'medium' => Carbon::parse($ticket->verified_at)->addHours(48),
+                    'low' => Carbon::parse($ticket->verified_at)->addHours(72),
+                    default => Carbon::parse($ticket->verified_at)->addHours(48),
+                };
+
                 $remaining = now()->diffInHours($deadline, false);
 
                 $slaStatus = match (true) {
@@ -302,20 +330,22 @@ class DashboardController extends Controller
                 };
 
                 $badge = match ($slaStatus) {
-                    'Terlambat' => 'bg-danger',
-                    'Peringatan' => 'bg-warning text-dark',
-                    'Normal' => 'bg-success',
-                    'Tertunda' => 'bg-secondary',
-                    default => 'bg-primary',
+                    'Terlambat' => 'bg-danger text-white',
+                    'Peringatan' => 'bg-warning text-white',
+                    'Normal' => 'bg-success text-white',
+                    'Terbuka' => 'bg-primary text-white',
+                    default => 'bg-secondary',
                 };
 
                 return [
                     'id' => 'TKT-' . str_pad($ticket->id, 5, '0', STR_PAD_LEFT),
                     'title' => $ticket->title,
+                    'priority' => ucfirst($ticket->priority),
                     'status' => $slaStatus,
                     'badge' => $badge,
-                    'created_at' => $ticket->created_at,
+                    'verified_at' => $ticket->verified_at,
                     'deadline' => $deadline,
+                    'created_at' => $ticket->created_at,
                 ];
             });
     }

@@ -1,5 +1,5 @@
 <x-default-layout>
-<link rel="stylesheet" href="{{ asset('assets/css/custom-css/helpdesk.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/custom-css/tiket.css') }}">
 
 <style>
     .skeleton {
@@ -76,7 +76,7 @@
                         </div>
                         @if (auth()->user()->role->id != '1')
                             <div class="col-md-2">
-                                <button class="btn btn-dark w-100"
+                                <button class="btn btn-primary w-100"
                                     data-bs-toggle="modal"
                                     data-bs-target="#createTiketModal">
                                     <i class="fas fa-plus me-1"></i> Buat Tiket Baru
@@ -509,11 +509,11 @@
                 </form>
             </div>
             <div class="modal-footer d-flex justify-content-end gap-2">
-                <button class="btn border border-gray-300 btn-hover-primary py-2 fw-semibold bg-white" id="btnDraftTiket">Simpan Draft</button>
-                <button class="btn btn-dark py-2 fw-semibold" id="btnCreateTiket">Buat Tiket</button>
-                <button class="btn btn-dark py-2 fw-semibold" id="btnEditTiket">Edit Tiket</button>
-                <button class="btn border border-gray-300 btn-hover-primary py-2 fw-semibold bg-white" id="btnTolakTiket">Tolak Tiket</button>
-                <button class="btn btn-dark py-2 fw-semibold" id="btnTerimaTiket">Terima Tiket</button>
+                <button class="btn border border-gray-300 py-2 fw-semibold bg-white" id="btnDraftTiket">Simpan Draft</button>
+                <button class="btn btn-primary py-2 fw-semibold" id="btnCreateTiket">Buat Tiket</button>
+                <button class="btn btn-warning py-2 fw-semibold" id="btnEditTiket">Edit Tiket</button>
+                <button class="btn border border-gray-300 btn-danger py-2 fw-semibold" id="btnTolakTiket">Tolak Tiket</button>
+                <button class="btn btn-success py-2 fw-semibold" id="btnTerimaTiket">Terima Tiket</button>
             </div>
         </div>
     </div>
@@ -523,14 +523,12 @@
     <div class="modal-dialog modal-dialog-centered" style="max-width: 850px;">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="responModalLabel">Diskusi terkait tiket dengan agen Anda</h5>
+                <h5 class="modal-title" id="responModalLabel">Diskusi Tiket dengan Agen</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-0">
-                <!-- Card Chat -->
                 <div class="card border-0" style="height: 500px;">
                     <div class="card-body d-flex flex-column p-0">
-                        <!-- Area pesan -->
                         <div id="chatArea" class="flex-grow-1 overflow-auto p-4" style="background: #f8f9fa;"></div>
 
                         <div class="border-top p-3 bg-white d-flex align-items-center justify-content-between gap-2 input-chat-wrapper">
@@ -558,7 +556,6 @@
         </div>
     </div>
 </div>
-
 
 @push('scripts')
     <script src="{{ asset('assets/js/custom-js/ticket.js') }}"></script>

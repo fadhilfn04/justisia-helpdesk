@@ -27,6 +27,8 @@ return new class extends Migration
             $table->datetime('last_login_at')->nullable();
             $table->string('last_login_ip')->nullable();
             $table->timestamp('last_seen')->nullable();
+            $table->timestamp('verified_at')->nullable();
+            $table->timestamp('sla_due_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

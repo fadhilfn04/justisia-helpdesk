@@ -22,7 +22,7 @@ class TiketController extends Controller
     {
         $ticket = Ticket::all();
         $agents = CategoryAgent::with('user')->get();
-        return view('pages.helpdesk.index', compact('ticket', 'agents'));
+        return view('pages.tiket.index', compact('ticket', 'agents'));
     }
 
     public function show($id)
@@ -73,17 +73,16 @@ class TiketController extends Controller
         $ticketTimeline = TicketTimeline::create([
             'ticket_id' => $ticket->id,
             'actor_id' => $request->userPelaporId,
-            'action' => 'Tiket Dibuat',
-            'description' => $request->deskripsi,
+            'action' => $request->status,
+            'description' => 'Tiket baru: ' . $request->title . '',
         ]);
 
         if($request->status != 'draft')
         {
             NotificationService::send(
                 $request->userPelaporId,
-                'success',
                 'Tiket berhasil diajukan',
-                'Tiket Anda dengan ID #{$ticket->id} telah berhasil diajukan. Mohon tunggu, admin akan segera melakukan verifikasi.'
+                "Tiket Anda dengan ID #{$ticket->id} telah berhasil diajukan. Mohon tunggu, admin akan segera melakukan verifikasi."
             );
         }
 
@@ -120,9 +119,15 @@ class TiketController extends Controller
                 'status' => 'open',
             ]);
 
+            $ticketTimeline = TicketTimeline::create([
+                'ticket_id' => $ticket->id,
+                'actor_id' => $ticket->user_id,
+                'action' => $ticket->status,
+                'description' => 'Tiket telah diperbaharui: ' . $ticket->title . '',
+            ]);
+
             NotificationService::send(
-                $request->userPelaporId,
-                'success',
+                $ticket->user_id,
                 'Tiket berhasil diperbarui',
                 "Tiket Anda dengan ID #{$ticket->id} telah berhasil diperbarui. Mohon tunggu, admin akan segera melakukan verifikasi."
             );
@@ -182,6 +187,13 @@ class TiketController extends Controller
 
         $ticket = Ticket::with('file')->findOrFail($request->id);
 
+        $ticketTimeline = TicketTimeline::create([
+            'ticket_id' => $ticket->id,
+            'actor_id' => $ticket->user_id,
+            'action' => $ticket->status,
+            'description' => 'Tiket telah dihapus: ' . $ticket->title . '',
+        ]);
+
         NotificationService::send(
             $ticket->user_id,
             'Tiket Dihapus',
@@ -204,22 +216,41 @@ class TiketController extends Controller
     public function verification($id, Request $request)
     {
         try {
-            $tiket = Ticket::findOrFail($id);
-            $tiket->assigned_to = $request->agent_id;
-            $tiket->priority = $request->priority;
-            $tiket->status = 'assignee';
-            $tiket->save();
+            $ticket = Ticket::findOrFail($id);
+
+            $ticket->assigned_to = $request->agent_id;
+            $ticket->priority = $request->priority;
+            $ticket->status = 'assignee';
+            $ticket->verified_at = now();
+
+            $slaHours = match ($request->priority) {
+                'high' => 24,
+                'medium' => 48,
+                'low' => 72,
+                default => 48,
+            };
+
+            $ticket->sla_due_at = now()->addHours($slaHours);
+            $ticket->save();
+
+            TicketTimeline::create([
+                'ticket_id' => $ticket->id,
+                'actor_id' => $ticket->user_id,
+                'action' => $ticket->status,
+                'description' => 'Tiket telah diverifikasi: ' . $ticket->title,
+            ]);
 
             NotificationService::send(
-                $tiket->user_id,
+                $ticket->user_id,
                 'Tiket Diverifikasi',
-                "Tiket Anda dengan ID #{$tiket->id} telah diverifikasi dan sedang diproses."
+                "Tiket Anda dengan ID #{$ticket->id} telah diverifikasi dan sedang diproses. Batas waktu penyelesaian: " .
+                $ticket->sla_due_at->translatedFormat('d M Y H:i')
             );
 
             return response()->json([
                 'success' => true,
                 'message' => 'Tiket berhasil diverifikasi!',
-                'data' => $tiket
+                'data' => $ticket
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -232,20 +263,27 @@ class TiketController extends Controller
     public function return($id)
     {
         try {
-            $tiket = Ticket::findOrFail($id);
-            $tiket->status = 'need_revision';
-            $tiket->save();
+            $ticket = Ticket::findOrFail($id);
+            $ticket->status = 'need_revision';
+            $ticket->save();
+
+            $ticketTimeline = TicketTimeline::create([
+                'ticket_id' => $ticket->id,
+                'actor_id' => $ticket->user_id,
+                'action' => $ticket->status,
+                'description' => 'Tiket telah dikembalikan ke pengguna: ' . $ticket->title . '',
+            ]);
 
             NotificationService::send(
-                $tiket->user_id,
+                $ticket->user_id,
                 'Tiket Dikembalikan',
-                "Tiket Anda dengan ID #{$tiket->id} telah dikembalikan dikarenakan informasi yang diterima kurang."
+                "Tiket Anda dengan ID #{$ticket->id} telah dikembalikan dikarenakan informasi yang diterima kurang."
             );
 
             return response()->json([
                 'success' => true,
                 'message' => 'Tiket berhasil direvisi!',
-                'data' => $tiket
+                'data' => $ticket
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -258,20 +296,27 @@ class TiketController extends Controller
     public function close($id)
     {
         try {
-            $tiket = Ticket::findOrFail($id);
-            $tiket->status = 'closed';
-            $tiket->save();
+            $ticket = Ticket::findOrFail($id);
+            $ticket->status = 'closed';
+            $ticket->save();
+
+            $ticketTimeline = TicketTimeline::create([
+                'ticket_id' => $ticket->id,
+                'actor_id' => $ticket->user_id,
+                'action' => $ticket->status,
+                'description' => 'Tiket telah ditutup: ' . $ticket->title . '',
+            ]);
 
             NotificationService::send(
-                $tiket->user_id,
+                $ticket->user_id,
                 'Tiket Ditutup',
-                "Tiket Anda dengan ID #{$tiket->id} telah ditutup dikarenakan permasalahan sudah selesai."
+                "Tiket Anda dengan ID #{$ticket->id} telah ditutup dikarenakan permasalahan sudah selesai."
             );
 
             return response()->json([
                 'success' => true,
                 'message' => 'Tiket berhasil ditutup!',
-                'data' => $tiket
+                'data' => $ticket
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -369,7 +414,7 @@ class TiketController extends Controller
     {
         $tiket = Ticket::findOrFail($request->id);
 
-        $tiket->status = "solved";
+        $tiket->status = "closed";
         $tiket->ticket_resolution_message = $request->pesanPenyelesaian;
 
         if ($request->hasFile('fileTiketPenyelesaian')) {
@@ -382,7 +427,7 @@ class TiketController extends Controller
         NotificationService::send(
             $tiket->user_id,
             'Tiket berhasil diselesaikan oleh agent',
-            "Tiket #{$tiket->id} telah diselesaikan oleh agen. Silakan periksa dan tutup tiket jika penyelesaian sudah sesuai.",
+            "Tiket #{$tiket->id} telah diselesaikan oleh agen.",
             "success",
         );
 

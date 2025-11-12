@@ -311,9 +311,6 @@ class ApitiketController extends BaseController
                     $dropdown .= '
                         <a href="#" class="dropdown-item f" data-id="'.$row->id.'">
                             <i data-lucide="notebook" class="me-2 text-primary" width="18" height="18"></i> Detail Penyelesaian
-                        </a>
-                        <a class="dropdown-item btn-tutup" href="#" data-id="' . $row->id . '">
-                            <i data-lucide="check-check" class="me-2 text-success" width="18" height="18"></i> Tutup Tiket
                         </a>';
                 }
 
@@ -329,32 +326,32 @@ class ApitiketController extends BaseController
 
                 if ($roleUserLogin == '3' && ($row->status === 'draft' ||$row->status === 'open')) {
                     $dropdown .= '
-                            <a href="#" class="dropdown-item btn-delete" data-id="'.$row->id.'">
-                                <i data-lucide="trash" class="me-2 text-danger" width="18" height="18"></i> Hapus
-                            </a>';
+                        <a href="#" class="dropdown-item btn-delete" data-id="'.$row->id.'">
+                            <i data-lucide="trash" class="me-2 text-danger" width="18" height="18"></i> Hapus
+                        </a>';
                 }
 
 
                 if ($roleUserLogin == '1' && ($row->status === 'open' || $row->status === 'need_revision' || $row->status == 'agent_rejected')) {
                     $dropdown .= '
-                            <a class="dropdown-item btn-verifikasi" href="#" data-id="' . $row->id . '">
-                                <i data-lucide="check-circle" class="me-2 text-success" width="18" height="18"></i> Verifikasi
-                            </a>';
+                        <a class="dropdown-item btn-verifikasi" href="#" data-id="' . $row->id . '">
+                            <i data-lucide="check-circle" class="me-2 text-success" width="18" height="18"></i> Verifikasi
+                        </a>';
                 }
 
-                if ($roleUserLogin != '2' && $row->status === 'closed') {
+                if ($roleUserLogin == '2' && $row->status === 'solved') {
                     $dropdown .= '
-                            <a class="dropdown-item btn-tutup" href="#" data-id="' . $row->id . '">
-                                <i data-lucide="x-circle" class="me-2 text-danger" width="18" height="18"></i> Tutup Tiket
-                            </a>';
+                        <a class="dropdown-item btn-tutup" href="#" data-id="' . $row->id . '">
+                            <i data-lucide="x-circle" class="me-2 text-danger" width="18" height="18"></i> Tutup Tiket
+                        </a>';
                 }
 
                 if($roleUserLogin == '2' && $row->status == 'in_progress')
                 {
                     $dropdown .= '
-                            <a class="dropdown-item btn-penyelesaian" href="#" data-id="' . $row->id . '">
-                                <i data-lucide="bookmark-check" class="me-2 text-success" width="18" height="18"></i> Input Penyelesaian
-                            </a>';
+                        <a class="dropdown-item btn-penyelesaian" href="#" data-id="' . $row->id . '">
+                            <i data-lucide="bookmark-check" class="me-2 text-success" width="18" height="18"></i> Input Penyelesaian
+                        </a>';
                 }
 
                 $dropdown .= '
