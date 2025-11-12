@@ -89,6 +89,13 @@ return new class extends Migration
             $table->softDeletes();
         });
 
+        Schema::create('regions', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         Schema::create('ticket_files', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');

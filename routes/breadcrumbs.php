@@ -56,3 +56,8 @@ Breadcrumbs::for('settings.faq.index', function (BreadcrumbTrail $trail) {
     $trail->parent('home');
     $trail->push('Kelola FAQ', route('settings.faq.index'));
 });
+
+Breadcrumbs::for('laporan.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('home');
+    $trail->push('Laporan & Analitik', route('laporan.index'));
+});

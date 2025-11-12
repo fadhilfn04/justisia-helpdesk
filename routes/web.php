@@ -53,11 +53,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/actionTiketAgent', [TiketController::class, 'actionTiketAgent'])->name('tiket.actionTiketAgent');
         Route::post('/ticketResolution', [TiketController::class, 'ticketResolution'])->name('tiket.ticketResolution');
 
-        // tiket message
         Route::get('/getAllChat/{ticketId}', [TiketController::class, 'getAllChat']);
         Route::post('/sendChat', [TiketController::class, 'sendChat']);
 
-        // api
         Route::prefix('api')->group(function () {
             Route::get('/getKategori', [ApitiketController::class, 'getKategori'])->name('tiket.getKategori');
             Route::get('/getTiket', [ApitiketController::class, 'getTiket'])->name('tiket.getTiket');
@@ -67,8 +65,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    Route::resource('laporan', LaporanController::class);
-    // Route::resource('settings', SettingsController::class);
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/statistik-kinerja', [LaporanController::class, 'filterStatistikKinerja'])->name('laporan.filter.statistikKinerja');
+    Route::get('/laporan/kinerja-bulanan', [LaporanController::class, 'filterKinerjaBulanan'])->name('laporan.filter.kinerjaBulanan');
+    Route::get('/laporan/distribusi-kategori', [LaporanController::class, 'filterDistribusiKategori'])->name('laporan.filter.distribusiKategori');
+    Route::get('/laporan/kinerja-agen', [LaporanController::class, 'filterKinerjaAgen'])->name('laporan.filter.kinerjaAgen');
+    Route::get('/laporan/tren-sla', [LaporanController::class, 'filterTrenSla'])->name('laporan.filter.trenSla');
+    Route::get('/laporan/kinerja-regional', [LaporanController::class, 'filterKinerjaRegional'])->name('laporan.filter.kinerjaRegional');
 
     Route::prefix('help')->group(function () {
         Route::get('/faq', [HelpController::class, 'index'])->name('help.index');
