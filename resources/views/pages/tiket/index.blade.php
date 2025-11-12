@@ -144,15 +144,15 @@
                     <label class="fw-semibold text-dark mb-2 d-block">Format Export</label>
                     <div class="d-flex align-items-center gap-4">
                     <div class="form-check">
-                        <input class="form-check-input form-check-sm" type="radio" name="exportFormat" id="exportExcel" checked>
+                        <input class="form-check-input form-check-sm" type="radio" name="exportFormat" id="exportExcel" checked style="cursor: pointer;">
                         <label class="form-check-label d-flex align-items-center text-dark" for="exportExcel">
-                        <i data-lucide="file-text" style="width: 1.4rem;" class="me-2"></i> Excel (CSV)
+                            <i data-lucide="file-text" style="width: 1.4rem;" class="me-2"></i> Excel (CSV)
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input form-check-sm" type="radio" name="exportFormat" id="exportPdf">
+                        <input class="form-check-input form-check-sm" type="radio" name="exportFormat" id="exportPdf" style="cursor: pointer;">
                         <label class="form-check-label d-flex align-items-center text-dark" for="exportPdf">
-                        <i data-lucide="file-text" style="width: 1.4rem;" class="me-2"></i> PDF
+                            <i data-lucide="file-text" style="width: 1.4rem;" class="me-2"></i> PDF
                         </label>
                     </div>
                     </div>
@@ -163,12 +163,14 @@
                 <div class="mb-7">
                     <label class="fw-semibold text-dark mb-2 d-block">Rentang Tanggal</label>
                     <div class="d-flex gap-3">
-                    <button class="btn border border-gray-300 w-30 d-flex py-2 align-items-center justify-content-start gap-4 btn-hover-primary">
-                        <i data-lucide="calendar" style="width: 1.4rem;"></i> Dari tanggal
-                    </button>
-                    <button class="btn border border-gray-300 w-30 d-flex py-2 align-items-center justify-content-start gap-4 btn-hover-primary">
-                        <i data-lucide="calendar" style="width: 1.4rem;"></i> Sampai tanggal
-                    </button>
+                        <div class="mb-3">
+                            <label for="dariTanggal" class="form-label">Dari Tanggal</label>
+                            <input type="text" id="dariTanggal" name="verified_at" class="form-control" placeholder="Pilih tanggal & waktu">
+                        </div>
+                        <div class="mb-3">
+                            <label for="sampaiTanggal" class="form-label">Sampai Tanggal</label>
+                            <input type="text" id="sampaiTanggal" name="verified_at" class="form-control" placeholder="Pilih tanggal & waktu">
+                        </div>
                     </div>
                 </div>
 
@@ -177,18 +179,14 @@
                 <div class="row g-3 mb-5">
                     <div class="col-md-4">
                         <label class="fw-semibold mb-1">Status</label>
-                        <select class="form-select shadow-none border">
-                            <option>Semua Status</option>
-                            <option>Pending</option>
-                            <option>Selesai</option>
+                        <select class="form-select shadow-none border" id="selectStatusImport">
+
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label class="fw-semibold mb-1">Prioritas</label>
-                        <select class="form-select shadow-none border">
-                            <option>Semua Prioritas</option>
-                            <option>Tinggi</option>
-                            <option>Rendah</option>
+                        <select class="form-select shadow-none border" id="statusSelectPrioritas">
+
                         </select>
                     </div>
                     <div class="col-md-4">
@@ -238,15 +236,15 @@
                     </div>
                     <div class="ms-4">
                         <div class="mb-1">Format:
-                        <span class="badge bg-light text-dark border border-gray-300">EXCEL</span>
+                        <span class="badge bg-light text-dark border border-gray-300" id="innerFormatTiket">EXCEL</span>
                         </div>
-                        <div>Total data yang akan diexport: <span class="fw-semibold">5 tiket</span></div>
+                        <div>Total data yang akan diexport: <span class="fw-semibold" id="innerCountTiket">5 tiket</span></div>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-end mt-4 gap-2">
                     <button type="button" class="btn bg-white border border-gray-300 btn-hover-primary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-dark">
+                    <button type="button" class="btn btn-dark" id="btnExportData">
                         <i data-lucide="download" class="me-2" style="width: 1.2rem;"></i> Export EXCEL
                     </button>
                 </div>
@@ -259,7 +257,7 @@
 <div class="modal fade" id="modalVerifikasiTiket" tabindex="-1" aria-labelledby="detailTiketLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered mw-700px">
         <div class="modal-content shadow-lg rounded-4 border-0">
-            
+
             <div class="modal-header bg-light border-0 rounded-top-4 px-5 py-4">
                 <div class="d-flex align-items-center">
                     <i data-lucide="ticket" class="text-primary me-2" style="width: 22px; height: 22px;"></i>
@@ -304,7 +302,7 @@
                             <label class="fw-semibold text-gray-700 mb-2">
                                 <i data-lucide="message-square" class="me-1 text-primary" style="width: 16px;"></i> Resolusi / Pesan Penyelesaian <span class="text-danger">*</span>
                             </label>
-                            <textarea id="inputPesanPenyelesaian" class="form-control form-control-solid fs-6" rows="4" placeholder="Jelaskan resolusi penyelesaian untuk tiket ini..." required></textarea>
+                            <textarea id="inputPesanPenyelesaian" class="form-control form-control-solid fs-6 text-area-input-penyelesaian" rows="4" placeholder="Jelaskan resolusi penyelesaian untuk tiket ini..." required></textarea>
                         </div>
 
                         <div class="col-md-12 input-file-penyelesaian">

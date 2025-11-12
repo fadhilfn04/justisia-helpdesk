@@ -243,7 +243,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     $("#createTiketModal").on("shown.bs.modal", function () {
-        $("#btnCreateTiket").on("click", function (e) {
+        $("#btnCreateTiket").off("click").on("click", function (e) {
             e.preventDefault();
 
             const title = $('#formTiket input[name="title"]').val()?.trim();
@@ -365,7 +365,7 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         });
 
-        $("#btnDraftTiket").on("click", function (e) {
+        $("#btnDraftTiket").off("click").on("click", function (e) {
             e.preventDefault();
 
             const title = $('#formTiket input[name="title"]').val()?.trim();
@@ -405,6 +405,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         showCancelButton: true,
                         confirmButtonText: "Ya, simpan",
                         cancelButtonText: "Batal",
+                        reverseButtons: true,
                     }).then((result) => {
                         if (result.isConfirmed) {
                             let formData = new FormData($("#formTiket")[0]);
@@ -485,7 +486,7 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         });
 
-        $("#btnEditTiket").on("click", function (e) {
+        $("#btnEditTiket").off("click").on("click", function (e) {
             e.preventDefault();
 
             const tiketId = $('#formTiket input[name="tiketId"]').val()?.trim();
@@ -579,8 +580,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         });
+
         // btn toal tiket agent
-        $("#btnTolakTiket").on("click", function (e) {
+        $("#btnTolakTiket").off("click").on("click", function (e) {
             e.preventDefault();
 
             const tiketId = $('#formTiket input[name="tiketId"]').val()?.trim();
@@ -654,7 +656,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         // btn terima tiket agent
-        $("#btnTerimaTiket").on("click", function (e) {
+        $("#btnTerimaTiket").off("click").on("click", function (e) {
             e.preventDefault();
 
             const tiketId = $('#formTiket input[name="tiketId"]').val()?.trim();
@@ -820,54 +822,77 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     // btn buka respon modal
-    $(document).on("click", ".btn-respon", function () {
-        const ticketId = $(this).data("id");
-        const ticketStatus = $(this).data("status");
-        const userRoleId = $(this).data("user-role-id");
-        const pj = $(this).data("pj");
-        const chatArea = $("#chatArea");
-        const chatInput = $("#chatInput");
+    $(document).on('click', '.btn-respon', function () {
+        const ticketId = $(this).data('id');
+        const ticketStatus = $(this).data('status');
+        const userRoleId = $(this).data('user-role-id');
+        const pj = $(this).data('pj');
+        const chatArea = $('#chatArea');
+        const chatInput = $('#chatInput');
 
-        if (ticketStatus == "draft") {
+        console.log(ticketStatus);
+
+        if(ticketStatus == "draft")
+        {
             Swal.fire({
-                icon: "warning",
-                title: "Peringatan!",
-                text: "Status tiket kamu masih dalam tahap draft. Silakan ajukan tiket terlebih dahulu untuk memulai diskusi dengan agen.",
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Status tiket kamu masih dalam tahap draft. Silakan ajukan tiket terlebih dahulu untuk memulai diskusi dengan agen.',
             });
             return;
         }
 
-        if (userRoleId == "2" && ticketStatus == "assignee") {
+        if(ticketStatus == "open" || ticketStatus == "assignee" || ticketStatus == "need_revision" || ticketStatus == "agent_rejected")
+        {
+            let nameTiketTranslate = "";
+            let textPesan = "";
+            switch(ticketStatus)
+            {
+                case "open":
+                    nameTiketTranslate = "Terbuka";
+                    textPesan = "Status tiket ini adalah Terbuka. Mohon menunggu proses verifikasi oleh admin dan penugasan agen yang akan menangani tiket ini.";
+                    break;
+                case "assignee":
+                    nameTiketTranslate = "Diverifikasi"
+                    textPesan = "Status tiket ini adalah Verifikasi. Mohon menunggu proses selanjutnya hingga penugasan agen yang akan menangani tiket ini.";
+                    break;
+                case "need_revision":
+                    nameTiketTranslate = "Perlu Revisi";
+                    textPesan = "Status tiket ini memerlukan Revisi. Silakan revisi tiket dan ajukan kembali untuk verifikasi ulang. admin akan menugaskan agen setelah tiket diverifikasi.";
+                    break;
+                case "agent_rejected":
+                    nameTiketTranslate = "Ditolak Agent";
+                    textPesan = "Status tiket ini adalah Ditolak oleh Agen. Mohon menunggu proses penugasan kembali tiket kepada agen yang akan dilakukan oleh admin.";
+                    break;
+            }
+
             Swal.fire({
-                icon: "warning",
-                title: "Peringatan!",
-                text: "Status tiket kamu masih dalam tahap verifikasi. Silakan terima tiket terlebih dahulu untuk memulai diskusi dengan user.",
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: textPesan,
             });
             return;
         }
 
-        if (!pj) {
+        if(!pj)
+        {
             Swal.fire({
-                icon: "warning",
-                title: "Peringatan!",
-                text: "Tiket Anda belum diverifikasi dan belum ditugaskan kepada agen oleh admin. Mohon tunggu sebentar sebelum memulai diskusi dengan agen.",
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Tiket Anda belum diverifikasi dan belum ditugaskan kepada agen oleh admin. Mohon tunggu sebentar sebelum memulai diskusi dengan agen.',
             });
             return;
         }
 
-        $("#responModal").modal("show");
+        $('#responModal').modal('show');
         if (userRoleId == 1) {
-            $("#responModalLabel").html(
-                "Diskusi terkait <strong>tiket user</strong> dengan agen"
-            );
-            $(".input-chat-wrapper").addClass("d-none");
+            $("#responModalLabel").html("Diskusi terkait <strong>tiket user</strong> dengan agen");
+            $('.input-chat-wrapper').addClass('d-none');
         } else {
-            $(".input-chat-wrapper").removeClass("d-none");
+            $('.input-chat-wrapper').removeClass('d-none');
         }
 
-        chatArea.html(
-            '<div class="text-center text-muted mt-4">Memuat pesan...</div>'
-        );
+        chatArea.html('<div class="text-center text-muted mt-4">Memuat pesan...</div>');
 
         let isFirstLoad = true;
 
@@ -885,60 +910,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
             $.ajax({
                 url: `/tiket/getAllChat/${ticketId}`,
-                method: "GET",
+                method: 'GET',
                 success: function (data) {
                     chatArea.empty();
                     isFirstLoad = false;
 
                     if (!data || data.length === 0) {
-                        chatArea.html(
-                            '<div class="text-center text-muted mt-4">Belum ada pesan.</div>'
-                        );
+                        chatArea.html('<div class="text-center text-muted mt-4">Belum ada pesan.</div>');
                         return;
                     }
 
-                    data.forEach((msg) => {
+                    data.forEach(msg => {
                         let isRight;
 
                         if (userRoleId == 1) {
-                            const senderIds = [
-                                ...new Set(data.map((m) => m.sender_id)),
-                            ];
+                            const senderIds = [...new Set(data.map(m => m.sender_id))];
                             const leftId = senderIds[0];
                             isRight = msg.sender_id !== leftId;
                         } else {
                             isRight = msg.sender_id == userId;
                         }
 
-                        const waktu = new Date(msg.created_at).toLocaleString(
-                            "id-ID",
-                            {
-                                day: "2-digit",
-                                month: "long",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                            }
-                        );
+                        const waktu = new Date(msg.created_at).toLocaleString('id-ID', {
+                            day: '2-digit',
+                            month: 'long',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
 
                         let senderName;
                         if (userRoleId == 1) {
-                            senderName = msg.sender?.name || "Agen";
+                            senderName = msg.sender?.name || 'Agen';
                         } else {
-                            senderName = isRight
-                                ? "Anda"
-                                : msg.sender?.name || "Agen";
+                            senderName = isRight ? 'Anda' : (msg.sender?.name || 'Agen');
                         }
 
                         const messageHTML = `
-                            <div class="d-flex ${
-                                isRight ? "justify-content-end" : ""
-                            } mb-3">
-                                <div class="${
-                                    isRight
-                                        ? "bg-primary text-white"
-                                        : "bg-white border"
-                                } rounded-3 p-3 shadow-sm" style="max-width: 70%; position: relative;">
+                            <div class="d-flex ${isRight ? 'justify-content-end' : ''} mb-3">
+                                <div class="${isRight ? 'bg-primary text-white' : 'bg-white border'} rounded-3 p-3 shadow-sm" style="max-width: 70%; position: relative;">
                                     <strong>${senderName}:</strong><br>
                                     ${msg.message}
                                     <div class="text-end mt-1" style="font-size: 0.75rem; opacity: 0.7;">${waktu}</div>
@@ -948,61 +958,48 @@ document.addEventListener("DOMContentLoaded", function () {
                         chatArea.append(messageHTML);
                     });
 
+
                     chatArea.scrollTop(chatArea[0].scrollHeight);
                 },
                 error: function () {
-                    chatArea.html(
-                        '<div class="text-center text-danger mt-4">Gagal memuat chat.</div>'
-                    );
-                },
+                    chatArea.html('<div class="text-center text-danger mt-4">Gagal memuat chat.</div>');
+                }
             });
         }
 
         loadChat();
-        const chatInterval = setInterval(loadChat, 5000);
+        const chatInterval = setInterval(loadChat, 2000);
 
-        $("#responModal").on("hidden.bs.modal", function () {
+        $('#responModal').on('hidden.bs.modal', function () {
             clearInterval(chatInterval);
         });
 
-        $("#sendBtn")
-            .off("click")
-            .on("click", function () {
-                const message = chatInput.val().trim();
-                if (!message) return;
+        $('#sendBtn').off('click').on('click', function () {
+            const message = chatInput.val().trim();
+            if (!message) return;
 
-                const formData = new FormData();
-                formData.append("ticket_id", ticketId);
-                formData.append("sender_id", userId);
-                formData.append("message", message);
-                formData.append(
-                    "_token",
-                    $('meta[name="csrf-token"]').attr("content")
-                );
+            const formData = new FormData();
+            formData.append('ticket_id', ticketId);
+            formData.append('sender_id', userId);
+            formData.append('message', message);
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
-                $.ajax({
-                    url: `/tiket/sendChat`,
-                    method: "POST",
-                    processData: false,
-                    contentType: false,
-                    data: formData,
-                    success: function () {
-                        chatInput.val("");
-                        loadChat();
-                        table.ajax.reload(null, false);
-                    },
-                    error: function (xhr) {
-                        console.error(xhr.responseJSON);
-                        alert("Gagal mengirim pesan.");
-                    },
-                });
+            $.ajax({
+                url: `/tiket/sendChat`,
+                method: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function () {
+                    chatInput.val('');
+                    loadChat();
+                    table.ajax.reload(null, false);
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseJSON);
+                    alert('Gagal mengirim pesan.');
+                }
             });
-
-        $("#chatInput").on("keypress", function (e) {
-            if (e.which === 13 && !e.shiftKey) {
-                e.preventDefault();
-                $("#sendBtn").click();
-            }
         });
     });
 
@@ -1665,4 +1662,316 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+
+    // export data tiket
+    flatpickr("#dariTanggal", {
+        enableTime: true,
+        dateFormat: "Y-m-d",
+        time_24hr: true,
+        defaultDate: new Date(),
+        locale: "id"
+    });
+
+    flatpickr("#sampaiTanggal", {
+        enableTime: true,
+        dateFormat: "Y-m-d",
+        time_24hr: true,
+        defaultDate: new Date(),
+        locale: "id"
+    });
+
+    const optionsStatusExport = [
+        { value: "", text: "Semua Tiket" },
+        { value: "open", text: "Terbuka" },
+        { value: "in_progress", text: "Proses" },
+        { value: "assignee", text: "Diverifikasi" },
+        { value: "closed", text: "Ditutup" },
+        { value: "draft", text: "Draft" },
+        { value: "need_revision", text: "Perlu Revisi" },
+        { value: "agent_rejected", text: "Ditolak Agent" },
+    ];
+
+    const optionsPrioritasExport = [
+        { value: "", text: "Semua Prioritas" },
+        { value: "low", text: "Rendah" },
+        { value: "medium", text: "Sedang" },
+        { value: "high", text: "Tinggi" },
+    ];
+
+    const statusSelectImport = $("#selectStatusImport");
+    const prioritasSelectImport = $("#statusSelectPrioritas");
+
+    optionsStatusExport.forEach((opt) => {
+        statusSelectImport.append(new Option(opt.text, opt.value));
+    });
+
+    optionsPrioritasExport.forEach((opt) => {
+        prioritasSelectImport.append(new Option(opt.text, opt.value));
+    });
+
+    statusSelectImport.select2({
+        placeholder: "Semua Status",
+        allowClear: true,
+        width: "100%",
+    });
+
+    prioritasSelectImport.select2({
+        placeholder: "Semua Prioritas",
+        allowClear: true,
+        width: "100%",
+    });
+
+    $(document).on("click", "#exportExcel", function(e) {
+        $("#exportExcel").val("excel");
+        $("#innerFormatTiket").html("EXCEL");
+        $("#btnExportData").html("Export EXCEL");
+    });
+
+    $(document).on("click", "#exportPdf", function(e) {
+        $("#exportExcel").val("pdf");
+        $("#innerFormatTiket").html("PDF");
+        $("#btnExportData").html("Export PDF");
+    });
+
+    // export tiket
+    $(document).on("click", "#btnExportData", function(e) {
+        e.preventDefault();
+
+        let exportFormat = $('input[name="exportFormat"]:checked').attr('id') === 'exportExcel' ? 'excel' : 'pdf';
+
+        let dariTanggal = $('#dariTanggal').val();
+        let sampaiTanggal = $('#sampaiTanggal').val();
+
+        let statusImport = $('#selectStatusImport').val();
+        let prioritas = $('#statusSelectPrioritas').val();
+
+        let wilayah = $('.form-select:eq(2)').val();
+
+        let dataDisertakan = [];
+        if ($('#dataDasar').is(':checked')) dataDisertakan.push('dataDasar');
+        if ($('#dataRespon').is(':checked')) dataDisertakan.push('dataRespon');
+        if ($('#dataAktivitas').is(':checked')) dataDisertakan.push('dataAktivitas');
+        if ($('#dataLampiran').is(':checked')) dataDisertakan.push('dataLampiran');
+
+        let formData = {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            format: exportFormat,
+            dariTanggal: dariTanggal,
+            sampaiTanggal: sampaiTanggal,
+            status: statusImport,
+            prioritas: prioritas,
+            wilayah: wilayah,
+            dataDisertakan: dataDisertakan
+        };
+
+        $("#loaderTiket").show();
+
+        $.ajax({
+            url: "/tiket/exportTiket",
+            type: "POST",
+            data: formData,
+            success: function(response) {
+                $("#loaderTiket").hide();
+
+                if (!response.data || response.data.length === 0) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Tidak Ada Data",
+                        text: "Tidak ada tiket yang ditemukan untuk diekspor.",
+                    });
+                    return;
+                }
+                const data = response.data;
+
+                const rows = data.map(t => {
+                    const createdAt = new Date(t.created_at);
+                    const tahun = createdAt.getFullYear();
+                    const idTiket = t.id ? `TKT-${tahun}-${t.id}` : "-";
+                    let slaDate = t.sla_due_at;
+                    let verifiedAt = t.verified_at;
+
+                    const datetimeSla = new Date(slaDate);
+                    const datetimeVerified = new Date(verifiedAt);
+                    const diffMs = datetimeSla.getTime() - datetimeVerified.getTime();
+                    const MS_PER_SECOND = 1000;
+                    const MS_PER_MINUTE = 60 * MS_PER_SECOND;
+                    const MS_PER_HOUR = 60 * MS_PER_MINUTE;
+                    const MS_PER_DAY = 24 * MS_PER_HOUR;
+
+                    let remainingMs = diffMs;
+                    const days = Math.floor(remainingMs / MS_PER_DAY);
+                    remainingMs %= MS_PER_DAY;
+                    const hours = Math.floor(remainingMs / MS_PER_HOUR);
+                    remainingMs %= MS_PER_HOUR;
+                    const minutes = Math.floor(remainingMs / MS_PER_MINUTE);
+                    remainingMs %= MS_PER_MINUTE;
+                    let waktuSla = `${days} hari, ${hours} jam, ${minutes} menit`;
+
+                    if(slaDate === null)
+                    {
+                        waktuSla = "-";
+                    }
+
+                    $statusTiket = "";
+                    $prioritasTiket = "";
+
+                    switch(t.status)
+                    {
+                        case "open":
+                            statusTiket = "Terbuka";
+                            break;
+                        case "assignee":
+                            statusTiket = "Diverifikasi"
+                            break;
+                        case "need_revision":
+                            statusTiket = "Perlu Revisi";
+                            break;
+                        case "agent_rejected":
+                            statusTiket = "Ditolak Agent";
+                            break;
+                        case "draft":
+                            statusTiket = "Draft";
+                            break;
+                        case "closed":
+                            statusTiket = "Ditutup";
+                            break;
+                        case "in_progress":
+                            statusTiket = "Proses";
+                            break;
+                    }
+
+                    switch(t.priority)
+                    {
+                        case "low":
+                            $prioritasTiket = "Rendah";
+                            break;
+                        case "medium":
+                            $prioritasTiket = "Sedang";
+                            break;
+                        case "high":
+                            $prioritasTiket = "Tinggi";
+                            break;
+                    }
+
+                    return {
+                        "ID Tiket": idTiket,
+                        "Judul": t.title || "-",
+                        "Status": statusTiket || "-",
+                        "Prioritas": $prioritasTiket || "-",
+                        "Pelapor": t.user?.name || "-",
+                        "Penanggung Jawab": t.agent?.name || "-",
+                        "Wilayah": t.wilayah?.name || "-",
+                        "Kategori": t.category?.name || "-",
+                        "SLA": waktuSla,
+                        "Tanggal Dibuat": t.created_at ? createdAt.toLocaleString("id-ID") : "-",
+                        "Update Terakhir": t.updated_at ? new Date(t.updated_at).toLocaleString("id-ID") : "-"
+                    };
+                });
+
+                if (exportFormat === 'excel') {
+                    const ws = XLSX.utils.json_to_sheet(rows);
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, "Tiket");
+
+                    const tanggal = new Date().toISOString().split("T")[0];
+                    const fileName = `tiket_export_${tanggal}.xlsx`;
+
+                    XLSX.writeFile(wb, fileName);
+                }
+                else if (exportFormat === 'pdf') {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF('l', 'mm', 'a4');
+
+                    const tanggal = new Date().toISOString().split("T")[0];
+                    const fileName = `tiket_export_${tanggal}.pdf`;
+
+                    doc.setFontSize(16);
+                    doc.setFont("helvetica", "bold");
+                    doc.text("Laporan Data Helpdesk", 148.5, 15, { align: "center" });
+
+                    doc.setFontSize(12);
+                    doc.setFont("helvetica", "normal");
+                    doc.text("Aplikasi Justisia - Kementerian Agraria dan Tata Ruang/BPN", 148.5, 22, { align: "center" });
+
+                    doc.setLineWidth(0.5);
+                    doc.line(14, 25, 283, 25);
+
+                    let posisiY = 35;
+
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(13);
+                    doc.text("Ringkasan Data", 14, posisiY);
+
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(10);
+                    doc.text(`Tanggal Export: ${new Date().toLocaleString("id-ID")}`, 14, posisiY + 7);
+
+                    const tableColumn = [
+                        "ID Tiket",
+                        "Judul",
+                        "Status",
+                        "Prioritas",
+                        "Pelapor",
+                        "Penanggung Jawab",
+                        "Wilayah",
+                        "Kategori",
+                        "SLA",
+                        "Tanggal Dibuat",
+                        "Update Terakhir"
+                    ];
+
+                    const tableRows = rows.map(r => [
+                        r["ID Tiket"],
+                        r["Judul"],
+                        r["Status"],
+                        r["Prioritas"],
+                        r["Pelapor"],
+                        r["Penanggung Jawab"],
+                        r["Wilayah"],
+                        r["Kategori"],
+                        r["SLA"],
+                        r["Tanggal Dibuat"],
+                        r["Update Terakhir"]
+                    ]);
+
+                    doc.autoTable({
+                        startY: posisiY + 14,
+                        head: [tableColumn],
+                        body: tableRows,
+                        theme: 'grid',
+                        styles: {
+                            fontSize: 8,
+                            cellPadding: 2,
+                        },
+                        headStyles: {
+                            fillColor: [41, 128, 185],
+                            textColor: [255, 255, 255],
+                            fontStyle: 'bold',
+                        },
+                    });
+
+                    doc.save(fileName);
+
+
+                }
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Export Berhasil",
+                    text: "File berhasil di donwload.",
+                });
+            },
+            error: function(xhr) {
+                // console.error(xhr.responseText);
+                $("#loaderTiket").hide();
+                Swal.fire({
+                    icon: "error",
+                    title: "Gagal Export",
+                    text: "Terjadi kesalahan saat mendonwload file.",
+                });
+            }
+        });
+    });
+
+
 });

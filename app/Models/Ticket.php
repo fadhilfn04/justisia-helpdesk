@@ -12,7 +12,7 @@ class Ticket extends Model
 
     protected $fillable = [
         'user_id', 'category_id', 'assigned_to', 'wilayah_id',
-        'title', 'description', 'ticket_resolution_message', 'completion_ticket_file', 'status', 'priority'
+        'title', 'description', 'ticket_resolution_message', 'completion_ticket_file', 'status', 'priority', 'created_at'
     ];
 
     public function user()

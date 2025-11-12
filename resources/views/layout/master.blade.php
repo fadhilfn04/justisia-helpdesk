@@ -19,6 +19,8 @@
 
     <!-- FilePond core -->
     <link rel="stylesheet" href="{{ asset('assets/css/file-preview/filepond.css') }}">
+    {{-- flatpicker css --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <!-- Plugin preview (gambar) -->
     <link rel="stylesheet" href="{{ asset('assets/css/file-preview/filePreviwImg.css') }}">
@@ -109,6 +111,13 @@
 <script src="{{ asset('assets/js/file-preview/filepond-plugin-image-preview.js') }}"></script>
 <script src="{{ asset('assets/js/file-preview/filepond.js') }}"></script>
 <script src="{{ asset('assets/js/custom-js/chatbot.js') }}"></script>
+{{-- flatpicker js --}}
+<script src="{{ asset('assets/js/flatpicker/flatpicker.js') }}"></script>
+{{-- export excel / csv --}}
+<script src="{{ asset('assets/js/export/xlsx.full.min.js') }}"></script>
+{{-- export PDF --}}
+<script src="{{ asset('assets/js/export/jspdf.umd.min.js') }}"></script>
+<script src="{{ asset('assets/js/export/jspdf.plugin.autotable.min.js') }}"></script>
 
 {{-- data lucide icon --}}
 <script src="{{ asset('assets/js/lucide/lucide.js') }}"></script>

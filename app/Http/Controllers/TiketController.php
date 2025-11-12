@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TiketExport;
 use App\Models\CategoryAgent;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Storage;
@@ -13,8 +14,9 @@ use App\Models\TicketMessage;
 use App\Models\TicketTimeline;
 use App\Models\User;
 use App\Services\NotificationService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Request as FacadesRequest;
+use Illuminate\Support\Facades\Auth;
 
 class TiketController extends Controller
 {
@@ -113,7 +115,7 @@ class TiketController extends Controller
     {
         $ticket = Ticket::findOrFail($request->tiketId);
 
-        if($request->isAjukan == 1 && $ticket->status == "draft")
+        if($request->isAjukan == 1 && ($ticket->status == "draft" || $ticket->status == "need_revision"))
         {
             $ticket->update([
                 'status' => 'open',
@@ -380,6 +382,7 @@ class TiketController extends Controller
         {
             $tiket->status = "agent_rejected";
             $tiket->assigned_to = null;
+            $tiket->sla_due_at = null;
 
             NotificationService::send(
                 $tiket->user_id,
@@ -436,6 +439,60 @@ class TiketController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Tiket berhasil diselesaikan.',
+        ]);
+    }
+
+    public function exportTiket(Request $request)
+    {
+        $query = Ticket::query();
+        $userId = Auth::id();
+
+        if (auth()->user()->role->id == '3') {
+            $query->where('user_id', $userId);
+        }
+
+        if (auth()->user()->role->id == '2') {
+            $isAgentTeknis = CategoryAgent::where('user_id', $userId)->get();
+            $categories = $isAgentTeknis->pluck('category');
+
+            $categoryTiketAgent = TicketCategory::whereIn('name', $categories)->get();
+            $categoryIds = $categoryTiketAgent->pluck('id');
+
+            $query->where('assigned_to', $userId)
+                ->whereIn('status', ['assignee', 'in_progress', 'closed', 'solved'])
+                ->whereIn('category_id', $categoryIds);
+        }
+
+        if (auth()->user()->role->id == '1') {
+            $query->whereNotIn('status', ['draft', 'need_revision']);
+        }
+
+        if ($request->filled('dariTanggal') && $request->filled('sampaiTanggal')) {
+            $dari = $request->dariTanggal . ' 00:00:00';
+            $sampai = $request->sampaiTanggal . ' 23:59:59';
+            $query->whereBetween('created_at', [$dari, $sampai]);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('prioritas')) {
+            $query->where('priority', $request->prioritas);
+        }
+
+        $tickets = $query
+            ->with([
+                'user:id,name,email',
+                'agent:id,name,email',
+                'category:id,name',
+            ])
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'data' => $tickets,
+            'success' => true,
         ]);
     }
 }

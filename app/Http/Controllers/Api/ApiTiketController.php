@@ -7,6 +7,7 @@ use App\Models\CategoryAgent;
 use App\Models\Ticket;
 use App\Models\TicketCategory;
 use App\Models\User;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -273,7 +274,23 @@ class ApitiketController extends BaseController
                     </span>
                 ';
             })
-            ->addColumn('sla', fn() => '-')
+            ->addColumn('sla', function($row) {
+                $sla_due_at = $row->sla_due_at;
+                $verified_at = $row->verified_at;
+
+                $datetimeSla = new DateTime($sla_due_at);
+                $datetimeVerified = new DateTime($verified_at);
+                $interval = $datetimeVerified->diff($datetimeSla);
+
+                $waktuSla = $interval->format('%d hari, %h jam, %i menit');
+
+                if($sla_due_at === null)
+                {
+                    return $waktuSla = "-";
+                } else {
+                    return $waktuSla;
+                }
+            })
             ->addColumn('respon', function ($row) use ($userId) {
                 $countResponMessage = $row->messages->count();
                 $roleIdUser = User::where('id', $userId)->first();
@@ -306,10 +323,10 @@ class ApitiketController extends BaseController
                             <i data-lucide="eye" class="me-2 text-warning" width="18" height="18"></i> Detail
                             </a>';
 
-                if ($roleUserLogin == '3' && $row->status === 'solved')
+                if ($roleUserLogin == '3' && $row->status === 'closed')
                 {
                     $dropdown .= '
-                        <a href="#" class="dropdown-item f" data-id="'.$row->id.'">
+                        <a href="#" class="dropdown-item btn-detail-penyelesaian" data-id="'.$row->id.'">
                             <i data-lucide="notebook" class="me-2 text-primary" width="18" height="18"></i> Detail Penyelesaian
                         </a>';
                 }
@@ -339,7 +356,7 @@ class ApitiketController extends BaseController
                         </a>';
                 }
 
-                if ($roleUserLogin == '2' && $row->status === 'solved') {
+                if ($roleUserLogin != '2' && $row->status === 'in_progress') {
                     $dropdown .= '
                         <a class="dropdown-item btn-tutup" href="#" data-id="' . $row->id . '">
                             <i data-lucide="x-circle" class="me-2 text-danger" width="18" height="18"></i> Tutup Tiket
