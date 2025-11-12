@@ -27,8 +27,6 @@ return new class extends Migration
             $table->datetime('last_login_at')->nullable();
             $table->string('last_login_ip')->nullable();
             $table->timestamp('last_seen')->nullable();
-            $table->timestamp('verified_at')->nullable();
-            $table->timestamp('sla_due_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -85,6 +83,8 @@ return new class extends Migration
             $table->string('completion_ticket_file')->nullable();
             $table->string('status')->default('open');
             $table->string('priority')->default('medium');
+            $table->timestamp('verified_at')->nullable();
+            $table->timestamp('sla_due_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
