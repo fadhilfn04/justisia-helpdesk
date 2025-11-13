@@ -25,7 +25,7 @@ class LaporanController extends Controller
         $wilayah = $request->input('wilayah', 'Semua Wilayah');
         $kategori = $request->input('kategori', 'Semua Kategori');
 
-        $statistikKinerja = $this->getStatistik();
+        $statistikKinerja = $this->getStatistik($periode, $wilayah, $kategori);
         $statistik = $this->getStatistikKinerja($periode, $wilayah, $kategori);
         $kinerjaBulanan = $this->getKinerjaBulanan($periode, $wilayah);
         $distribusiKategori = $this->getDistribusiKategori($periode, $wilayah);
@@ -173,17 +173,76 @@ class LaporanController extends Controller
         ];
     }
 
-    private function getStatistik()
+    public function filterStatistik(Request $request)
     {
-        $tiket = Ticket::selectRaw("
+        $periode = $request->get('periode', 'monthly');
+        $wilayah = $request->get('wilayah');
+        $kategori = $request->get('kategori');
+
+        $data = $this->getStatistik($periode, $wilayah, $kategori);
+
+        return response()->json($data);
+    }
+
+    private function getStatistik($periode = null, $wilayah = null, $kategori = null)
+    {
+        $query = Ticket::selectRaw("
                 DATE_FORMAT(created_at, '%Y-%m') as bulan,
                 COUNT(*) as total_masuk,
                 SUM(CASE WHEN status = 'closed' THEN 1 ELSE 0 END) as total_selesai
-            ")
-            ->where('created_at', '>=', now()->subMonths(3))
+            ");
+
+        if (!empty($wilayah)) {
+            $query->where('wilayah_id', $wilayah);
+        }
+
+        if (!empty($kategori)) {
+            $query->where('category_id', $kategori);
+        }
+
+        if (!empty($periode)) {
+            switch ($periode) {
+                case 'daily':
+                    $start = now()->startOfDay();
+                    $end = now()->endOfDay();
+                    break;
+                case 'weekly':
+                    $start = now()->startOfWeek();
+                    $end = now()->endOfWeek();
+                    break;
+                case 'monthly':
+                    $start = now()->startOfMonth();
+                    $end = now()->endOfMonth();
+                    break;
+                case 'yearly':
+                    $start = now()->startOfYear();
+                    $end = now()->endOfYear();
+                    break;
+                default:
+                    $start = now()->subMonths(3);
+                    $end = now();
+                    break;
+            }
+
+            $query->whereBetween('created_at', [$start, $end]);
+        } else {
+            $query->where('created_at', '>=', now()->subMonths(3));
+        }
+
+        $tiket = $query
             ->groupBy('bulan')
             ->orderBy('bulan')
             ->get();
+
+        if ($tiket->isEmpty()) {
+            return [
+                'prediksi_tiket_masuk' => 0,
+                'growth' => 0,
+                'prediksi_selesai' => 0,
+                'completion_rate' => 0,
+                'backlog' => 0,
+            ];
+        }
 
         $rataMasuk = $tiket->avg('total_masuk') ?? 0;
         $rataSelesai = $tiket->avg('total_selesai') ?? 0;
@@ -191,11 +250,14 @@ class LaporanController extends Controller
         $last = $tiket->last();
         $prev = $tiket->count() > 1 ? $tiket[$tiket->count() - 2] : $last;
 
-        $growthRate = $prev && $prev->total_masuk > 0
-            ? (($last->total_masuk - $prev->total_masuk) / $prev->total_masuk) * 100
+        $lastMasuk = $last->total_masuk ?? 0;
+        $prevMasuk = $prev->total_masuk ?? 0;
+
+        $growthRate = ($prevMasuk > 0)
+            ? (($lastMasuk - $prevMasuk) / $prevMasuk) * 100
             : 0;
 
-        $prediksiMasuk = round($last->total_masuk * (1 + $growthRate / 100));
+        $prediksiMasuk = round($lastMasuk * (1 + $growthRate / 100));
         $prediksiSelesai = round($prediksiMasuk * ($rataSelesai / max($rataMasuk, 1)));
         $backlog = max($prediksiMasuk - $prediksiSelesai, 0);
 
@@ -207,6 +269,7 @@ class LaporanController extends Controller
             'backlog' => $backlog,
         ];
     }
+
 
     public function filterKinerjaBulanan(Request $request)
     {
@@ -600,9 +663,20 @@ class LaporanController extends Controller
         return $data;
     }
 
-    private function getTrenTiketHarian($periode)
+    public function filterTrenTiketHarian(Request $request)
     {
-        $tren = DB::table('tickets')
+        $periode = $request->get('periode', 'monthly');
+        $wilayah = $request->get('wilayah');
+        $kategori = $request->get('kategori');
+
+        $data = $this->getTrenTiketHarian($periode, $wilayah, $kategori);
+
+        return response()->json($data);
+    }
+
+    private function getTrenTiketHarian($periode = null, $wilayah = null, $kategori = null)
+    {
+        $query = DB::table('tickets')
             ->selectRaw("
                 DATE(created_at) as tanggal,
                 COUNT(*) as tiket_masuk,
@@ -610,12 +684,49 @@ class LaporanController extends Controller
                 ROUND(SUM(CASE WHEN status IN ('resolved', 'closed') THEN 1 ELSE 0 END) / COUNT(*) * 100, 2) as tingkat_penyelesaian,
                 ROUND(AVG(TIMESTAMPDIFF(HOUR, created_at, updated_at)), 2) as rata_rata_respon_jam,
                 ROUND(SUM(CASE WHEN status IN ('resolved', 'closed') AND TIMESTAMPDIFF(HOUR, created_at, updated_at) <= 72 THEN 1 ELSE 0 END) / COUNT(*) * 100, 2) as sla_compliance
-            ")
-            // ->whereBetween('created_at', [$periode['mulai'], $periode['selesai']])
+            ");
+
+        if (!empty($wilayah)) {
+            $query->where('wilayah_id', $wilayah);
+        }
+
+        if (!empty($kategori)) {
+            $query->where('category_id', $kategori);
+        }
+
+        if (!empty($periode)) {
+            switch ($periode) {
+                case 'daily':
+                    $start = now()->startOfDay();
+                    $end = now()->endOfDay();
+                    break;
+                case 'weekly':
+                    $start = now()->startOfWeek();
+                    $end = now()->endOfWeek();
+                    break;
+                case 'monthly':
+                    $start = now()->startOfMonth();
+                    $end = now()->endOfMonth();
+                    break;
+                case 'yearly':
+                    $start = now()->startOfYear();
+                    $end = now()->endOfYear();
+                    break;
+                default:
+                    $start = now()->subMonths(3);
+                    $end = now();
+                    break;
+            }
+
+            $query->whereBetween('created_at', [$start, $end]);
+        }
+
+        $tren = $query
             ->groupByRaw('DATE(created_at)')
             ->orderByRaw('DATE(created_at)')
             ->get();
 
         return $tren;
     }
+
 }

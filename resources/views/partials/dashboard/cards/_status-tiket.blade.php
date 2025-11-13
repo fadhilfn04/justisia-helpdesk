@@ -6,7 +6,7 @@
             </div>
             <div class="fw-semibold text-muted text-uppercase small">Tiket Aktif</div>
             <h2 id="total-tiket" class="fw-bold text-dark mb-1">
-                {{ $ticketStatus['total_tiket'] }}
+                {{ $ticketStatus['tiket_aktif'] }}
             </h2>
             <span class="text-success fw-semibold d-inline-flex align-items-center gap-1">
                 <i class="bi bi-arrow-up-short"></i>

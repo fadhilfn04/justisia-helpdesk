@@ -93,7 +93,7 @@ var KTSigninGeneral = (function () {
                 } else {
                     // Show error popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                     Swal.fire({
-                        text: "Sorry, looks like there are some errors detected, please try again.",
+                        text: "Maaf, sepertinya ada beberapa kesalahan yang terdeteksi, silakan coba lagi.",
                         icon: "error",
                         buttonsStyling: false,
                         confirmButtonText: "Ok, got it!",
@@ -143,7 +143,7 @@ var KTSigninGeneral = (function () {
                                 location.href = response.data.redirect_url;
                             } else {
                                 Swal.fire({
-                                    text: "Sorry, the email or password is incorrect, please try again.",
+                                    text: "Maaf, email atau password Anda salah. Silahkan coba kembali.",
                                     icon: "error",
                                     buttonsStyling: false,
                                     confirmButtonText: "Ok, got it!",
@@ -155,7 +155,7 @@ var KTSigninGeneral = (function () {
                         })
                         .catch(function (error) {
                             Swal.fire({
-                                text: "Sorry, looks like there are some errors detected, please try again.",
+                                text: "Maaf, sepertinya ada beberapa kesalahan yang terdeteksi, silakan coba lagi.",
                                 icon: "error",
                                 buttonsStyling: false,
                                 confirmButtonText: "Ok, got it!",
@@ -174,7 +174,7 @@ var KTSigninGeneral = (function () {
                 } else {
                     // Show error popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                     Swal.fire({
-                        text: "Sorry, looks like there are some errors detected, please try again.",
+                        text: "Maaf, email atau password Anda salah. Silahkan coba kembali.",
                         icon: "error",
                         buttonsStyling: false,
                         confirmButtonText: "Ok, got it!",

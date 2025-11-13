@@ -32,7 +32,7 @@
                                     </div>
                                     <div>
                                         <div class="text-muted small fw-semibold text-uppercase">Total Tiket Aktif</div>
-                                        <h3 class="fw-bold text-dark mb-1">{{ $ticketStatus['total_tiket'] }}</h3>
+                                        <h3 class="fw-bold text-dark mb-1">{{ $ticketStatus['tiket_aktif'] }}</h3>
                                         <small class="text-success fw-semibold d-flex align-items-center gap-1">
                                             <i class="bi bi-arrow-up-short"></i>
                                             +{{ $ticketStatus['kenaikan_tiket_bulan_ini'] }}% dari bulan lalu
@@ -90,12 +90,12 @@
 
                     @if (auth()->user()->role->id != '3')
                         <div class="row g-5 mb-5">
-                            <div class="col-xl-8">
+                            <div class="col">
                                 @include('partials.dashboard.charts._tren-tiket-bulanan')
                             </div>
-                            <div class="col-xl-4">
+                            {{-- <div class="col-xl-4">
                                 @include('partials.dashboard.charts._jenis-sengketa')
-                            </div>
+                            </div> --}}
                         </div>
 
                         <div class="row g-5 mb-5">
@@ -241,7 +241,7 @@
         function updateRealtimeData(data) {
             const s = data.ticket_status ?? {};
 
-            document.getElementById('total-tiket').textContent = s.total_tiket ?? '-';
+            document.getElementById('total-tiket').textContent = s.tiket_aktif ?? '-';
             document.getElementById('waktu-respon').textContent = s.rata_rata_waktu_respon ?? '-';
             document.getElementById('sla-compliance').textContent = s.sla_compliance ?? '-';
 

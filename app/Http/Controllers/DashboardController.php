@@ -56,6 +56,7 @@ class DashboardController extends Controller
         $query = Ticket::query();
 
         $totalTiket = (clone $query)->count();
+        $tiketAktif = (clone $query)->where('status', '<>', 'closed')->count();
         $tiketSelesai = (clone $query)->where('status', 'closed')->count();
         $tiketProses = (clone $query)->where('status', 'in_progress')->count();
         $tiketOpen = (clone $query)->where('status', 'open')->count();
@@ -141,6 +142,7 @@ class DashboardController extends Controller
 
         return [
             'total_tiket' => $totalTiket,
+            'tiket_aktif' => $tiketAktif,
             'tiket_selesai' => $tiketSelesai,
             'tiket_proses' => $tiketProses,
             'tiket_open' => $tiketOpen,
@@ -202,8 +204,8 @@ class DashboardController extends Controller
     {
         $monthlyData = Ticket::select(
                 DB::raw('MONTH(created_at) as month'),
-                DB::raw("SUM(CASE WHEN status != 'Selesai' THEN 1 ELSE 0 END) as masuk"),
-                DB::raw("SUM(CASE WHEN status = 'Selesai' THEN 1 ELSE 0 END) as selesai")
+                DB::raw("SUM(CASE WHEN status != 'closed' THEN 1 ELSE 0 END) as masuk"),
+                DB::raw("SUM(CASE WHEN status = 'closed' THEN 1 ELSE 0 END) as selesai")
             )
             ->whereYear('created_at', now()->year)
             ->groupBy('month')
@@ -226,8 +228,8 @@ class DashboardController extends Controller
 
         $dailyData = Ticket::select(
                 DB::raw('HOUR(created_at) as hour'),
-                DB::raw("SUM(CASE WHEN status != 'Selesai' THEN 1 ELSE 0 END) as masuk"),
-                DB::raw("SUM(CASE WHEN status = 'Selesai' THEN 1 ELSE 0 END) as selesai")
+                DB::raw("SUM(CASE WHEN status != 'closed' THEN 1 ELSE 0 END) as masuk"),
+                DB::raw("SUM(CASE WHEN status = 'closed' THEN 1 ELSE 0 END) as selesai")
             )
             ->whereDate('created_at', $today)
             ->groupBy('hour')

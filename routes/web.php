@@ -73,6 +73,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/laporan/kinerja-agen', [LaporanController::class, 'filterKinerjaAgen'])->name('laporan.filter.kinerjaAgen');
     Route::get('/laporan/tren-sla', [LaporanController::class, 'filterTrenSla'])->name('laporan.filter.trenSla');
     Route::get('/laporan/kinerja-regional', [LaporanController::class, 'filterKinerjaRegional'])->name('laporan.filter.kinerjaRegional');
+    Route::get('/laporan/tren-tiket-harian', [LaporanController::class, 'filterTrenTiketHarian'])->name('laporan.filter.trenTiketHarian');
+    Route::get('/laporan/statistik', [LaporanController::class, 'filterStatistik'])->name('laporan.filter.statistik');
 
     Route::prefix('help')->group(function () {
         Route::get('/faq', [HelpController::class, 'index'])->name('help.index');

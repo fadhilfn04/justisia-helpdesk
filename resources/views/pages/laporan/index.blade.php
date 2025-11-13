@@ -35,14 +35,14 @@
                     </select>
                 </div>
 
-                <div class="d-flex gap-3">
+                {{-- <div class="d-flex gap-3">
                     <button class="btn btn-light-primary d-flex align-items-center gap-2">
                         <i class="ki-outline ki-exit-up fs-3"></i> Export Excel
                     </button>
                     <button class="btn btn-light-danger d-flex align-items-center gap-2">
                         <i class="ki-outline ki-file fs-3"></i> Export PDF
                     </button>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -105,30 +105,33 @@
         let distribusiKategoriChart = null;
         let trenSlaChart = null;
         let kinerjaRegionalChart = null;
+        let trenTiketHarianChart = null;
 
         [filterPeriode, filterWilayah, filterKategori].forEach(select => {
             select.addEventListener('change', () => {
-                fetchStatistik();
+                fetchStatistikKinerja();
                 fetchKinerjaBulanan();
                 fetchDistribusiKategori();
                 fetchKinerjaAgenList();
                 fetchTrenSla();
                 fetchKinerjaRegional();
+                fetchTrenTiketHarian();
+                fetchStatistik();
             });
         });
 
-        function fetchStatistik() {
+        function fetchStatistikKinerja() {
             const periode = filterPeriode.value;
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
             fetch(`/laporan/statistik-kinerja?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
-                .then(data => updateStatistik(data))
+                .then(data => updateStatistikKinerja(data))
                 .catch(error => console.error('Error Statistik:', error));
         }
 
-        function updateStatistik(data) {
+        function updateStatistikKinerja(data) {
             const fields = {
                 total_tiket: data.total_tiket,
                 tingkat_penyelesaian: data.tingkat_penyelesaian + ' %',
@@ -498,12 +501,98 @@
             }
         }
 
-        fetchStatistik();
+        function fetchTrenTiketHarian() {
+            const periode = filterPeriode.value;
+            const wilayah = filterWilayah.value;
+            const kategori = filterKategori.value;
+
+            fetch(`/laporan/tren-tiket-harian?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+                .then(response => response.json())
+                .then(data => updateTrenTiketHarianChart(data))
+                .catch(error => console.error('Error Chart:', error));
+        }
+
+        function updateTrenTiketHarianChart(data) {
+            const categories  = data.map(d => d.tanggal);
+            const tiketMasuk = data.map(d => d.tiket_masuk);
+            const tiketSelesai = data.map(d => d.tiket_selesai);
+
+            const options = {
+                chart: {
+                    type: 'area',
+                    height: 320,
+                    toolbar: { show: false },
+                    zoom: { enabled: false },
+                },
+                series: [
+                    { name: 'Tiket Masuk', data: tiketMasuk },
+                    { name: 'Tiket Selesai', data: tiketSelesai },
+                ],
+                xaxis: {
+                    categories,
+                    labels: { style: { colors: '#6c757d' } },
+                },
+                yaxis: {
+                    labels: { style: { colors: '#6c757d' } },
+                },
+                stroke: { curve: 'smooth', width: 3 },
+                colors: ['#007bff', '#28a745'],
+                fill: {
+                    type: 'gradient',
+                    gradient: { shadeIntensity: 0.4, opacityFrom: 0.5, opacityTo: 0.1 },
+                },
+                dataLabels: { enabled: false },
+                legend: {
+                    position: 'top',
+                    horizontalAlign: 'right',
+                    labels: { colors: '#6c757d' },
+                },
+                grid: { borderColor: '#f1f1f1' },
+                tooltip: { theme: 'light' },
+            };
+
+            if (trenTiketHarianChart) {
+                trenTiketHarianChart.updateOptions(options);
+            } else {
+                trenTiketHarianChart = new ApexCharts(document.querySelector("#trenTiketHarianChart"), options);
+                trenTiketHarianChart.render();
+            }
+        }
+
+        function fetchStatistik() {
+            const periode = filterPeriode.value;
+            const wilayah = filterWilayah.value;
+            const kategori = filterKategori.value;
+
+            fetch(`/laporan/statistik?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+                .then(response => response.json())
+                .then(data => updateStatistik(data))
+                .catch(error => console.error('Error Statistik:', error));
+        }
+
+        function updateStatistik(data) {
+            const fields = {
+                prediksi_tiket_masuk: data.prediksi_tiket_masuk,
+                growth: data.growth + ' %',
+                prediksi_selesai: data.prediksi_selesai + ' hari',
+                completion_rate: data.completion_rate + ' %',
+                backlog: data.backlog
+            };
+
+            Object.entries(fields).forEach(([key, value]) => {
+                const el = document.querySelector(`[data-field="${key}"]`);
+                if (el) animateValue(el, value);
+            });
+        }
+
+        fetchStatistikKinerja();
         fetchKinerjaBulanan();
         fetchDistribusiKategori();
         fetchKinerjaAgenList();
         fetchTrenSla();
         fetchKinerjaRegional();
+        fetchTrenTiketHarian();
+        fetchStatistik();
     });
     </script>
 @endpush
