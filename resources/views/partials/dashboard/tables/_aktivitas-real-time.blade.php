@@ -23,7 +23,7 @@
                                 [$badgeClass, $badgeText] = match ($activity->action) {
                                     'draft' => ['bg-primary text-white', 'Draft'],
                                     'open' => ['bg-primary text-white', 'Terbuka'],
-                                    'assignee' => ['bg-secondary text-white', 'Ditugaskan'],
+                                    'assignee' => ['bg-warning text-white', 'Ditugaskan'],
                                     'in_progress' => ['bg-success text-white', 'Diproses'],
                                     'closed' => ['bg-dark text-white', 'Ditutup'],
                                     'need_revision' => ['bg-danger text-white', 'Butuh Revisi'],

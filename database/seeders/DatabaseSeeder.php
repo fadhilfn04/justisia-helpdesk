@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             TicketTimelineSeeder::class,
             FeedbackSurveySeeder::class,
             NotificationSeeder::class,
+            CategoryAgentSeeder::class,
         ]);
 
         \App\Models\User::factory(10)->create();
