@@ -3,15 +3,27 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes, Notifiable;
 
     protected $fillable = [
-        'name', 'email', 'password', 'role_id', 'phone'
+        'name', 
+        'email', 
+        'password', 
+        'role_id', 
+        'phone', 
+        'last_login_at',
+        'last_login_ip', 
+        'last_seen',
+    ];
+
+    protected $casts = [
+        'last_seen' => 'datetime',
     ];
 
     protected $hidden = ['password'];
@@ -31,9 +43,9 @@ class User extends Authenticatable
         return $this->hasMany(Ticket::class, 'assigned_to');
     }
 
-    public function categoryAgents()
+    public function categoryAgent()
     {
-        return $this->hasMany(CategoryAgent::class);
+        return $this->hasOne(CategoryAgent::class, 'user_id');
     }
 
     public function ticketMessages()
@@ -58,6 +70,11 @@ class User extends Authenticatable
 
     public function notifications()
     {
-        return $this->hasMany(Notification::class);
+        return $this->hasMany(Notification::class, 'user_id');
+    }
+
+    public function unreadNotifications()
+    {
+        return $this->notifications()->where('is_read', false);
     }
 }

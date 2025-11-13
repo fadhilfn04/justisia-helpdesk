@@ -15,6 +15,16 @@
     <link rel="canonical" href="{{ url()->current() }}"/>
     <link rel="stylesheet" href="{{ asset('assets/css/fontawesome/font-awesome.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/custom-css/sidebarHeader.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/custom-css/chatbot.css') }}">
+
+    <!-- FilePond core -->
+    <link rel="stylesheet" href="{{ asset('assets/css/file-preview/filepond.css') }}">
+    {{-- flatpicker css --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <!-- Plugin preview (gambar) -->
+    <link rel="stylesheet" href="{{ asset('assets/css/file-preview/filePreviwImg.css') }}">
+
     {!! includeFavicon() !!}
 
     <!--begin::Fonts-->
@@ -38,7 +48,6 @@
         {!! sprintf('<link rel="stylesheet" href="%s">', asset($path)) !!}
     @endforeach
     <!--end::Custom Stylesheets-->
-
     @livewireStyles
 </head>
 <!--end::Head-->
@@ -46,9 +55,40 @@
 <!--begin::Body-->
 <body {!! printHtmlClasses('body') !!} {!! printHtmlAttributes('body') !!}>
 
+{{-- loader --}}
+<div id="loaderTiket" style="display: none;">
+  <div class="loader-spinner"></div>
+</div>
+
 @include('partials/theme-mode/_init')
 <div class="mt-8"></div>
 @yield('content')
+
+{{-- chatbot --}}
+
+{{-- sembuyikan jika di halaman login --}}
+@if (!Request::is('login'))
+    <div id="chatButton" class="chat-button">
+        <i data-lucide="bot-message-square" width="25" height="25"></i>
+    </div>
+
+    <!-- Kotak Chat -->
+    <div id="chatBox" class="chat-box shadow">
+        <div class="chat-header d-flex justify-content-between align-items-center">
+            <span><strong>Chat Bot</strong></span>
+            <button class="btn-close btn-sm" id="closeChat"></button>
+        </div>
+
+        <div class="chat-body">
+            {{-- body isi chatbot --}}
+        </div>
+
+        <div class="chat-footer d-flex">
+            <input type="text" class="form-control" placeholder="Ketik pesan..." />
+            <button class="btn btn-dark ms-2">Kirim</button>
+        </div>
+    </div>
+@endif
 
 <!--begin::Javascript-->
 <!--begin::Global Javascript Bundle(mandatory for all pages)-->
@@ -68,6 +108,17 @@
     {!! sprintf('<script src="%s"></script>', asset($path)) !!}
 @endforeach
 <!--end::Custom Javascript-->
+<script src="{{ asset('assets/js/file-preview/filepond-plugin-image-preview.js') }}"></script>
+<script src="{{ asset('assets/js/file-preview/filepond.js') }}"></script>
+<script src="{{ asset('assets/js/custom-js/chatbot.js') }}"></script>
+{{-- flatpicker js --}}
+<script src="{{ asset('assets/js/flatpicker/flatpicker.js') }}"></script>
+{{-- export excel / csv --}}
+<script src="{{ asset('assets/js/export/xlsx.full.min.js') }}"></script>
+{{-- export PDF --}}
+<script src="{{ asset('assets/js/export/jspdf.umd.min.js') }}"></script>
+<script src="{{ asset('assets/js/export/jspdf.plugin.autotable.min.js') }}"></script>
+
 {{-- data lucide icon --}}
 <script src="{{ asset('assets/js/lucide/lucide.js') }}"></script>
 <script>

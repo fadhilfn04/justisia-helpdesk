@@ -13,7 +13,7 @@ class TicketStatusLogFactory extends Factory
 
     public function definition(): array
     {
-        $statuses = ['open', 'in_progress', 'resolved', 'closed'];
+        $statuses = ['open', 'in_progress', 'solved', 'closed'];
         $old = $this->faker->randomElement($statuses);
         $new = $this->faker->randomElement(array_diff($statuses, [$old]));
 

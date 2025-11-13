@@ -36,12 +36,43 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $request->user()->update([
+        $user = $request->user();
+
+        $user->update([
             'last_login_at' => Carbon::now()->toDateTimeString(),
-            'last_login_ip' => $request->getClientIp()
+            'last_login_ip' => $request->getClientIp(),
         ]);
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        switch ($user->role_id) {
+            case 1:
+                $redirectUrl = RouteServiceProvider::ADMIN;
+                break;
+            case 2:
+                $redirectUrl = RouteServiceProvider::AGENT;
+                break;
+            case 3:
+                $redirectUrl = RouteServiceProvider::USER;
+                break;
+            default:
+                $redirectUrl = RouteServiceProvider::USER;
+                break;
+        }
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Login berhasil!',
+                'redirect_url' => $redirectUrl,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'role_id' => $user->role_id,
+                    'email' => $user->email,
+                ],
+            ]);
+        }
+
+        return redirect()->intended($redirectUrl);
     }
 
     /**
