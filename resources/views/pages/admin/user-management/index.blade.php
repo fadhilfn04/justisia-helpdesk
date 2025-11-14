@@ -10,13 +10,6 @@
 
 <div class="content-wrapper">
     <div class="container-fluid">
-
-        <div class="d-flex justify-content-end align-items-center mb-4">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#faqModal" onclick="openCreateModal()">
-                <i class="bi bi-plus-lg"></i> Tambah Pengguna
-            </button>
-        </div>
-
         <div class="card mb-7 border-0 shadow-sm">
             <div class="card-body">
                 <div class="position-relative">

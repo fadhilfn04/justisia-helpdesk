@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
-class ApitiketController extends BaseController
+class ApiTiketController extends BaseController
 {
     public function getKategori()
     {

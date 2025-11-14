@@ -18,13 +18,13 @@ Breadcrumbs::for('dashboard', function (BreadcrumbTrail $trail) {
 
 // Home > Dashboard > User Management
 Breadcrumbs::for('user-management.index', function (BreadcrumbTrail $trail) {
-    $trail->parent('dashboard');
+    $trail->parent('home');
     $trail->push('Manajemen Pengguna', route('user-management.users.index'));
 });
 
 // Home > Dashboard > User Management > Users
 Breadcrumbs::for('user-management.users.index', function (BreadcrumbTrail $trail) {
-    $trail->parent('user-management.index');
+    $trail->parent('home');
     $trail->push('Pengguna', route('user-management.users.index'));
 });
 
@@ -57,7 +57,17 @@ Breadcrumbs::for('settings.faq.index', function (BreadcrumbTrail $trail) {
     $trail->push('Kelola FAQ', route('settings.faq.index'));
 });
 
+Breadcrumbs::for('settings.ticket-category.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('home');
+    $trail->push('Kelola Kategori Tiket', route('settings.ticket-category.index'));
+});
+
 Breadcrumbs::for('laporan.index', function (BreadcrumbTrail $trail) {
     $trail->parent('home');
     $trail->push('Laporan & Analitik', route('laporan.index'));
+});
+
+Breadcrumbs::for('tiket.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('home');
+    $trail->push('Daftar Tiket', route('tiket.index'));
 });
