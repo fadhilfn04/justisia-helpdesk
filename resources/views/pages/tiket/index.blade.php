@@ -1,31 +1,5 @@
 <x-default-layout>
 <link rel="stylesheet" href="{{ asset('assets/css/custom-css/tiket.css') }}">
-
-<style>
-    .skeleton {
-    position: relative;
-    overflow: hidden;
-    background: #e0e0e0;
-    border-radius: 8px;
-}
-.skeleton::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -150px;
-    width: 150px;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    animation: loading 1.2s infinite;
-}
-
-@keyframes loading {
-    100% {
-        left: 100%;
-    }
-}
-</style>
-
 <div class="content-wrapper">
     <div class="container-fluid">
         <div class="row g-4">
