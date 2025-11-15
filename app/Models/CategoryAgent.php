@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CategoryAgent extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = ['user_id', 'category'];
+    protected $fillable = ['user_id', 'category', 'created_at', 'updated_at', 'deleted_at'];
 
     public function user()
     {

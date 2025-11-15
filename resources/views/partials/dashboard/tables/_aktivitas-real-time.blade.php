@@ -1,7 +1,7 @@
 <div class="card shadow-sm border-0 h-100">
     <div class="card-header">
         <div class="card-title">
-            <h2>Aktivitas Real-Time</h2>
+            <h2>Aktivitas Real Time</h2>
         </div>
     </div>
 
@@ -14,24 +14,26 @@
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
                         <div>
                             <div class="fw-semibold">
-                                {{ ucfirst($activity->action ?? 'Aktivitas') }}: {{ $activity->ticket_title }}
+                                {{ $activity->ticket_title }}
                             </div>
                             <div class="text-muted small">oleh {{ $activity->actor_name }}</div>
                         </div>
                         <div class="text-end">
                             @php
-                                $badgeClass = match ($activity->action) {
-                                    'Ticket Created' => 'bg-primary text-white',
-                                    'Assigned To Staff' => 'bg-warning text-dark',
-                                    'Status Updated' => 'bg-secondary',
-                                    'Closed' => 'bg-success text-white',
-                                    'Reopened' => 'bg-info text-white',
-                                    default => 'bg-secondary'
+                                [$badgeClass, $badgeText] = match ($activity->action) {
+                                    'draft' => ['bg-primary text-white', 'Draft'],
+                                    'open' => ['bg-primary text-white', 'Terbuka'],
+                                    'assignee' => ['bg-warning text-white', 'Ditugaskan'],
+                                    'in_progress' => ['bg-success text-white', 'Diproses'],
+                                    'closed' => ['bg-dark text-white', 'Ditutup'],
+                                    'need_revision' => ['bg-danger text-white', 'Butuh Revisi'],
+                                    'agent_rejected' => ['bg-danger text-white', 'Ditolak Agent'],
+                                    default => ['bg-secondary text-white', ucfirst($activity->action ?? 'Tidak diketahui')],
                                 };
                             @endphp
 
-                            <span class="badge {{ $badgeClass }} me-2">
-                                {{ $activity->action }}
+                            <span class="badge {{ $badgeClass }}">
+                                {{ $badgeText }}
                             </span>
 
                             <span class="text-muted small">

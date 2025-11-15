@@ -4,23 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ticket extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'category_id', 'assigned_to',
-        'title', 'description', 'status', 'priority'
+        'user_id', 'category_id', 'assigned_to', 'wilayah_id',
+        'title', 'description', 'ticket_resolution_message', 'completion_ticket_file', 'status', 'priority', 'created_at'
     ];
 
-    // === Relationships ===
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function assignedTo()
+    public function agent()
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
@@ -48,5 +48,9 @@ class Ticket extends Model
     public function feedbackSurveys()
     {
         return $this->hasMany(FeedbackSurvey::class);
+    }
+    public function file()
+    {
+        return $this->hasMany(TicketFile::class);
     }
 }

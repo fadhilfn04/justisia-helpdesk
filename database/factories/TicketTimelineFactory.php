@@ -14,11 +14,13 @@ class TicketTimelineFactory extends Factory
             'ticket_id' => Ticket::factory(),
             'actor_id' => User::factory(),
             'action' => $this->faker->randomElement([
-                'Ticket Created',
-                'Status Updated',
-                'Assigned to Staff',
-                'Reopened',
-                'Closed'
+                'draft',
+                'in_progress',
+                'open',
+                'assignee',
+                'need_revision',
+                'agent_rejected',
+                'closed',
             ]),
             'description' => $this->faker->optional()->sentence(10),
             'created_at' => now(),

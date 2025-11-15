@@ -1,7 +1,7 @@
 <div class="card shadow-sm border-0 h-100">
     <div class="card-header">
         <div class="card-title">
-            <h2>Jenis Sengketa</h2>
+            Jenis Sengketa
         </div>
     </div>
     <div class="card-body">
@@ -11,19 +11,18 @@
 
 @push('scripts')
 <script>
+    const kategoriData = @json($disputeByCategory);
+    const labels = kategoriData.map(item => item.kategori);
+    const series = kategoriData.map(item => item.jumlah);
+
     const optionsJenis = {
         chart: {
             type: 'donut',
             height: 300
         },
-        labels: [
-            'Sengketa Batas',
-            'Konflik Kepemilikan',
-            'Cacat Administrasi',
-            'Putusan Pengadilan'
-        ],
-        series: [35, 28, 22, 15],
-        colors: ['#4e73df', '#f6c23e', '#36b9cc', '#e74a3b'],
+        labels: labels,
+        series: series,
+        colors: ['#4e73df', '#f6c23e', '#36b9cc', '#e74a3b', '#858796', '#1cc88a', '#e83e8c'],
         legend: {
             position: 'bottom'
         },
@@ -40,7 +39,10 @@
                         total: {
                             show: true,
                             label: 'Total',
-                            formatter: () => '100%'
+                            formatter: (w) => {
+                                const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                return total;
+                            }
                         }
                     }
                 }

@@ -17,16 +17,36 @@
                             <td class="text-end">
                                 <div>
                                     @switch($ticket['status'])
+                                        @case('draft')
+                                            <span class="badge badge-light-secondary">Draft</span>
+                                            @break
+
                                         @case('open')
                                             <span class="badge badge-light-primary">Terbuka</span>
                                             @break
 
+                                        @case('assignee')
+                                            <span class="badge badge-light-warning">Diverifikasi</span>
+                                            @break
+
                                         @case('in_progress')
-                                            <span class="badge badge-light-warning">Sedang Diproses</span>
+                                            <span class="badge badge-light-info">Sedang Diproses</span>
                                             @break
 
                                         @case('closed')
                                             <span class="badge badge-light-success">Selesai</span>
+                                            @break
+
+                                        @case('solved')
+                                            <span class="badge badge-light-success">Selesai</span>
+                                            @break
+
+                                        @case('agent_rejected')
+                                            <span class="badge badge-light-danger">Ditolak Agent</span>
+                                            @break
+
+                                        @case('need_revision')
+                                            <span class="badge badge-light-danger">Perlu Revisi</span>
                                             @break
 
                                         @default
