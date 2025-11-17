@@ -101,9 +101,13 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         drawCallback: function () {
             lucide.createIcons();
+
+            // count datatable tiket
+            let countDataTable = this.api().page.info().recordsTotal;
+            $("#countDataTableTiket").html(countDataTable);
         },
     });
-
+    
     // btn refresh tabel
     $("#btnRefreshTabel").on("click", function (e) {
         e.preventDefault();
