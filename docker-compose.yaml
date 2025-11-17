@@ -39,6 +39,7 @@ services:
           MYSQL_PASSWORD: iniP@assword
       volumes:
           - ./db_data:/var/lib/mysql
+          - ./db_data/my.cnf:/etc/mysql/my.cnf
       networks:
           - kby-atr-net
       ports:
