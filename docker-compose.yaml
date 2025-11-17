@@ -39,7 +39,6 @@ services:
           MYSQL_PASSWORD: iniP@assword
       volumes:
           - ./db_data:/var/lib/mysql
-          - ./db_data/my.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf
       networks:
           - kby-atr-net
       ports:
