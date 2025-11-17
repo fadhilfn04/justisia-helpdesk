@@ -28,21 +28,23 @@ services:
       - ./nginx:/etc/nginx/conf.d/
     networks:
       - kby-atr-net
+
   db:
-      image: mariadb:10.5
-      container_name: db-justisia-helpdesk-erm
-      restart: unless-stopped
-      environment:
-          MYSQL_ROOT_PASSWORD: iniP@assword
-          MYSQL_DATABASE: helpdesk
-          MYSQL_USER: root
-          MYSQL_PASSWORD: iniP@assword
-      volumes:
-          - ./db_data:/var/lib/mysql
-      networks:
-          - kby-atr-net
-      ports:
-          - "8990:3306"
+    image: mariadb:10.5
+    container_name: db-justisia-helpdesk-erm
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: iniP@assword
+      MYSQL_DATABASE: helpdesk
+      MYSQL_USER: root
+      MYSQL_PASSWORD: iniP@assword
+    volumes:
+      - ./db_data:/var/lib/mysql
+    networks:
+      - kby-atr-net
+    ports:
+      - "8990:3306"
+
 networks:
   kby-atr-net:
-    driver: bridge
+    external: true
