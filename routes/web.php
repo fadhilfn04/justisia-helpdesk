@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\FaqController;
-use App\Http\Controllers\Api\ApitiketController;
+use App\Http\Controllers\Api\ApiTiketController;
 use App\Http\Controllers\Apps\PermissionManagementController;
 use App\Http\Controllers\Apps\RoleManagementController;
 use App\Http\Controllers\Apps\UserManagementController;
@@ -12,7 +12,12 @@ use App\Http\Controllers\TiketController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\TicketCategoryController;
+use App\Models\User;
+use Illuminate\Container\Attributes\Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Route;
+use PHPUnit\Util\Json;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +29,53 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::prefix('sso')->group(function () {
+    Route::get('/redirect', function (Request $request) {
+        $data = $request->all();
+        // return $data;
+        // Ambil string JSON pada field "data"
+        $jsonString = $data['data'] ?? null;
+
+        // Decode string JSON pertama
+        $decodedData = $jsonString ? json_decode($jsonString, true) : null;
+
+        if($decodedData['email_verified'] == false){
+            $decodedData['email_verified'] = $decodedData['preferred_username'].'@atrbpn.go.id';
+        }
+
+        $email = $decodedData['email_verified'] ?? null;
+        $user = User::where('email', $email)->first();
+        if (!$user) {
+            // Jika user belum ada, buat user baru
+            $user = User::create([
+                'name' => $decodedData['atrbpn-profile']['namapegawai'] ?? 'Unknown',
+                'email' => $email,
+                'role_id'=>3,
+                'password' => bcrypt('password123'), // Set password random atau sesuai kebutuhan
+                'data_user' => json_encode($decodedData),
+            ]);
+        } else {
+            // Jika user sudah ada, update data_user
+            $user->update([
+                'data_user' => json_encode($decodedData),
+            ]);
+        }
+
+        // Login user
+        FacadesAuth::login($user);
+
+        return redirect('/dashboard');
+        // Return hasil decode, misal seluruh array
+        // return response()->json([
+        //     'raw_request' => $data,
+        //     'decoded_data' => $decodedData,
+        //     'nama_pegawai' => $decodedData['atrbpn-profile']['namapegawai'] ?? null,
+        //     'kantor' => $decodedData['atrbpn-profile']['namakantor'] ?? null,
+        // ]);
+    })->name('sso.redirect');
+});
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -58,11 +110,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/sendChat', [TiketController::class, 'sendChat']);
 
         Route::prefix('api')->group(function () {
-            Route::get('/getKategori', [ApitiketController::class, 'getKategori'])->name('tiket.getKategori');
-            Route::get('/getTiket', [ApitiketController::class, 'getTiket'])->name('tiket.getTiket');
-            Route::get('/getDetailTiket/{id}', [ApitiketController::class, 'getDetailTiket'])->name('tiket.getDetailTiket');
-            Route::get('/status-summary', [ApitiketController::class, 'statusSummary'])->name('tiket.statusSummary');
-            Route::get('/checkDuplicateTiket/{id}/{title}', [ApitiketController::class, 'checkDuplicateTiket'])->name('tiket.checkDuplicateTiket');
+            Route::get('/getKategori', [ApiTiketController::class, 'getKategori'])->name('tiket.getKategori');
+            Route::get('/getTiket', [ApiTiketController::class, 'getTiket'])->name('tiket.getTiket');
+            Route::get('/getDetailTiket/{id}', [ApiTiketController::class, 'getDetailTiket'])->name('tiket.getDetailTiket');
+            Route::get('/status-summary', [ApiTiketController::class, 'statusSummary'])->name('tiket.statusSummary');
+            Route::get('/checkDuplicateTiket/{id}/{title}', [ApiTiketController::class, 'checkDuplicateTiket'])->name('tiket.checkDuplicateTiket');
         });
     });
 
@@ -99,4 +151,3 @@ Route::get('/error', function () {
 Route::get('/auth/redirect/{provider}', [SocialiteController::class, 'redirect']);
 
 require __DIR__ . '/auth.php';
-
