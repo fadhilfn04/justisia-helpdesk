@@ -65,6 +65,10 @@ Route::prefix('sso')->group(function () {
         // Login user
         FacadesAuth::login($user);
 
+        $request->authenticate();
+
+        $request->session()->regenerate();
+
         return redirect('/dashboard');
         // Return hasil decode, misal seluruh array
         // return response()->json([
