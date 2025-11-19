@@ -82,10 +82,9 @@ class ApiTiketController extends BaseController
                 'terbuka' => 'open',
                 'proses' => 'in_progress',
                 'diverifikasi' => 'assignee',
-                'ditutup' => 'closed',
+                'selesai' => 'closed',
                 'draft' => 'draft',
                 'ditolak' => 'agent_rejected',
-                'selesai' => 'solved',
                 'revisi' => 'need_revision'
             ];
 
@@ -125,8 +124,7 @@ class ApiTiketController extends BaseController
                         'proses' => 'in_progress',
                         'diverifikasi' => 'assignee',
                         'terbuka' => 'open',
-                        'ditutup' => 'closed',
-                        'selesai' => 'solved',
+                        'selesai' => 'closed',
                         'ditolak agent' => 'agent_rejected',
                         'perlu revisi' => 'need_revision'
                     ];
@@ -199,11 +197,8 @@ class ApiTiketController extends BaseController
                         $status = 'terbuka';
                         $color = 'badge-bg-dark-blue'; $icon = 'clock'; $textColor = 'text-dark-blue'; break;
                     case 'closed':
-                        $status = 'ditutup';
-                        $color = 'badge-bg-dark'; $icon = 'circle-check-big'; $textColor = 'text-dark'; break;
-                    case 'solved':
                         $status = 'selesai';
-                        $color = 'badge-bg-primary'; $icon = 'circle-check-big'; $textColor = 'text-primary'; break;
+                        $color = 'badge-bg-dark'; $icon = 'circle-check-big'; $textColor = 'text-dark'; break;
                     case 'need_revision':
                         $status = 'Perlu Revisi';
                         $color = 'badge-bg-danger'; $icon = 'triangle-alert'; $textColor = 'text-danger'; break;
@@ -250,7 +245,7 @@ class ApiTiketController extends BaseController
             ->addColumn('pj', function($row) {
                 $pj = $row->agent->name ?? '-';
 
-                 $initials = '-';
+                $initials = '-';
 
                 if ($row->agent && $row->agent->name) {
                     $words = explode(' ', trim($row->agent->name));
@@ -384,6 +379,7 @@ class ApiTiketController extends BaseController
     public function statusSummary(Request $request)
     {
         $userId = Auth::id();
+        $user   = Auth::user();
 
         $statusMap = [
             'open' => 'Terbuka',
@@ -401,11 +397,26 @@ class ApiTiketController extends BaseController
             'need_revision' => 'text-danger',
         ];
 
-        $statusCounts = Ticket::where('user_id', $userId)
-            ->select('status', DB::raw('count(*) as total'))
-            ->groupBy('status')
-            ->pluck('total', 'status')
-            ->toArray();
+        $isAdmin       = $user->role->id === 1;
+        $isAgentTeknis = CategoryAgent::where('user_id', $userId)->exists();
+
+        $query = Ticket::select('status', DB::raw('count(*) as total'))
+            ->groupBy('status');
+
+        if ($isAdmin) {
+            $query->whereNotIn('status', ['draft', 'need_revision']);
+        } else if ($isAgentTeknis) {
+            $categories  = CategoryAgent::where('user_id', $userId)->pluck('category');
+            $categoryIds = TicketCategory::whereIn('name', $categories)->pluck('id');
+
+            $query->where('assigned_to', $userId)
+                ->whereIn('status', ['assignee', 'in_progress', 'closed', 'solved'])
+                ->whereIn('category_id', $categoryIds);
+        } else {
+            $query->where('user_id', $userId);
+        }
+
+        $statusCounts = $query->pluck('total', 'status')->toArray();
 
         $response = [];
 

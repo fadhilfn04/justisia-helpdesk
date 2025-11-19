@@ -107,39 +107,6 @@
                             </div> --}}
                         </div>
                     @endif
-
-                    <div class="card border-0 shadow-sm rounded-4 mb-4">
-                        <div class="card-body py-4">
-                            <h5 class="fw-bold mb-1">Aksi Cepat</h5>
-                            <p class="text-muted mb-4">Akses fitur utama dengan cepat</p>
-
-                            <div class="row g-3">
-                                <div class="col-md col-sm-6">
-                                    <a href="{{ route('tiket.index') }}" class="text-decoration-none">
-                                        <div class="quick-action-card text-center p-4 rounded-3 border bg-white h-100 hover-shadow transition">
-                                            <div class="fs-1 mb-2 text-primary">
-                                                <i class="bi bi-ticket-perforated"></i>
-                                            </div>
-                                            <div class="fw-semibold text-dark">Buat Tiket Baru</div>
-                                        </div>
-                                    </a>
-                                </div>
-
-                                @if (auth()->user()->role->id != '3')
-                                    <div class="col-md col-sm-6">
-                                        <a href="{{ route('user-management.users.index') }}" class="text-decoration-none">
-                                            <div class="quick-action-card text-center p-4 rounded-3 border bg-white h-100 hover-shadow transition">
-                                                <div class="fs-1 mb-2 text-success">
-                                                    <i class="bi bi-people"></i>
-                                                </div>
-                                                <div class="fw-semibold text-dark">Manajemen User</div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="tab-pane fade" id="tab_realtime" role="tabpanel">
