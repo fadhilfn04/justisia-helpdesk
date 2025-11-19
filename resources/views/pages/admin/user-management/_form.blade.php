@@ -55,7 +55,6 @@
     @endforeach
 </div>
 
-<!-- Pilihan kategori muncul hanya kalau role Agent -->
 <div id="category-container" class="mb-7" style="display: none;">
     <label class="fw-semibold fs-6 mb-2">Pilih Kategori Tiket</label>
     <div class="border rounded p-4 bg-light">

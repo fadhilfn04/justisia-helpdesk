@@ -2,7 +2,7 @@
     <div class="d-flex align-items-center justify-content-between mb-3">
         <div>
             <h4 class="fw-bold mb-1">
-                <i class="fa-solid fa-user-tie text-primary me-2"></i> Kinerja Agen
+                <i class="text-primary me-2"></i> Kinerja Agen
             </h4>
             <p class="text-muted mb-0">Performa individual agen helpdesk</p>
         </div>

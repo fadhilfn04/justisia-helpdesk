@@ -1,7 +1,7 @@
 <div class="card shadow-sm rounded-4 p-4 mb-6 bg-white border-0">
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
-            <h4 class="fw-bold mb-1 text-dark">📈 Tren Tiket Harian</h4>
+            <h4 class="fw-bold mb-1 text-dark">Tren Tiket Harian</h4>
             <p class="text-muted mb-0">Perkembangan tiket dan penyelesaian per hari</p>
         </div>
     </div>
@@ -13,7 +13,7 @@
 <div class="card shadow-sm rounded-4 p-4 mb-6 bg-white border-0">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-            <h4 class="fw-bold mb-1 text-dark">📊 Prediksi Beban Kerja</h4>
+            <h4 class="fw-bold mb-1 text-dark">Prediksi Beban Kerja</h4>
             <p class="text-muted mb-0">Estimasi berdasarkan tren historis 3 bulan terakhir</p>
         </div>
     </div>

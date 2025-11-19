@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -91,5 +94,30 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    public function ssoLogin(Request $request)
+    {
+        $token = $request->query('token');
+        $secret = env('SSO_SHARED_SECRET');
+
+        try {
+            $decoded = JWT::decode($token, new Key($secret, 'HS256'));
+            $user = User::where('email', $decoded->email)->first();
+
+            if (!$user) {
+                return redirect('/login')->withErrors('User tidak ditemukan.');
+            }
+
+            Auth::login($user);
+            $user->update([
+                'last_login_at' => now(),
+                'last_login_ip' => $request->getClientIp(),
+            ]);
+
+            return redirect()->intended(RouteServiceProvider::HOME);
+        } catch (\Exception $e) {
+            return redirect('/login')->withErrors('Token tidak valid atau sudah kedaluwarsa.');
+        }
     }
 }

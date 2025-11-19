@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\TiketExport;
 use App\Models\CategoryAgent;
 use App\Models\Notification;
+use App\Models\Region;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Ticket;
@@ -37,6 +38,80 @@ class TiketController extends Controller
         ]);
     }
 
+    // public function store(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'userPelaporId' => 'required|exists:users,id',
+    //         'title' => 'required|string|max:255',
+    //         'deskripsi' => 'required|string',
+    //         'kategori' => 'required|exists:ticket_categories,id',
+    //         'fileTiket.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
+    //     ]);
+
+    //     $normalizedTitle = strtolower(trim(preg_replace('/\s+/', ' ', $request->title)));
+    //     $isDuplicate = Ticket::where('user_id', $request->userPelaporId)
+    //         ->get()
+    //         ->contains(function ($ticket) use ($normalizedTitle) {
+    //             $dbTitle = strtolower(trim(preg_replace('/\s+/', ' ', $ticket->title)));
+    //             return $dbTitle === $normalizedTitle;
+    //         });
+
+    //     if ($isDuplicate) {
+    //         return response()->json([
+    //             'message' => 'Tiket dengan judul yang sama telah tercatat sebelumnya.',
+    //             'duplicate' => true
+    //         ], 422);
+    //     }
+
+    //     $ticket = Ticket::create([
+    //         'user_id' => $request->userPelaporId,
+    //         'category_id' => $request->kategori,
+    //         'assigned_to' => null,
+    //         'wilayah_id' => null,
+    //         'title' => $request->title,
+    //         'description' => $request->deskripsi,
+    //         'status' => $request->status,
+    //     ]);
+
+    //     $ticketTimeline = TicketTimeline::create([
+    //         'ticket_id' => $ticket->id,
+    //         'actor_id' => $request->userPelaporId,
+    //         'action' => $request->status,
+    //         'description' => 'Tiket baru: ' . $request->title . '',
+    //     ]);
+
+    //     if($request->status != 'draft')
+    //     {
+    //         NotificationService::send(
+    //             $request->userPelaporId,
+    //             'Tiket berhasil diajukan',
+    //             "Tiket Anda dengan ID #{$ticket->id} telah berhasil diajukan. Mohon tunggu, admin akan segera melakukan verifikasi."
+    //         );
+    //     }
+
+    //     $fileUrls = [];
+
+    //     if ($request->hasFile('fileTiket')) {
+    //         foreach ($request->file('fileTiket') as $file) {
+    //             $path = $file->store('fileTickets', 'public');
+    //             $url = Storage::url($path);
+
+    //             TicketFile::create([
+    //                 'ticket_id' => $ticket->id,
+    //                 'file_ticket' => $url,
+    //             ]);
+
+    //             $fileUrls[] = $url;
+    //         }
+    //     }
+
+    //     return response()->json([
+    //         'message' => 'Tiket berhasil disimpan',
+    //         'ticket_id' => $ticket->id,
+    //         'files' => $fileUrls,
+    //     ]);
+    // }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -46,6 +121,27 @@ class TiketController extends Controller
             'kategori' => 'required|exists:ticket_categories,id',
             'fileTiket.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
         ]);
+
+        $user = User::findOrFail($request->userPelaporId);
+        $dataUser = $user->data_user ? json_decode($user->data_user, true) : null;
+
+        $idWilayah = $dataUser['kantor_id'] ?? null;
+        $namaWilayah = $dataUser['nama_kantor'] ?? null;
+
+        $regionId = null;
+
+        if ($idWilayah) {
+            $region = Region::where('id', $idWilayah)->first();
+
+            if (!$region) {
+                $region = Region::create([
+                    'id' => $idWilayah,
+                    'name' => $namaWilayah ?: 'Wilayah Tanpa Nama',
+                ]);
+            }
+
+            $regionId = $region->id;
+        }
 
         $normalizedTitle = strtolower(trim(preg_replace('/\s+/', ' ', $request->title)));
         $isDuplicate = Ticket::where('user_id', $request->userPelaporId)
@@ -66,21 +162,20 @@ class TiketController extends Controller
             'user_id' => $request->userPelaporId,
             'category_id' => $request->kategori,
             'assigned_to' => null,
-            'wilayah_id' => null,
+            'wilayah_id' => $regionId,
             'title' => $request->title,
             'description' => $request->deskripsi,
             'status' => $request->status,
         ]);
 
-        $ticketTimeline = TicketTimeline::create([
+        TicketTimeline::create([
             'ticket_id' => $ticket->id,
             'actor_id' => $request->userPelaporId,
             'action' => $request->status,
-            'description' => 'Tiket baru: ' . $request->title . '',
+            'description' => 'Tiket baru: ' . $request->title,
         ]);
 
-        if($request->status != 'draft')
-        {
+        if ($request->status != 'draft') {
             NotificationService::send(
                 $request->userPelaporId,
                 'Tiket berhasil diajukan',

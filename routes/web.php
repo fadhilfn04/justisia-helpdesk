@@ -7,10 +7,11 @@ use App\Http\Controllers\Apps\RoleManagementController;
 use App\Http\Controllers\Apps\UserManagementController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\HelpController;
-use App\Http\Controllers\TiketController;
-use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\TiketController;
+use App\Http\Controllers\Api\ApitiketController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\HelpController;
 use App\Http\Controllers\TicketCategoryController;
 use App\Models\User;
 use Illuminate\Container\Attributes\Auth;
@@ -23,11 +24,9 @@ use PHPUnit\Util\Json;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
+| Main route definitions for the Helpdesk application.
+| These routes are loaded by the RouteServiceProvider within a "web" group.
+|--------------------------------------------------------------------------
 */
 
 Route::prefix('sso')->group(function () {
@@ -80,65 +79,72 @@ Route::prefix('sso')->group(function () {
     })->name('sso.redirect');
 });
 
-
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/', [DashboardController::class, 'index']);
-
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/agen-online', [DashboardController::class, 'getAgenOnline'])->name('dashboard.agenOnline');
-    Route::get('/dashboard/realtime', [DashboardController::class, 'getRealtimeData'])->name('dashboard.realtime');
-
-    Route::prefix('notifications')->group(function () {
-        Route::get('/partial', [NotificationController::class, 'partial'])->name('notifications.partial');
-        Route::post('/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
-        Route::post('/{id}/mark-read', [NotificationController::class, 'markRead'])->name('notifications.markRead');
-        Route::delete('/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::controller(DashboardController::class)->group(function () {
+        Route::get('/', 'index')->name('dashboard');
+        Route::get('/dashboard', 'index');
+        Route::get('/dashboard/agen-online', 'getAgenOnline')->name('dashboard.agenOnline');
+        Route::get('/dashboard/realtime', 'getRealtimeData')->name('dashboard.realtime');
     });
 
-    Route::prefix('tiket')->group(function () {
-        Route::resource('/', TiketController::class)->parameters(['' => 'tiket']);
-        Route::get('/', [TiketController::class, 'index'])->name('tiket.index');
-        Route::post('/store', [TiketController::class, 'store'])->name('tiket.store');
-        Route::post('/update', [TiketController::class, 'update'])->name('tiket.update');
-        Route::post('/delete', [TiketController::class, 'delete'])->name('tiket.destroy');
-        Route::post('/{id}/verification', [TiketController::class, 'verification'])->name('verification');
-        Route::post('/{id}/return', [TiketController::class, 'return'])->name('tiket.return');
-        Route::post('/{id}/close', [TiketController::class, 'close'])->name('tiket.close');
-        Route::get('/{id}/timeline', [TiketController::class, 'getTimeline']);
-        Route::post('/actionTiketAgent', [TiketController::class, 'actionTiketAgent'])->name('tiket.actionTiketAgent');
-        Route::post('/ticketResolution', [TiketController::class, 'ticketResolution'])->name('tiket.ticketResolution');
-        Route::post('/exportTiket', [TiketController::class, 'exportTiket'])->name('tiket.exportTiket');
+    Route::prefix('notifications')->name('notifications.')->controller(NotificationController::class)->group(function () {
+        Route::get('/partial', 'partial')->name('partial');
+        Route::post('/mark-all-read', 'markAllRead')->name('markAllRead');
+        Route::post('/{id}/mark-read', 'markRead')->name('markRead');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+    });
 
-        Route::get('/getAllChat/{ticketId}', [TiketController::class, 'getAllChat']);
-        Route::post('/sendChat', [TiketController::class, 'sendChat']);
+    Route::prefix('tiket')->name('tiket.')->group(function () {
+        Route::controller(TiketController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{id}', 'show')->name('show');
+            Route::post('/store', 'store')->name('store');
+            Route::post('/update', 'update')->name('update');
+            Route::post('/delete', 'delete')->name('destroy');
 
-        Route::prefix('api')->group(function () {
-            Route::get('/getKategori', [ApiTiketController::class, 'getKategori'])->name('tiket.getKategori');
-            Route::get('/getTiket', [ApiTiketController::class, 'getTiket'])->name('tiket.getTiket');
-            Route::get('/getDetailTiket/{id}', [ApiTiketController::class, 'getDetailTiket'])->name('tiket.getDetailTiket');
-            Route::get('/status-summary', [ApiTiketController::class, 'statusSummary'])->name('tiket.statusSummary');
-            Route::get('/checkDuplicateTiket/{id}/{title}', [ApiTiketController::class, 'checkDuplicateTiket'])->name('tiket.checkDuplicateTiket');
+            Route::post('/{id}/verification', 'verification')->name('verification');
+            Route::post('/{id}/return', 'return')->name('return');
+            Route::post('/{id}/close', 'close')->name('close');
+
+            Route::get('/{id}/timeline', 'getTimeline')->name('timeline');
+
+            Route::post('/actionTiketAgent', 'actionTiketAgent')->name('actionTiketAgent');
+            Route::post('/ticketResolution', 'ticketResolution')->name('ticketResolution');
+            Route::post('/exportTiket', 'exportTiket')->name('exportTiket');
+
+            Route::get('/getAllChat/{ticketId}', 'getAllChat')->name('getAllChat');
+            Route::post('/sendChat', 'sendChat')->name('sendChat');
+        });
+
+        Route::prefix('api')->name('api.')->controller(ApitiketController::class)->group(function () {
+            Route::get('/getKategori', 'getKategori')->name('getKategori');
+            Route::get('/getTiket', 'getTiket')->name('getTiket');
+            Route::get('/getDetailTiket/{id}', 'getDetailTiket')->name('getDetailTiket');
+            Route::get('/status-summary', 'statusSummary')->name('statusSummary');
+            Route::get('/checkDuplicateTiket/{id}/{title}', 'checkDuplicateTiket')->name('checkDuplicateTiket');
         });
     });
 
-    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
-    Route::get('/laporan/statistik-kinerja', [LaporanController::class, 'filterStatistikKinerja'])->name('laporan.filter.statistikKinerja');
-    Route::get('/laporan/kinerja-bulanan', [LaporanController::class, 'filterKinerjaBulanan'])->name('laporan.filter.kinerjaBulanan');
-    Route::get('/laporan/distribusi-kategori', [LaporanController::class, 'filterDistribusiKategori'])->name('laporan.filter.distribusiKategori');
-    Route::get('/laporan/kinerja-agen', [LaporanController::class, 'filterKinerjaAgen'])->name('laporan.filter.kinerjaAgen');
-    Route::get('/laporan/tren-sla', [LaporanController::class, 'filterTrenSla'])->name('laporan.filter.trenSla');
-    Route::get('/laporan/kinerja-regional', [LaporanController::class, 'filterKinerjaRegional'])->name('laporan.filter.kinerjaRegional');
-    Route::get('/laporan/tren-tiket-harian', [LaporanController::class, 'filterTrenTiketHarian'])->name('laporan.filter.trenTiketHarian');
-    Route::get('/laporan/statistik', [LaporanController::class, 'filterStatistik'])->name('laporan.filter.statistik');
-
-    Route::prefix('help')->group(function () {
-        Route::get('/faq', [HelpController::class, 'index'])->name('help.index');
-        Route::get('/guide', [HelpController::class, 'guide'])->name('help.guide');
-        Route::get('/kontak', [HelpController::class, 'kontak'])->name('help.kontak');
+    Route::prefix('laporan')->name('laporan.')->controller(LaporanController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/statistik-kinerja', 'filterStatistikKinerja')->name('filter.statistikKinerja');
+        Route::get('/kinerja-bulanan', 'filterKinerjaBulanan')->name('filter.kinerjaBulanan');
+        Route::get('/distribusi-kategori', 'filterDistribusiKategori')->name('filter.distribusiKategori');
+        Route::get('/kinerja-agen', 'filterKinerjaAgen')->name('filter.kinerjaAgen');
+        Route::get('/tren-sla', 'filterTrenSla')->name('filter.trenSla');
+        Route::get('/kinerja-regional', 'filterKinerjaRegional')->name('filter.kinerjaRegional');
+        Route::get('/tren-tiket-harian', 'filterTrenTiketHarian')->name('filter.trenTiketHarian');
+        Route::get('/statistik', 'filterStatistik')->name('filter.statistik');
     });
 
-    Route::name('user-management.')->prefix('user-management')->group(function () {
+    Route::prefix('help')->name('help.')->controller(HelpController::class)->group(function () {
+        Route::get('/faq', 'index')->name('faq');
+        Route::get('/guide', 'guide')->name('guide');
+        Route::get('/kontak', 'kontak')->name('kontak');
+    });
+
+    Route::prefix('user-management')->name('user-management.')->group(function () {
         Route::resource('users', UserManagementController::class);
     });
 
@@ -148,9 +154,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-Route::get('/error', function () {
-    abort(500);
-});
+Route::view('/error', 'errors.500')->name('error.500');
 
 Route::get('/auth/redirect/{provider}', [SocialiteController::class, 'redirect']);
 

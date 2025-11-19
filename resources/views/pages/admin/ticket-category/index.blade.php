@@ -1,10 +1,17 @@
 <x-default-layout>
 
+    @section('title')
+        Kelola FAQ
+    @endsection
+
+    @section('breadcrumbs')
+        {{ Breadcrumbs::render('settings.ticket-category.index') }}
+    @endsection
+
 <div class="content-wrapper">
     <div class="container-fluid">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="mb-0">Kelola Kategori Tiket</h4>
+        <div class="d-flex justify-content-end align-items-center mb-4">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#faqModal" onclick="openCreateModal()">
                 <i class="bi bi-plus-lg"></i> Tambah Kategori Tiket
             </button>

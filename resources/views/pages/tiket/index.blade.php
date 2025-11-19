@@ -1,5 +1,13 @@
 <x-default-layout>
 <link rel="stylesheet" href="{{ asset('assets/css/custom-css/tiket.css') }}">
+    
+    @section('title')
+        Daftar Tiket
+    @endsection
+
+    @section('breadcrumbs')
+        {{ Breadcrumbs::render('tiket.index') }}
+    @endsection
 
 <style>
     .skeleton {
@@ -93,7 +101,7 @@
                     <div class="mb-5">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h4 class="fw-bold mb-1">Daftar Tiket (5)</h4>
+                                <h4 class="fw-bold mb-1">Daftar Tiket (<span id="countDataTableTiket"></span>)</h4>
                                 <p class="text-muted mb-0 fs-7">Kelola dan pantau semua tiket helpdesk</p>
                             </div>
                             <button class="btn btn-sm bg-white border border-gray-300 btn-hover-primary" id="btnRefreshTabel">
@@ -377,7 +385,7 @@
 
                         <div class="row g-5">
                             <!-- 🧭 Kiri: Kontak dan Form -->
-                            <div class="col-lg-{{ auth()->user()->role->id != 3 ? 8 : 12 }}">
+                            <div class="col">
                                 <!-- 1️⃣ Saluran Kontak Resmi -->
                                 <div class="card mb-5 border border-gray-300">
                                     <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">
@@ -469,38 +477,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            @if(auth()->user()->role->id != '3')
-                                <div class="col-lg-4">
-                                    <div class="card border mb-3 border-gray-300">
-                                        <div class="card-header border-0">
-                                            <h1 class="card-title" style="font-size: 1.2rem; font-weight: 600;">
-                                                Prioritas
-                                            </h1>
-                                        </div>
-
-                                        <div class="card-body py-0 mb-2">
-                                            <div class="priority-option text-danger fs-6 fw-semibold" data-value="high">Tinggi</div>
-                                            <div class="priority-option text-warning fs-6 fw-semibold active" data-value="medium">Sedang</div>
-                                            <div class="priority-option text-success fs-6 fw-semibold" data-value="low">Rendah</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Card Estimasi SLA -->
-                                    <div class="card border mb-3 border-gray-300">
-                                        <div class="card-header border-0">
-                                            <h1 class="card-title" style="font-size: 1.2rem; font-weight: 600;">Estimasi SLA</h1>
-                                        </div>
-                                        <div class="card-body py-0 mb-5 text-dark">
-                                            <span class="fw-semibold">Berdasarkan kategori dan prioritas:</span>
-                                            <ul class="mt-2 mb-0 ps-3">
-                                                <li>Respon awal: <span class="fw-bold text-dark">3x24 jam</span></li>
-                                                <li>Penyelesaian: <span class="fw-bold text-dark">7–14 hari kerja</span></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
                         </div>
 
                     </div>
