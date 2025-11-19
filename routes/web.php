@@ -65,7 +65,7 @@ Route::prefix('sso')->group(function () {
         // Login user
         FacadesAuth::login($user);
 
-        $request->authenticate();
+        // $request->authenticate();
 
         $request->session()->regenerate();
 
