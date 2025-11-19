@@ -12,14 +12,15 @@ class User extends Authenticatable
     use HasFactory, Notifiable, SoftDeletes, Notifiable;
 
     protected $fillable = [
-        'name', 
-        'email', 
-        'password', 
-        'role_id', 
-        'phone', 
+        'name',
+        'email',
+        'password',
+        'role_id',
+        'phone',
         'last_login_at',
-        'last_login_ip', 
+        'last_login_ip',
         'last_seen',
+        'data_user',
     ];
 
     protected $casts = [

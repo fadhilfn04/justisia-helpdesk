@@ -1,7 +1,8 @@
 <?php
 
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NotificationController;
@@ -12,8 +13,8 @@ use App\Http\Controllers\HelpController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\TicketCategoryController;
 use App\Http\Controllers\Apps\UserManagementController;
-use App\Http\Controllers\Apps\RoleManagementController;
-use App\Http\Controllers\Apps\PermissionManagementController;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,51 @@ use App\Http\Controllers\Apps\PermissionManagementController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/sso-login', [AuthenticatedSessionController::class, 'ssoLogin'])->name('sso.login');
+Route::prefix('sso')->group(function () {
+    Route::get('/redirect', function (Request $request) {
+        $data = $request->all();
+        // return $data;
+        // Ambil string JSON pada field "data"
+        $jsonString = $data['data'] ?? null;
+
+        // Decode string JSON pertama
+        $decodedData = $jsonString ? json_decode($jsonString, true) : null;
+
+        if($decodedData['email_verified'] == false){
+            $decodedData['email_verified'] = $decodedData['preferred_username'].'@atrbpn.go.id';
+        }
+
+        $email = $decodedData['email_verified'] ?? null;
+        $user = User::where('email', $email)->first();
+        if (!$user) {
+            // Jika user belum ada, buat user baru
+            $user = User::create([
+                'name' => $decodedData['atrbpn-profile']['namapegawai'] ?? 'Unknown',
+                'email' => $email,
+                'role_id'=>3,
+                'password' => bcrypt('password123'), // Set password random atau sesuai kebutuhan
+                'data_user' => json_encode($decodedData),
+            ]);
+        } else {
+            // Jika user sudah ada, update data_user
+            $user->update([
+                'data_user' => json_encode($decodedData),
+            ]);
+        }
+
+        // Login user
+        FacadesAuth::login($user);
+
+        return redirect('/dashboard');
+        // Return hasil decode, misal seluruh array
+        // return response()->json([
+        //     'raw_request' => $data,
+        //     'decoded_data' => $decodedData,
+        //     'nama_pegawai' => $decodedData['atrbpn-profile']['namapegawai'] ?? null,
+        //     'kantor' => $decodedData['atrbpn-profile']['namakantor'] ?? null,
+        // ]);
+    })->name('sso.redirect');
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
