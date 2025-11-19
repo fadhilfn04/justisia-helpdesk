@@ -9,7 +9,6 @@ use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\TiketController;
-use App\Http\Controllers\Api\ApitiketController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\TicketCategoryController;
