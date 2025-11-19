@@ -101,7 +101,7 @@
                     <div class="mb-5">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h4 class="fw-bold mb-1">Daftar Tiket</h4>
+                                <h4 class="fw-bold mb-1">Daftar Tiket (<span id="countDataTableTiket"></span>)</h4>
                                 <p class="text-muted mb-0 fs-7">Kelola dan pantau semua tiket helpdesk</p>
                             </div>
                             <button class="btn btn-sm bg-white border border-gray-300 btn-hover-primary" id="btnRefreshTabel">
