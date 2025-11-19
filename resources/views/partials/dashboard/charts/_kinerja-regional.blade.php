@@ -1,8 +1,8 @@
 <div class="card shadow-sm rounded-3 p-4 mb-6 bg-light">
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
-            <h4 class="fw-bold mb-1">📈 Kinerja Regional</h4>
-            <p class="text-muted mb-0">Perbandingan rata-rata waktu penyelesaian antar wilayah</p>
+            <h4 class="fw-bold mb-1">Kinerja Wilayah Kantor</h4>
+            <p class="text-muted mb-0">Perbandingan rata-rata waktu penyelesaian antar wilayah kantor</p>
         </div>
         <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2">
             Data {{ now()->translatedFormat('F Y') }}
@@ -15,8 +15,8 @@
 <div class="card shadow-sm rounded-3 p-4 bg-light">
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
-            <h4 class="fw-bold mb-1">🏅 Tingkat Penyelesaian Regional</h4>
-            <p class="text-muted mb-0">Ringkasan jumlah tiket dan rata-rata waktu respon tiap wilayah</p>
+            <h4 class="fw-bold mb-1">Tingkat Penyelesaian Wilayah Kantor</h4>
+            <p class="text-muted mb-0">Ringkasan jumlah tiket dan rata-rata waktu respon tiap wilayah kantor</p>
         </div>
         <i class="ki-outline ki-map fs-2 text-gray-500"></i>
     </div>

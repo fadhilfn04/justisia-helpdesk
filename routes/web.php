@@ -45,6 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('tiket')->name('tiket.')->group(function () {
         Route::controller(TiketController::class)->group(function () {
             Route::get('/', 'index')->name('index');
+            Route::get('/{id}', 'show')->name('show');
             Route::post('/store', 'store')->name('store');
             Route::post('/update', 'update')->name('update');
             Route::post('/delete', 'delete')->name('destroy');

@@ -385,7 +385,7 @@
 
                         <div class="row g-5">
                             <!-- 🧭 Kiri: Kontak dan Form -->
-                            <div class="col-lg-{{ auth()->user()->role->id != 3 ? 8 : 12 }}">
+                            <div class="col">
                                 <!-- 1️⃣ Saluran Kontak Resmi -->
                                 <div class="card mb-5 border border-gray-300">
                                     <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">

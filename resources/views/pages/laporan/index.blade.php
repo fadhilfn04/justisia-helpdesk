@@ -57,7 +57,7 @@
                     <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#tab_kinerja">Kinerja</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#tab_regional">Regional</a>
+                    <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#tab_regional">Wilayah</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#tab_tren">Tren</a>
