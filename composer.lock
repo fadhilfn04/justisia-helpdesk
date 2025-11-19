@@ -2500,7 +2500,6 @@
         {
             "name": "league/flysystem-local",
             "version": "3.30.0",
-            "version": "3.30.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem-local.git",
@@ -5883,7 +5882,6 @@
         {
             "name": "symfony/http-kernel",
             "version": "v7.3.4",
-            "version": "v7.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-kernel.git",
@@ -6992,7 +6990,6 @@
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v3.6.0",
             "version": "v3.6.0",
             "source": {
                 "type": "git",
