@@ -286,9 +286,9 @@
                             </label>
                             <select id="prioritas" class="form-select form-select-solid" data-control="select2" data-hide-search="true" data-placeholder="Pilih Prioritas">
                                 <option></option>
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
+                                <option value="low">Rendah</option>
+                                <option value="medium">Sedang</option>
+                                <option value="high">Tinggi</option>
                             </select>
                         </div>
 

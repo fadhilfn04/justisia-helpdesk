@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", function () {
         { value: "proses", text: "Proses" },
         { value: "diverifikasi", text: "Diverifikasi" },
         { value: "selesai", text: "Selesai" },
-        { value: "ditutup", text: "Ditutup" },
         { value: "draft", text: "Draft" },
         { value: "revisi", text: "Perlu Revisi" },
         { value: "ditolak", text: "Ditolak Agent" },
@@ -1412,7 +1411,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (text.includes("diverifikasi")) return "bg-success";
         if (text.includes("selesai")) return "bg-primary";
         if (text.includes("terbuka")) return "bg-dark-blue";
-        if (text.includes("ditutup")) return "bg-dark";
         if (text.includes("perlu revisi")) return "bg-danger";
         if (text.includes("ditolak agent")) return "bg-danger";
         return "bg-secondary";
@@ -1689,7 +1687,7 @@ document.addEventListener("DOMContentLoaded", function () {
         { value: "open", text: "Terbuka" },
         { value: "in_progress", text: "Proses" },
         { value: "assignee", text: "Diverifikasi" },
-        { value: "closed", text: "Ditutup" },
+        { value: "closed", text: "Selesai" },
         { value: "draft", text: "Draft" },
         { value: "need_revision", text: "Perlu Revisi" },
         { value: "agent_rejected", text: "Ditolak Agent" },
@@ -1837,7 +1835,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             statusTiket = "Draft";
                             break;
                         case "closed":
-                            statusTiket = "Ditutup";
+                            statusTiket = "Selesai";
                             break;
                         case "in_progress":
                             statusTiket = "Proses";
@@ -1966,7 +1964,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             },
             error: function(xhr) {
-                // console.error(xhr.responseText);
                 $("#loaderTiket").hide();
                 Swal.fire({
                     icon: "error",
@@ -1977,5 +1974,38 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    const deskripsiInput = document.getElementById('deskripsi');
 
+    const teknisKeywords = [
+        "error", "bug", "crash", "lambat", "loading", "gagal", "tidak bisa",
+        "not working", "hang", "server", "tidak tampil", "404", "500"
+    ];
+
+    const akunKeywords = [
+        "login", "password", "reset", "akun", "verifikasi", "email", "otp",
+        "ganti password", "lupa password"
+    ];
+
+    deskripsiInput.addEventListener("input", function () {
+        const text = this.value.toLowerCase();
+        let kategori = null;
+
+        if (teknisKeywords.some(keyword => text.includes(keyword))) {
+            kategori = 1;
+        } else if (akunKeywords.some(keyword => text.includes(keyword))) {
+            kategori = 2;
+        } else if (text.length > 10) {
+            kategori = 3;
+        }
+
+        if (kategori !== null) {
+            let kategoriLabel = "";
+            if (kategori === 1) kategoriLabel = "Teknis";
+            if (kategori === 2) kategoriLabel = "Akun";
+            if (kategori === 3) kategoriLabel = "Lainnya";
+
+            const option = new Option(kategoriLabel, kategori, true, true);
+            $("#kategori").append(option).trigger("change");
+        }
+    });
 });
