@@ -49,7 +49,7 @@
             <div class="col-12">
                 <div class="py-10 px-5 rounded bg-white border">
                     <div class="row g-3 align-items-center">
-                        <div class="col-md-{{ auth()->user()->role->id != 1 ? 2 : 4 }}">
+                        <div class="col-md-{{ auth()->user()->role->id == 3 ? 2 : 4 }}">
                                 <div class="position-relative">
                                     {!! getIcon('magnifier', 'fs-5 position-absolute top-50 start-0 translate-middle-y ms-3 text-dark') !!}
                                     <input type="text" class="form-control ps-12" id="searchTiket" placeholder="Cari tiket, ID, atau pelapor...">
@@ -82,7 +82,7 @@
                                 <i class="fas fa-download me-1"></i> Export Data
                             </button>
                         </div>
-                        @if (auth()->user()->role->id != '1')
+                        @if (auth()->user()->role->id == '3')
                             <div class="col-md-2">
                                 <button class="btn btn-primary w-100"
                                     data-bs-toggle="modal"
