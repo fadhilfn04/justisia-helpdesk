@@ -59,7 +59,7 @@ class ApiTiketController extends BaseController
 
         if(auth()->user()->role->id == '2')
         {
-            $query = $query = Ticket::where('assigned_to', $userId)->latest();
+            $query = $query = Ticket::where('assigned_to', $userId)->whereIn('status', ['assignee', 'in_progress', 'closed', 'solved'])->latest();
         }
 
         if(auth()->user()->role->id == '1')

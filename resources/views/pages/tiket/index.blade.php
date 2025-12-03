@@ -442,7 +442,7 @@
                                     </div>
                                     <div class="card-body py-3 mb-5">
                                         <div class="mb-4">
-                                            <label for="nama_lengkap" class="form-label fw-semibold">Nama lengkap<span class="text-dark">*</span></label>
+                                            <label for="nama_lengkap" class="form-label fw-semibold">Nama lengkap <span class="text-dark">*</span></label>
                                             <input type="text" id="nama_lengkap" class="form-control fs-6" value="{{ auth()->user()->name }}" disabled>
                                         </div>
 
