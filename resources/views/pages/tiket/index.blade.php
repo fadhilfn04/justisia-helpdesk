@@ -463,7 +463,7 @@
                                 <div class="card mb-5 border border-gray-300">
                                     <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">
                                         <span class="card-title p-0 d-flex align-items-center">
-                                            Lampiran Dokumen
+                                            Lampiran Dokumen <span class="text-dark">*</span>
                                         </span>
                                         <p class="py-0">
                                             Upload dokumen pendukung (maksimal 10MB per file). Format: JPG, JPEG, PNG, PDF.
