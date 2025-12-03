@@ -243,9 +243,9 @@
                             <div class="mb-3"></div>
                             <span class="fs-6-5">Dokumen yang diperlukan meliputi KTP, sertifikat asli, dan dokumen pendukung lainnya.</span>
                         </div>
-                        <button class="btn border border-gray-300 w-100 mt-3 py-1 fs-6 btn-hover-primary">
+                        <a href="{{ route('help.faq') }}" class="btn border border-gray-300 w-100 mt-3 py-1 fs-6 btn-hover-primary">
                             <i data-lucide="file-text" class="me-2" style="width: 1.2rem;"></i> Lihat FAQ Lengkap
-                        </button>
+                        </a>
                     </div>
                 </div>
 
