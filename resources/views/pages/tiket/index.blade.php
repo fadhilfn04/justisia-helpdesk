@@ -48,8 +48,20 @@
             {{-- Filter & Action --}}
             <div class="col-12">
                 <div class="py-10 px-5 rounded bg-white border">
+                    @php
+                        $col = 0;
+
+                        if(auth()->user()->role->id == 2 && auth()->user()->role->id == 1) {
+                            $col = 2;
+                        } else if(auth()->user()->role->id != 3) {
+                            $col = 4;
+                        } else {
+                            $col = 4;   
+                        }
+                    @endphp
+
                     <div class="row g-3 align-items-center">
-                        <div class="col-md-{{ auth()->user()->role->id == 3 ? 2 : 4 }}">
+                        <div class="col-md-{{ $col }}">
                                 <div class="position-relative">
                                     {!! getIcon('magnifier', 'fs-5 position-absolute top-50 start-0 translate-middle-y ms-3 text-dark') !!}
                                     <input type="text" class="form-control ps-12" id="searchTiket" placeholder="Cari tiket, ID, atau pelapor...">
@@ -65,16 +77,18 @@
 
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <select class="form-select text-dark">
-                                <option selected>Semua Wilayah</option>
-                                <option value="jakarta_selatan">Jakarta Selatan</option>
-                                <option value="bandung">Bandung</option>
-                                <option value="surabaya">Surabaya</option>
-                                <option value="medan">Medan</option>
-                                <option value="makassar">Makassar</option>
-                            </select>
-                        </div>
+                        @if (auth()->user()->role->id != 3)
+                            <div class="col-md-2">
+                                <select class="form-select text-dark">
+                                    <option selected>Semua Wilayah</option>
+                                    <option value="jakarta_selatan">Jakarta Selatan</option>
+                                    <option value="bandung">Bandung</option>
+                                    <option value="surabaya">Surabaya</option>
+                                    <option value="medan">Medan</option>
+                                    <option value="makassar">Makassar</option>
+                                </select>
+                            </div>
+                        @endif
                         <div class="col-md-2">
                             <button class="btn bg-white border border-gray-300 w-100 btn-hover-primary"
                                     data-bs-toggle="modal"
@@ -82,7 +96,7 @@
                                 <i class="fas fa-download me-1"></i> Export Data
                             </button>
                         </div>
-                        @if (auth()->user()->role->id == '3')
+                        @if (auth()->user()->role->id == 3)
                             <div class="col-md-2">
                                 <button class="btn btn-primary w-100"
                                     data-bs-toggle="modal"
