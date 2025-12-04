@@ -15,8 +15,9 @@ $(document).ready(function () {
                     return meta.row + 1;
                 },
                 className: 'text-center',
-                orderable: false,
-                searchable: false
+                orderable: true,
+                searchable: false,
+                width: '7%',
             },
             {
                 data: 'question',
@@ -26,8 +27,8 @@ $(document).ready(function () {
             },
             {
                 data: 'category',
+                width: '10%',
                 render: function (data) {
-                    // Warna default
                     let badgeClass = 'border-gray-300 text-dark bg-transparent';
 
                     switch (data?.id) {

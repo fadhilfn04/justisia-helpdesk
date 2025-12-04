@@ -1220,7 +1220,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     $(document).on("click", ".btn-verifikasi", function (e) {
         e.preventDefault();
-        $(".select-agent").show();
         $(".select-prioritas").show();
         $("#btn-verifikasi-final").show();
         $("#btn-return").show();
@@ -1269,16 +1268,6 @@ document.addEventListener("DOMContentLoaded", function () {
     $("#btn-verifikasi-final").click(function () {
         const id = $(this).data("id");
         const priority = $("#prioritas").val();
-        const agent_id = $("#agent_id").val();
-
-        if (!agent_id) {
-            Swal.fire(
-                "Peringatan",
-                "Silakan pilih agent terlebih dahulu.",
-                "warning"
-            );
-            return;
-        }
 
         Swal.fire({
             title: "Verifikasi & Tugaskan Tiket",
@@ -1294,8 +1283,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     type: "POST",
                     data: {
                         _token: $('meta[name="csrf-token"]').attr("content"),
-                        priority,
-                        agent_id,
+                        priority
                     },
                     success: function () {
                         Swal.fire({
@@ -1346,7 +1334,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             timer: 1500,
                             showConfirmButton: false,
                         });
-                        $("#agent_id").val(null).trigger("change");
                         $("#prioritas").val("medium").trigger("change");
                         $("#modalVerifikasiTiket").modal("hide");
                         table.ajax.reload(null, false);
@@ -1449,7 +1436,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     $(document).on("click", ".btn-penyelesaian", function (e) {
         e.preventDefault();
-        $(".select-agent").hide();
         $(".select-prioritas").hide();
         $("#btn-verifikasi-final").hide();
         $("#btn-return").hide();
@@ -1497,7 +1483,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     $(document).on("click", ".btn-detail-penyelesaian", function (e) {
         e.preventDefault();
-        $(".select-agent").hide();
         $(".select-prioritas").hide();
         $("#btn-verifikasi-final").hide();
         $("#btn-return").hide();

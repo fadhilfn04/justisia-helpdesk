@@ -8,32 +8,6 @@
     @section('breadcrumbs')
         {{ Breadcrumbs::render('tiket.index') }}
     @endsection
-
-<style>
-    .skeleton {
-    position: relative;
-    overflow: hidden;
-    background: #e0e0e0;
-    border-radius: 8px;
-}
-.skeleton::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -150px;
-    width: 150px;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    animation: loading 1.2s infinite;
-}
-
-@keyframes loading {
-    100% {
-        left: 100%;
-    }
-}
-</style>
-
 <div class="content-wrapper">
     <div class="container-fluid">
         <div class="row g-4">
@@ -294,7 +268,7 @@
                 <div id="detail-tiket-content">
                     <div class="row g-4">
 
-                        <div class="col-md-6 select-prioritas">
+                        <div class="col select-prioritas">
                             <label class="fw-semibold text-gray-700 mb-2">
                                 <i data-lucide="flag" class="me-1 text-primary" style="width: 16px;"></i> Prioritas
                             </label>
@@ -303,20 +277,6 @@
                                 <option value="low">Rendah</option>
                                 <option value="medium">Sedang</option>
                                 <option value="high">Tinggi</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6 select-agent">
-                            <label class="fw-semibold text-gray-700 mb-2">
-                                <i data-lucide="users" class="me-1 text-primary" style="width: 16px;"></i> Pilih Agent
-                            </label>
-                            <select id="agent_id" class="form-select form-select-solid" data-control="select2" data-hide-search="true" data-placeholder="Pilih Agent">
-                                <option></option>
-                                @foreach ($agents as $agent)
-                                    @if ($agent->user)
-                                        <option value="{{ $agent->user->id }}">{{ $agent->user->name }}</option>
-                                    @endif
-                                @endforeach
                             </select>
                         </div>
 
