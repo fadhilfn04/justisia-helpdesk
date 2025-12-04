@@ -315,7 +315,8 @@ class TiketController extends Controller
         try {
             $ticket = Ticket::findOrFail($id);
 
-            $ticket->assigned_to = $request->agent_id;
+            $agent = User::where('role_id', 2)->value('id');
+            $ticket->assigned_to = $agent;
             $ticket->priority = $request->priority;
             $ticket->status = 'assignee';
             $ticket->verified_at = now();

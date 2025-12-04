@@ -268,7 +268,7 @@
                 <div id="detail-tiket-content">
                     <div class="row g-4">
 
-                        <div class="col-md-6 select-prioritas">
+                        <div class="col select-prioritas">
                             <label class="fw-semibold text-gray-700 mb-2">
                                 <i data-lucide="flag" class="me-1 text-primary" style="width: 16px;"></i> Prioritas
                             </label>
@@ -277,20 +277,6 @@
                                 <option value="low">Rendah</option>
                                 <option value="medium">Sedang</option>
                                 <option value="high">Tinggi</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6 select-agent">
-                            <label class="fw-semibold text-gray-700 mb-2">
-                                <i data-lucide="users" class="me-1 text-primary" style="width: 16px;"></i> Pilih Agent
-                            </label>
-                            <select id="agent_id" class="form-select form-select-solid" data-control="select2" data-hide-search="true" data-placeholder="Pilih Agent">
-                                <option></option>
-                                @foreach ($agents as $agent)
-                                    @if ($agent->user)
-                                        <option value="{{ $agent->user->id }}">{{ $agent->user->name }}</option>
-                                    @endif
-                                @endforeach
                             </select>
                         </div>
 
