@@ -25,6 +25,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'last_seen' => 'datetime',
+        'data_user' => 'array',
     ];
 
     protected $hidden = ['password'];

@@ -25,7 +25,19 @@ class TiketController extends Controller
     {
         $ticket = Ticket::all();
         $agents = CategoryAgent::with('user')->get();
-        return view('pages.tiket.index', compact('ticket', 'agents'));
+
+        $user = auth()->user();
+        $tipeKantorId = $user->data_user['atrbpn-profile']['tipekantorid'] ?? null;
+        $kantorId = $user->data_user['atrbpn-profile']['kantorid'] ?? null;
+        $namaKantor = $user->data_user['atrbpn-profile']['namakantor'] ?? null;
+        
+        return view('pages.tiket.index', compact(
+            'ticket',
+            'agents',
+            'tipeKantorId',
+            'kantorId',
+            'namaKantor'
+        ));
     }
 
     public function show($id)

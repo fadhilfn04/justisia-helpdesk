@@ -8,7 +8,7 @@ $(document).ready(function () {
     const table = $('#ticketCategory').DataTable({
         processing: true,
         serverSide: false,
-        ajax: '/settings/ticket-category/data',
+        ajax: window.TICKET_CATEGORY_DATA_URL + '/data',
         columns: [
             {
                 data: null,
@@ -74,7 +74,7 @@ $(document).ready(function () {
         e.preventDefault();
         const id = $(this).data('id');
 
-        $.get(`/settings/ticket-category/${id}/edit`, function (data) {
+        $.get(`${window.TICKET_CATEGORY_DATA_URL}/${id}/edit`, function (data) {
             $('#ticketCategoryModalLabel').text('Edit Kategori Tiket');
             $('#ticket_category_id').val(data.id);
             $('#name').val(data.name);
@@ -87,7 +87,8 @@ $(document).ready(function () {
         e.preventDefault();
 
         const id = $('#ticket_category_id').val();
-        const url = id ? `/settings/ticket-category/${id}` : `/settings/ticket-category`;
+        const base = window.TICKET_CATEGORY_DATA_URL;
+        const url = id ? `${base}/${id}` : base;
         const method = id ? 'PUT' : 'POST';
 
         $.ajax({
@@ -132,7 +133,7 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: `/settings/ticket-category/${id}`,
+                    url: `${window.TICKET_CATEGORY_DATA_URL}/${id}`,
                     method: 'DELETE',
                     headers: { 'X-CSRF-TOKEN': csrf },
                     success: function () {

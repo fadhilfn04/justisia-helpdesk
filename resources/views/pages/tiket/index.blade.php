@@ -387,21 +387,13 @@
                                                 </select>
                                             </div>
 
-                                            <!-- Wilayah -->
+                                            <!-- Kantor -->
                                             <div class="col-md-4">
-                                                <label for="wilayah" class="form-label fw-semibold">Wilayah <span class="text-dark">*</span></label>
-                                                <select id="wilayah" class="form-select fs-6">
-                                                    <option selected disabled>Pilih wilayah</option>
-                                                    <option value="jakarta-pusat">Jakarta Pusat</option>
-                                                    <option value="jakarta-selatan">Jakarta Selatan</option>
-                                                    <option value="jakarta-timur">Jakarta Timur</option>
-                                                    <option value="jakarta-barat">Jakarta Barat</option>
-                                                    <option value="jakarta-utara">Jakarta Utara</option>
-                                                    <option value="bandung">Bandung</option>
-                                                    <option value="surabaya">Surabaya</option>
-                                                    <option value="medan">Medan</option>
-                                                    <option value="makassar">Makassar</option>
-                                                </select>
+                                                <label for="wilayah" class="form-label fw-semibold">
+                                                    Kantor <span class="text-dark">*</span>
+                                                </label>
+
+                                                <input type="text" class="form-control fs-6" value="{{ $namaKantor }}" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -504,6 +496,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    window.TICKET_DATA_URL = "{{ url('tiket') }}";
+</script>
 
 @push('scripts')
     <script src="{{ asset('assets/js/custom-js/ticket.js') }}"></script>
