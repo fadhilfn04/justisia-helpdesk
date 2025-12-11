@@ -16,7 +16,7 @@ $(document).ready(function () {
                     return meta.row + 1;
                 },
                 className: 'text-center',
-                orderable: false,
+                orderable: true,
                 searchable: false
             },
             {

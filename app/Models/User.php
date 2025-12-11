@@ -71,11 +71,11 @@ class User extends Authenticatable
 
     public function notifications()
     {
-        return $this->hasMany(Notification::class, 'user_id');
+        return $this->hasMany(Notification::class, 'user_id')->orderBy('created_at', 'desc');
     }
 
     public function unreadNotifications()
     {
-        return $this->notifications()->where('is_read', false);
+        return $this->notifications()->where('is_read', false)->orderBy('created_at', 'desc');
     }
 }

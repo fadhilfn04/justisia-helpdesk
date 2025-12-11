@@ -59,16 +59,7 @@ class ApiTiketController extends BaseController
 
         if(auth()->user()->role->id == '2')
         {
-            $isAgentTeknis = CategoryAgent::where('user_id', $userId)->get();
-            $categories = $isAgentTeknis->pluck('category');
-
-            $categoryTiketAgent = TicketCategory::whereIn('name', $categories)->get();
-            $categoryIds = $categoryTiketAgent->pluck('id');
-
-            $query = Ticket::where('assigned_to', $userId)
-                ->whereIn('status', ['assignee', 'in_progress', 'closed', 'solved'])
-                ->whereIn('category_id', $categoryIds)
-                ->latest();
+            $query = $query = Ticket::where('assigned_to', $userId)->whereIn('status', ['assignee', 'in_progress', 'closed', 'solved'])->latest();
         }
 
         if(auth()->user()->role->id == '1')

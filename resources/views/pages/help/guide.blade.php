@@ -13,10 +13,10 @@
     </header>
 
     <div class="container py-7">
-        <div class="d-flex align-items-center position-relative" style="width: 35%;">
+        {{-- <div class="d-flex align-items-center position-relative" style="width: 35%;">
             {!! getIcon('magnifier','fs-3 position-absolute text-dark ms-5') !!}
             <input type="text" class="form-control form-control-solid bg-white input-soft-shadow ps-13" placeholder="Cari pertanyaan atau topik..." id="faqSearchInput"/>
-        </div>
+        </div> --}}
         <div class="row g-5 mt-7">
             <h2>Panduan Unggulan</h2>
 

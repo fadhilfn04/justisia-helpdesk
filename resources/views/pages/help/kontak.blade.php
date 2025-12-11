@@ -42,9 +42,10 @@
                                             <div class="fw-medium mb-1">mitra@atrbpn.go.id</div>
                                             <div class="small"><i class="far fa-clock me-1 fs-8 text-dark"></i>24/7</div>
                                         </div>
-                                        <button class="btn bg-white border btn-sm btn-hover-primary">
+                                        <a href="mailto:mitra@atrbpn.go.id?subject=Pertanyaan%20Umum&body=Halo%2C%20saya%20ingin%20bertanya%20tentang..."
+                                            class="btn bg-white border btn-sm btn-hover-primary">
                                             Hubungi <i class="fas fa-external-link-alt ms-2 fs-7 text-dark"></i>
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -66,9 +67,9 @@
                                             <div class="fw-medium mb-1">14000 (Mandiri Call)</div>
                                             <div class="small"><i class="far fa-clock me-2 fs-7 text-dark"></i>Senin–Jumat, 08:00–16:00</div>
                                         </div>
-                                        <button class="btn bg-white border btn-sm btn-hover-primary">
+                                        <a href="tel:14000" class="btn bg-white border btn-sm btn-hover-primary">
                                             Hubungi <i class="fas fa-external-link-alt ms-2 fs-7 text-dark"></i>
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -90,9 +91,11 @@
                                             <div class="fw-medium mb-1">Jl. Sisingamangaraja No.2, Jakarta Selatan</div>
                                             <div class="small"><i class="far fa-clock me-2 fs-7 text-dark"></i>Senin–Jumat, 08:00–16:00</div>
                                         </div>
-                                        <button class="btn bg-white border btn-sm btn-hover-primary">
+                                        <a href="https://maps.google.com/?q=Jl. Sisingamangaraja No.2, Jakarta Selatan" 
+                                            target="_blank"
+                                            class="btn bg-white border btn-sm btn-hover-primary">
                                             Hubungi <i class="fas fa-external-link-alt ms-2 fs-7 text-dark"></i>
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -114,67 +117,16 @@
                                             <div class="fw-medium mb-1">Buat tiket baru</div>
                                             <div class="small"><i class="far fa-clock me-2 fs-7 text-dark"></i>24/7</div>
                                         </div>
-                                        <button class="btn bg-white border btn-sm btn-hover-primary">
-                                            Buat Tiket <i class="fas fa-external-link-alt ms-2 fs-7 text-dark"></i>
-                                        </button>
+                                        <a href="{{ route('tiket.index') }}">
+                                            <button class="btn bg-white border btn-sm btn-hover-primary">
+                                                Buat Tiket 
+                                                <i class="fas fa-external-link-alt ms-2 fs-7 text-dark"></i>
+                                            </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- 2️⃣ Formulir Kontak Cepat -->
-                <div class="card border">
-                    <div class="card-header d-flex mt-5 border-0 flex-column align-items-start">
-                        <h5 class="card-title p-0 d-flex align-items-center">
-                            <i data-lucide="send" class="mx-2" style="width: 1.5rem;"></i>
-                            Formulir Kontak Cepat
-                        </h5>
-                        <p>Kirim pesan langsung kepada tim support kami</p>
-                    </div>
-                    <div class="card-body">
-                        <form>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Nama Lengkap *</label>
-                                    <input type="text" class="form-control text-dark" placeholder="Masukkan nama lengkap" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Email *</label>
-                                    <input type="email" class="form-control text-dark" placeholder="nama@email.com" required>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Nomor Telepon</label>
-                                    <input type="text" class="form-control text-dark" placeholder="08xxxxxxxxxx">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Kategori *</label>
-                                    <select class="form-select" required>
-                                        <option>Pilih kategori</option>
-                                        <option>Sengketa Pertanahan</option>
-                                        <option>Pembatalan Sertifikat</option>
-                                        <option>Masalah Teknis Aplikasi</option>
-                                        <option>Masalah Akun Pengguna</option>
-                                        <option>Permintaan Informasi</option>
-                                        <option>Lainnya</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Subjek *</label>
-                                <input type="text" class="form-control text-dark" placeholder="Ringkasan singkat masalah Anda" required>
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label">Pesan *</label>
-                                <textarea class="form-control text-dark" rows="2" placeholder="Jelaskan masalah atau pertanyaan Anda secara detail..." required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-dark text-white w-100 py-2 fs-6-5">
-                                <i data-lucide="send" class="me-4" style="width: 1.3rem;"></i> Kirim Pesan
-                            </button>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -220,69 +172,53 @@
                     </div>
                 </div>
 
-                <!-- FAQ -->
-                <div class="card mb-4 border">
-                    <div class="card-header border-0">
-                        <h1 class="card-title" style="font-size: 1.4rem; font-weight: 600;"><i data-lucide="file-text" class="me-2" style="width: 1.5rem;"></i> FAQ Singkat</h1>
-                    </div>
-                    <div class="card-body py-3 mb-5">
-                        <div class="mb-3">
-                            <span class="fs-6-5" style="font-weight: 500;">Bagaimana cara mengajukan sengketa pertanahan?</span><br>
-                            <div class="mb-3"></div>
-                            <span class="fs-6-5">Anda dapat mengajukan sengketa melalui sistem helpdesk dengan melengkapi dokumen yang diperlukan.</span>
-                        </div>
-                        <hr style="border: 0; border-top: 1px solid var(--bs-gray-600);">
-                        <div class="mb-3">
-                            <span class="fs-6-5" style="font-weight: 500;">Berapa lama proses pembatalan sertifikat?</span><br>
-                            <div class="mb-3"></div>
-                            <span class="fs-6-5">Proses pembatalan sertifikat memakan waktu 14-30 hari kerja tergantung kompleksitas kasus.</span>
-                        </div>
-                        <hr style="border: 0; border-top: 1px solid var(--bs-gray-600);">
-                        <div class="mb-3">
-                            <span class="fs-6-5" style="font-weight: 500;">Dokumen apa saja yang diperlukan?</span><br>
-                            <div class="mb-3"></div>
-                            <span class="fs-6-5">Dokumen yang diperlukan meliputi KTP, sertifikat asli, dan dokumen pendukung lainnya.</span>
-                        </div>
-                        <button class="btn border border-gray-300 w-100 mt-3 py-1 fs-6 btn-hover-primary">
-                            <i data-lucide="file-text" class="me-2" style="width: 1.2rem;"></i> Lihat FAQ Lengkap
-                        </button>
-                    </div>
-                </div>
-
                 <!-- Media Sosial -->
                 <div class="card mb-4 border">
                     <div class="card-header border-0">
-                        <h1 class="card-title mb-1" style="font-size: 1.4rem; font-weight: 600;"><i data-lucide="globe" class="me-2" style="width: 1.5rem;"></i> Media Sosial</h1>
+                        <h1 class="card-title mb-1" style="font-size: 1.4rem; font-weight: 600;">
+                            <i data-lucide="globe" class="me-2" style="width: 1.5rem;"></i> Media Sosial
+                        </h1>
                     </div>
+
                     <div class="card-body py-3 mb-5">
                         <div class="row g-2">
+
+                            <!-- Facebook -->
                             <div class="col-6">
-                                <button class="btn border border-gray-300 w-100 fs-6-5 d-flex justify-content-start align-items-center px-3 py-1">
+                                <a href="https://facebook.com/atrbpn" target="_blank"
+                                class="btn border border-gray-300 w-100 fs-6-5 d-flex justify-content-start align-items-center px-3 py-1">
                                     <i data-lucide="facebook" class="text-dark me-4" style="width: 1.2rem;"></i>
-                                    <span">Facebook</span>
-                                </button>
+                                    <span>Facebook</span>
+                                </a>
                             </div>
 
+                            <!-- Twitter / X -->
                             <div class="col-6">
-                                <button class="btn border border-gray-300 w-100 fs-6-5 d-flex justify-content-start align-items-center px-3 py-1">
+                                <a href="https://twitter.com/atrbpn" target="_blank"
+                                class="btn border border-gray-300 w-100 fs-6-5 d-flex justify-content-start align-items-center px-3 py-1">
                                     <i data-lucide="twitter" class="text-dark me-4" style="width: 1.2rem;"></i>
-                                        <span>Twitter</span>
-                                </button>
+                                    <span>Twitter</span>
+                                </a>
                             </div>
 
+                            <!-- Instagram -->
                             <div class="col-6">
-                                <button class="btn border border-gray-300 w-100 fs-6-5 d-flex justify-content-start align-items-center px-3 py-1">
+                                <a href="https://instagram.com/atrbpn" target="_blank"
+                                class="btn border border-gray-300 w-100 fs-6-5 d-flex justify-content-start align-items-center px-3 py-1">
                                     <i data-lucide="instagram" class="text-dark me-4" style="width: 1.2rem;"></i>
-                                    <span">Instagram</span>
-                                </button>
+                                    <span>Instagram</span>
+                                </a>
                             </div>
 
+                            <!-- YouTube -->
                             <div class="col-6">
-                                <button class="btn border border-gray-300 w-100 fs-6-5 d-flex justify-content-start align-items-center px-3 py-1">
+                                <a href="https://youtube.com/atrbpn" target="_blank"
+                                class="btn border border-gray-300 w-100 fs-6-5 d-flex justify-content-start align-items-center px-3 py-1">
                                     <i data-lucide="youtube" class="text-dark me-4" style="width: 1.2rem;"></i>
-                                    <span">YouTube</span>
-                                </button>
+                                    <span>YouTube</span>
+                                </a>
                             </div>
+
                         </div>
                     </div>
                 </div>
