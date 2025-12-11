@@ -497,6 +497,10 @@
     </div>
 </div>
 
+<script>
+    window.TICKET_DATA_URL = "{{ url('tiket') }}";
+</script>
+
 @push('scripts')
     <script src="{{ asset('assets/js/custom-js/ticket.js') }}"></script>
 @endpush

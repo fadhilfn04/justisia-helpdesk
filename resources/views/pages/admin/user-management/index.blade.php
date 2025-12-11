@@ -62,6 +62,10 @@
     </div>
 </div>
 
+<script>
+    window.USER_DATA_URL = "{{ url('user-management') }}";
+</script>
+
 @push('scripts')
     <script src="{{ asset('assets/js/custom-js/user-management.js') }}"></script>
 @endpush

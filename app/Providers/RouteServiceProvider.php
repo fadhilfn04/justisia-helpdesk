@@ -17,10 +17,10 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/helpdesk';
-    public const ADMIN = '/helpdesk';
-    public const AGENT = '/helpdesk/tiket';
-    public const USER = '/helpdesk/tiket';
+    public const HOME = '/dashboard';
+    public const ADMIN = '/dashboard';
+    public const AGENT = '/tiket';
+    public const USER = '/tiket';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
