@@ -43,6 +43,22 @@ services:
           - kby-atr-net
       ports:
           - "8990:3306"
+
+  phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      container_name: phpmyadmin-justisia-helpdesk
+      restart: unless-stopped
+      environment:
+          PMA_HOST: db
+          PMA_PORT: 3306
+          MYSQL_ROOT_PASSWORD: iniP@assword
+      ports:
+          - "8991:80"
+      networks:
+          - kby-atr-net
+      depends_on:
+          - db
+
 networks:
   kby-atr-net:
     name: justisia-helpdesk_kby-atr-net
