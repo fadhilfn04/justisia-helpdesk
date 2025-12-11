@@ -71,7 +71,7 @@ Route::prefix('sso')->group(function () {
     })->name('sso.redirect');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::prefix('helpdesk')->middleware(['auth', 'verified'])->group(function () {
 
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/', 'index')->name('dashboard');

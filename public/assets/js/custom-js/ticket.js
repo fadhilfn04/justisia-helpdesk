@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "/tiket/api/getTiket",
+            url: "/helpdesk/tiket/api/getTiket",
             data: function (d) {
                 d.status = cardStatus || statusSelect.val();
                 d.prioritas = prioritasSelect.val();
@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
     $("#kategori").select2({
         placeholder: "Pilih Kategori Tiket",
         ajax: {
-            url: "/tiket/api/getKategori",
+            url: "/helpdesk/tiket/api/getKategori",
             dataType: "json",
             delay: 250,
             processResults: function (data) {
@@ -267,7 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const userId = $('#formTiket input[name="userPelaporId"]').val();
             $.get(
-                `/tiket/api/checkDuplicateTiket/${userId}/${encodeURIComponent(
+                `/helpdesk/tiket/api/checkDuplicateTiket/${userId}/${encodeURIComponent(
                     title
                 )}`,
                 function (res) {
@@ -320,7 +320,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             $("#loaderTiket").show();
 
                             $.ajax({
-                                url: "/tiket/store",
+                                url: "/helpdesk/tiket/store",
                                 type: "POST",
                                 data: formData,
                                 processData: false,
@@ -388,7 +388,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             $.get(
-                `/tiket/api/checkDuplicateTiket/${userId}/${encodeURIComponent(
+                `/helpdesk/tiket/api/checkDuplicateTiket/${userId}/${encodeURIComponent(
                     title
                 )}`,
                 function (res) {
@@ -441,7 +441,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             $("#loaderTiket").show();
 
                             $.ajax({
-                                url: "/tiket/store",
+                                url: "/helpdesk/tiket/store",
                                 type: "POST",
                                 data: formData,
                                 processData: false,
@@ -552,7 +552,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     $("#loaderTiket").show();
 
                     $.ajax({
-                        url: "/tiket/update",
+                        url: "/helpdesk/tiket/update",
                         type: "POST",
                         data: formData,
                         processData: false,
@@ -619,7 +619,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const message = result.value;
                     $("#loaderTiket").show();
                     $.ajax({
-                        url: `/tiket/actionTiketAgent`,
+                        url: `/helpdesk/tiket/actionTiketAgent`,
                         type: "POST",
                         data: {
                             _token: $('meta[name="csrf-token"]').attr(
@@ -678,7 +678,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const message = result.value;
                     $("#loaderTiket").show();
                     $.ajax({
-                        url: `/tiket/actionTiketAgent`,
+                        url: `/helpdesk/tiket/actionTiketAgent`,
                         type: "POST",
                         data: {
                             _token: $('meta[name="csrf-token"]').attr(
@@ -745,7 +745,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 $("#loaderTiket").show();
 
                 $.ajax({
-                    url: "/tiket/update",
+                    url: "/helpdesk/tiket/update",
                     type: "POST",
                     data: formData,
                     processData: false,
@@ -912,7 +912,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             $.ajax({
-                url: `/tiket/getAllChat/${ticketId}`,
+                url: `/helpdesk/tiket/getAllChat/${ticketId}`,
                 method: 'GET',
                 success: function (data) {
                     chatArea.empty();
@@ -988,7 +988,7 @@ document.addEventListener("DOMContentLoaded", function () {
             formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
             $.ajax({
-                url: `/tiket/sendChat`,
+                url: `/helpdesk/tiket/sendChat`,
                 method: 'POST',
                 processData: false,
                 contentType: false,
@@ -1032,7 +1032,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const previewArea = $("#previewArea");
         previewArea.html("");
 
-        $.get(`/tiket/api/getDetailTiket/${id}`, function (res) {
+        $.get(`/helpdesk/tiket/api/getDetailTiket/${id}`, function (res) {
             // Isi form
             $("#judul").val(res.title);
             $("#deskripsi").val(res.description);
@@ -1123,7 +1123,7 @@ document.addEventListener("DOMContentLoaded", function () {
         pond.removeFiles();
         $("#previewArea").html("");
 
-        $.get(`/tiket/api/getDetailTiket/${id}`, function (res) {
+        $.get(`/helpdesk/tiket/api/getDetailTiket/${id}`, function (res) {
             $("#judul").val(res.title);
             $("#deskripsi").val(res.description);
             $("#wilayah").val(res.wilayah_id);
@@ -1186,7 +1186,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (result.isConfirmed) {
                 $("#loaderTiket").show();
                 $.ajax({
-                    url: "/tiket/delete",
+                    url: "/helpdesk/tiket/delete",
                     type: "POST",
                     data: {
                         id: id,
@@ -1230,7 +1230,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const id = $(this).data("id");
 
         $.ajax({
-            url: `/tiket/${id}`,
+            url: `/helpdesk/tiket/${id}`,
             type: "GET",
             success: function (response) {
                 const tiket = response.data;
@@ -1279,7 +1279,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: `/tiket/${id}/verification`,
+                    url: `/helpdesk/tiket/${id}/verification`,
                     type: "POST",
                     data: {
                         _token: $('meta[name="csrf-token"]').attr("content"),
@@ -1321,7 +1321,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: `/tiket/${id}/return`,
+                    url: `/helpdesk/tiket/${id}/return`,
                     type: "POST",
                     data: {
                         _token: $('meta[name="csrf-token"]').attr("content"),
@@ -1363,7 +1363,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: `/tiket/${id}/close`,
+                    url: `/helpdesk/tiket/${id}/close`,
                     type: "POST",
                     data: {
                         id: id,
@@ -1404,7 +1404,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function refreshStatusSummary() {
-        $.get("/tiket/api/status-summary", function (data) {
+        $.get("/helpdesk/tiket/api/status-summary", function (data) {
             const container = $(".row-status-summary");
             container.empty();
 
@@ -1446,7 +1446,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const id = $(this).data("id");
 
         $.ajax({
-            url: `/tiket/${id}`,
+            url: `/helpdesk/tiket/${id}`,
             type: "GET",
             success: function (response) {
                 const tiket = response.data;
@@ -1498,7 +1498,7 @@ document.addEventListener("DOMContentLoaded", function () {
         previewArea.html("");
 
         $.ajax({
-            url: `/tiket/${id}`,
+            url: `/helpdesk/tiket/${id}`,
             type: "GET",
             success: function (response) {
                 const tiket = response.data;
@@ -1622,7 +1622,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     formData.append("fileTiketPenyelesaian", fileInput);
 
                 $.ajax({
-                    url: `/tiket/ticketResolution`,
+                    url: `/helpdesk/tiket/ticketResolution`,
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -1754,7 +1754,7 @@ document.addEventListener("DOMContentLoaded", function () {
         $("#loaderTiket").show();
 
         $.ajax({
-            url: "/tiket/exportTiket",
+            url: "/helpdesk/tiket/exportTiket",
             type: "POST",
             data: formData,
             success: function(response) {

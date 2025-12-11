@@ -8,7 +8,7 @@ $(document).ready(function () {
     const table = $('#users').DataTable({
         processing: true,
         serverSide: false,
-        ajax: '/user-management/users/data',
+        ajax: '/helpdesk/user-management/users/data',
         columns: [
             {
                 data: null,
@@ -156,7 +156,7 @@ $(document).ready(function () {
         e.preventDefault();
         const id = $(this).data('id');
 
-        $.get(`/user-management/users/${id}/edit`, function (data) {
+        $.get(`/helpdesk/user-management/users/${id}/edit`, function (data) {
             $('#userModalLabel').text('Edit Pengguna');
             $('#user_id').val(data.id);
             $('#name').val(data.name);
@@ -177,7 +177,7 @@ $(document).ready(function () {
         e.preventDefault();
 
         const id = $('#user_id').val();
-        const url = id ? `/user-management/users/${id}` : `/user-management/users`;
+        const url = id ? `/helpdesk/user-management/users/${id}` : `/helpdesk/user-management/users`;
         const method = id ? 'PUT' : 'POST';
 
         $.ajax({
@@ -222,7 +222,7 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: `/user-management/users/${id}`,
+                    url: `/helpdesk/user-management/users/${id}`,
                     method: 'DELETE',
                     headers: { 'X-CSRF-TOKEN': csrf },
                     success: function () {

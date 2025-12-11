@@ -125,7 +125,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/statistik-kinerja?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`/helpdesk/laporan/statistik-kinerja?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateStatistikKinerja(data))
                 .catch(error => console.error('Error Statistik:', error));
@@ -171,7 +171,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/kinerja-bulanan?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`/helpdesk/laporan/kinerja-bulanan?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateKinerjaBulananChart(data))
                 .catch(error => console.error('Error Chart:', error));
@@ -226,7 +226,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/distribusi-kategori?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`/helpdesk/laporan/distribusi-kategori?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateDistribusiKategoriChart(data))
                 .catch(error => console.error('Error Chart:', error));
@@ -284,7 +284,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/kinerja-agen?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`/helpdesk/laporan/kinerja-agen?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateKinerjaAgenList(data))
                 .catch(error => console.error('Error Kinerja Agen:', error));
@@ -353,7 +353,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/tren-sla?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`/helpdesk/laporan/tren-sla?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateTrenSlaChart(data))
                 .catch(error => console.error('Error Chart:', error));
@@ -435,7 +435,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/kinerja-regional?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`/helpdesk/laporan/kinerja-regional?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateTrenSlaChart(data))
                 .catch(error => console.error('Error Chart:', error));
@@ -506,7 +506,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/tren-tiket-harian?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`/helpdesk/laporan/tren-tiket-harian?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateTrenTiketHarianChart(data))
                 .catch(error => console.error('Error Chart:', error));
@@ -564,7 +564,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/statistik?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`/helpdesk/laporan/statistik?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateStatistik(data))
                 .catch(error => console.error('Error Statistik:', error));
