@@ -267,7 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const userId = $('#formTiket input[name="userPelaporId"]').val();
             $.get(
-                `/helpdesk/tiket/api/checkDuplicateTiket/${userId}/${encodeURIComponent(
+                `${window.TICKET_DATA_URL}/api/checkDuplicateTiket/${userId}/${encodeURIComponent(
                     title
                 )}`,
                 function (res) {
@@ -388,7 +388,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             $.get(
-                `/helpdesk/tiket/api/checkDuplicateTiket/${userId}/${encodeURIComponent(
+                `${window.TICKET_DATA_URL}/api/checkDuplicateTiket/${userId}/${encodeURIComponent(
                     title
                 )}`,
                 function (res) {
@@ -912,7 +912,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             $.ajax({
-                url: `${window.TICKET_DATA_URL}/api/getAllChat/${ticketId}`,
+                url: `${window.TICKET_DATA_URL}/getAllChat/${ticketId}`,
                 method: 'GET',
                 success: function (data) {
                     chatArea.empty();
@@ -988,7 +988,7 @@ document.addEventListener("DOMContentLoaded", function () {
             formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
             $.ajax({
-                url: `${window.TICKET_DATA_URL}/api/sendChat`,
+                url: `${window.TICKET_DATA_URL}/sendChat`,
                 method: 'POST',
                 processData: false,
                 contentType: false,
@@ -1032,7 +1032,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const previewArea = $("#previewArea");
         previewArea.html("");
 
-        $.get(`/helpdesk/tiket/api/getDetailTiket/${id}`, function (res) {
+        $.get(`${window.TICKET_DATA_URL}/api/getDetailTiket/${id}`, function (res) {
             // Isi form
             $("#judul").val(res.title);
             $("#deskripsi").val(res.description);
@@ -1123,7 +1123,7 @@ document.addEventListener("DOMContentLoaded", function () {
         pond.removeFiles();
         $("#previewArea").html("");
 
-        $.get(`/helpdesk/tiket/api/getDetailTiket/${id}`, function (res) {
+        $.get(`${window.TICKET_DATA_URL}/api/getDetailTiket/${id}`, function (res) {
             $("#judul").val(res.title);
             $("#deskripsi").val(res.description);
             $("#wilayah").val(res.wilayah_id);
