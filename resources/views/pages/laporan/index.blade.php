@@ -94,6 +94,10 @@
         </div>
     </div>
 
+<script>
+    window.LAPORAN_STATISTIK_URL = "{{ url('laporan') }}";
+</script>
+
 @push('scripts')
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -125,7 +129,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/statistik-kinerja?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`${window.LAPORAN_STATISTIK_URL}/statistik-kinerja?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateStatistikKinerja(data))
                 .catch(error => console.error('Error Statistik:', error));
@@ -171,7 +175,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/kinerja-bulanan?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`${window.LAPORAN_STATISTIK_URL}/kinerja-bulanan?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateKinerjaBulananChart(data))
                 .catch(error => console.error('Error Chart:', error));
@@ -226,7 +230,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/distribusi-kategori?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`${window.LAPORAN_STATISTIK_URL}/distribusi-kategori?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateDistribusiKategoriChart(data))
                 .catch(error => console.error('Error Chart:', error));
@@ -284,7 +288,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/kinerja-agen?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`${window.LAPORAN_STATISTIK_URL}/kinerja-agen?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateKinerjaAgenList(data))
                 .catch(error => console.error('Error Kinerja Agen:', error));
@@ -353,7 +357,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/tren-sla?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`${window.LAPORAN_STATISTIK_URL}/tren-sla?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateTrenSlaChart(data))
                 .catch(error => console.error('Error Chart:', error));
@@ -435,9 +439,9 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/kinerja-regional?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`${window.LAPORAN_STATISTIK_URL}/kinerja-regional?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
-                .then(data => updateTrenSlaChart(data))
+                .then(data => updateKinerjaRegionalChart(data))
                 .catch(error => console.error('Error Chart:', error));
         }
 
@@ -506,7 +510,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/tren-tiket-harian?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`${window.LAPORAN_STATISTIK_URL}/tren-tiket-harian?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateTrenTiketHarianChart(data))
                 .catch(error => console.error('Error Chart:', error));
@@ -564,7 +568,7 @@
             const wilayah = filterWilayah.value;
             const kategori = filterKategori.value;
 
-            fetch(`/laporan/statistik?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
+            fetch(`${window.LAPORAN_STATISTIK_URL}/statistik?periode=${periode}&wilayah=${wilayah}&kategori=${kategori}`)
                 .then(response => response.json())
                 .then(data => updateStatistik(data))
                 .catch(error => console.error('Error Statistik:', error));

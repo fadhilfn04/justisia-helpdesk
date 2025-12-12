@@ -64,6 +64,10 @@
     </div>
 </div>
 
+<script>
+    window.TICKET_CATEGORY_DATA_URL = "{{ url('settings/ticket-category') }}";
+</script>
+
 @push('scripts')
     <script src="{{ asset('assets/js/custom-js/ticket-category.js') }}"></script>
 @endpush

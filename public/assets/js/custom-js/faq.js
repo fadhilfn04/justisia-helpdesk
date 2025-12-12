@@ -7,7 +7,7 @@ $(document).ready(function () {
     const table = $('#faqTable').DataTable({
         processing: true,
         serverSide: false,
-        ajax: '/settings/faq/data',
+        ajax: window.FAQ_DATA_URL + '/data',
         columns: [
             {
                 data: null,
@@ -104,7 +104,7 @@ $(document).ready(function () {
         e.preventDefault();
         const id = $(this).data('id');
 
-        $.get(`/settings/faq/${id}/edit`, function (data) {
+        $.get(`${window.FAQ_DATA_URL}/${id}/edit`, function (data) {
             $('#faqModalLabel').text('Edit FAQ');
             $('#faq_id').val(data.id);
             $('#question').val(data.question);
@@ -118,7 +118,8 @@ $(document).ready(function () {
         e.preventDefault();
 
         const id = $('#faq_id').val();
-        const url = id ? `/settings/faq/${id}` : `/settings/faq`;
+        const base = window.FAQ_DATA_URL;
+        const url = id ? `${base}/${id}` : base;
         const method = id ? 'PUT' : 'POST';
 
         $.ajax({
@@ -163,7 +164,7 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: `/settings/faq/${id}`,
+                    url: `${window.FAQ_BASE_URL}/${id}`,
                     method: 'DELETE',
                     headers: { 'X-CSRF-TOKEN': csrf },
                     success: function () {

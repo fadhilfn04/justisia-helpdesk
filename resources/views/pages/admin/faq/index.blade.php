@@ -65,6 +65,10 @@
     </div>
 </div>
 
+<script>
+    window.FAQ_DATA_URL = "{{ url('settings/faq') }}";
+</script>
+
 @push('scripts')
     <script src="{{ asset('assets/js/custom-js/faq.js') }}"></script>
 @endpush
