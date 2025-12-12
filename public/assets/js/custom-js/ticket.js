@@ -912,7 +912,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             $.ajax({
-                url: `${window.TICKET_DATA_URL}/api/getAllChat/${ticketId}`,
+                url: `${window.TICKET_DATA_URL}/getAllChat/${ticketId}`,
                 method: 'GET',
                 success: function (data) {
                     chatArea.empty();
@@ -988,7 +988,7 @@ document.addEventListener("DOMContentLoaded", function () {
             formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
             $.ajax({
-                url: `${window.TICKET_DATA_URL}/api/sendChat`,
+                url: `${window.TICKET_DATA_URL}/sendChat`,
                 method: 'POST',
                 processData: false,
                 contentType: false,
