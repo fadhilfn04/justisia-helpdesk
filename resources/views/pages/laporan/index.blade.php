@@ -446,7 +446,8 @@
         }
 
         function updateKinerjaRegionalChart(data) {
-            const slaData  = data;
+            const regions = data.map(item => item.wilayah);
+            const slaData = data.map(item => item.rata_respon); 
 
             const options = {
                 chart: {

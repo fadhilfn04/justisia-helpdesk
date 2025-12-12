@@ -498,6 +498,7 @@
 </div>
 
 <script>
+    console.log("Nama Kantor:", @json($namaKantor));
     window.TICKET_DATA_URL = "{{ url('tiket') }}";
 </script>
 

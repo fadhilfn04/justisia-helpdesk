@@ -267,7 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const userId = $('#formTiket input[name="userPelaporId"]').val();
             $.get(
-                `/helpdesk/tiket/api/checkDuplicateTiket/${userId}/${encodeURIComponent(
+                `${window.TICKET_DATA_URL}/api/checkDuplicateTiket/${userId}/${encodeURIComponent(
                     title
                 )}`,
                 function (res) {
@@ -388,7 +388,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             $.get(
-                `/helpdesk/tiket/api/checkDuplicateTiket/${userId}/${encodeURIComponent(
+                `${window.TICKET_DATA_URL}/api/checkDuplicateTiket/${userId}/${encodeURIComponent(
                     title
                 )}`,
                 function (res) {
@@ -1032,7 +1032,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const previewArea = $("#previewArea");
         previewArea.html("");
 
-        $.get(`/helpdesk/tiket/api/getDetailTiket/${id}`, function (res) {
+        $.get(`${window.TICKET_DATA_URL}/api/getDetailTiket/${id}`, function (res) {
             // Isi form
             $("#judul").val(res.title);
             $("#deskripsi").val(res.description);
@@ -1123,7 +1123,7 @@ document.addEventListener("DOMContentLoaded", function () {
         pond.removeFiles();
         $("#previewArea").html("");
 
-        $.get(`/helpdesk/tiket/api/getDetailTiket/${id}`, function (res) {
+        $.get(`${window.TICKET_DATA_URL}/api/getDetailTiket/${id}`, function (res) {
             $("#judul").val(res.title);
             $("#deskripsi").val(res.description);
             $("#wilayah").val(res.wilayah_id);
