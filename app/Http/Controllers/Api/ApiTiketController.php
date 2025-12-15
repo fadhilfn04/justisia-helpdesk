@@ -11,6 +11,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 class ApiTiketController extends BaseController
@@ -30,7 +31,9 @@ class ApiTiketController extends BaseController
             return response()->json(['message' => 'Tiket tidak ditemukan'], 404);
         }
 
-        $files = $ticket->file->pluck('file_ticket')->toArray();
+        $files = $ticket->file->map(function ($f) {
+            return Storage::url($f->file_ticket);
+        });
 
         return response()->json([
             'id' => $ticket->id,
