@@ -195,26 +195,25 @@ class TiketController extends Controller
             );
         }
 
-        $fileUrls = [];
+        $filePaths = [];
 
         if ($request->hasFile('fileTiket')) {
             foreach ($request->file('fileTiket') as $file) {
                 $path = $file->store('fileTickets', 'public');
-                $url = Storage::url($path);
 
                 TicketFile::create([
                     'ticket_id' => $ticket->id,
-                    'file_ticket' => $url,
+                    'file_ticket' => $path,
                 ]);
 
-                $fileUrls[] = $url;
+                $filePaths[] = $path;
             }
         }
 
         return response()->json([
             'message' => 'Tiket berhasil disimpan',
             'ticket_id' => $ticket->id,
-            'files' => $fileUrls,
+            'files' => $filePaths,
         ]);
     }
 
