@@ -380,16 +380,16 @@
                                         </div>
 
                                         <div class="row mb-4">
-                                            <div class="col-md-8">
+                                            <div class="col-md-6">
                                                 <label for="kategori" class="form-label fw-semibold">Kategori <span class="text-dark">*</span></label>
                                                 <select id="kategori" class="form-select fs-6" style="width: 100%;" name="kategori" required>
 
                                                 </select>
                                             </div>
 
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <label for="wilayah" class="form-label fw-semibold">
-                                                    Kantor <span class="text-dark">*</span>
+                                                    Kantor
                                                 </label>
 
                                                 @if (!empty($namaKantor))
@@ -513,6 +513,7 @@
 
 <script>
     console.log("Nama Kantor:", @json($namaKantor));
+    console.log("ID Kantor:", @json($kantorId));
     window.TICKET_DATA_URL = "{{ url('tiket') }}";
 </script>
 

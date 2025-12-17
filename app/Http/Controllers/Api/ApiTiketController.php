@@ -259,7 +259,7 @@ class ApiTiketController extends BaseController
                 return '
                     <span class="d-inline-flex align-items-center gap-2">
                         <i data-lucide="map-pin" class="text-dark" style="width:1.4rem;"></i>
-                        <span>'.e($row->wilayah_id ?? '-').'</span>
+                        <span>'.e($row->wilayah->name ?? '-').'</span>
                     </span>
                 ';
             })
