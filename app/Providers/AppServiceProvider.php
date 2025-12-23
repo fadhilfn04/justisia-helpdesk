@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Core\KTBootstrap;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,5 +33,7 @@ class AppServiceProvider extends ServiceProvider
 
         KTBootstrap::init();
         Carbon::setLocale('id');
+	URL::forceScheme('https');
+        URL::forceRootUrl(Config::get('app.url'));
     }
 }

@@ -66,7 +66,9 @@ Route::prefix('sso')->group(function () {
         // $request->authenticate();
 
         $request->session()->regenerate();
-
+	if($user->role_id == 3){
+	   return  redirect('/tiket');
+	}
         return redirect('/dashboard');
         // Return hasil decode, misal seluruh array
         // return response()->json([
