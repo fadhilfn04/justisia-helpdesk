@@ -66,7 +66,9 @@ document.addEventListener("DOMContentLoaded", function () {
         serverSide: true,
         ajax: {
             url: `${window.TICKET_DATA_URL}/api/getTiket`,
+            type: 'POST',
             data: function (d) {
+                d._token = $('meta[name="csrf-token"]').attr('content');
                 d.status = cardStatus || statusSelect.val();
                 d.prioritas = prioritasSelect.val();
             },

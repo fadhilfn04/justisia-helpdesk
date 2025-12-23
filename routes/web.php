@@ -118,7 +118,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::prefix('api')->name('api.')->controller(ApitiketController::class)->group(function () {
             Route::get('/getKategori', 'getKategori')->name('getKategori');
-            Route::get('/getTiket', 'getTiket')->name('getTiket');
+            Route::post('/getTiket', 'getTiket')->name('getTiket');
             Route::get('/getDetailTiket/{id}', 'getDetailTiket')->name('getDetailTiket');
             Route::get('/status-summary', 'statusSummary')->name('statusSummary');
             Route::get('/checkDuplicateTiket/{id}/{title}', 'checkDuplicateTiket')->name('checkDuplicateTiket');
