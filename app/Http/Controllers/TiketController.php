@@ -30,7 +30,7 @@ class TiketController extends Controller
         $tipeKantorId = $user->data_user['atrbpn-profile']['tipekantorid'] ?? null;
         $kantorId = $user->data_user['atrbpn-profile']['kantorid'] ?? null;
         $namaKantor = $user->data_user['atrbpn-profile']['namakantor'] ?? null;
-        
+
         return view('pages.tiket.index', compact(
             'ticket',
             'agents',
@@ -384,16 +384,42 @@ class TiketController extends Controller
     {
         $request->validate([
             'ticket_id' => 'required|integer',
-            'message'   => 'required|string',
+            'sender_id' => 'required|integer',
         ]);
+
+        $messageText = $request->message ?? "";
+        $typeFile = null;
+        $filePath = null;
+        $fileSize = null;
+
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('public/messageFile', $fileName);
+            $typeFile = "photo";
+            $fileSize = $file->getSize();
+        } elseif ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('public/messageFile', $fileName);
+            $typeFile = "doc";
+            $fileSize = $file->getSize();
+        }
 
         $msg = TicketMessage::create([
-            'ticket_id' => $request->ticket_id,
-            'sender_id' => $request->sender_id,
-            'message'   => $request->message
+            'ticket_id'    => $request->ticket_id,
+            'sender_id'    => $request->sender_id,
+            'message'      => $messageText,
+            'message_file' => $filePath,
+            'message_file_type' => $typeFile,
+            'message_file_size' => $fileSize,
         ]);
 
-        return response()->json($msg);
+        return response()->json([
+            'status' => 'Berhasil kirim ke server',
+            'message' => $msg,
+            'file_path' => $filePath,
+        ]);
     }
 
     public function getTimeline($id)

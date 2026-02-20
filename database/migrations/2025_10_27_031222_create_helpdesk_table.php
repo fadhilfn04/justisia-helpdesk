@@ -110,6 +110,9 @@ return new class extends Migration
             $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');
             $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
             $table->text('message');
+            $table->string('message_file')->nullable();
+            $table->string('message_file_type')->nullable();
+            $table->string('message_file_size')->nullable();
             $table->string('attachment')->nullable();
             $table->timestamps();
             $table->softDeletes();

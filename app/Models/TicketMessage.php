@@ -10,7 +10,7 @@ class TicketMessage extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['ticket_id', 'sender_id', 'message', 'attachment'];
+    protected $fillable = ['ticket_id', 'sender_id', 'message', 'message_file', 'message_file_type', 'message_file_size', 'attachment'];
 
     public function ticket()
     {

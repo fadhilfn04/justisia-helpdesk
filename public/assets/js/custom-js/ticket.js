@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
             $("#countDataTableTiket").html(countDataTable);
         },
     });
-    
+
     // btn refresh tabel
     $("#btnRefreshTabel").on("click", function (e) {
         e.preventDefault();
@@ -901,6 +901,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let isFirstLoad = true;
 
+        function isUserAtBottom() {
+            let chat = $('#chatArea');
+            return chat.scrollTop() + chat.innerHeight() >= chat[0].scrollHeight - 10;
+        }
+
         function loadChat() {
             if (isFirstLoad) {
                 chatArea.html(`
@@ -917,6 +922,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 url: `${window.TICKET_DATA_URL}/getAllChat/${ticketId}`,
                 method: 'GET',
                 success: function (data) {
+                    const shouldScroll = isUserAtBottom();
                     chatArea.empty();
                     isFirstLoad = false;
 
@@ -951,11 +957,61 @@ document.addEventListener("DOMContentLoaded", function () {
                             senderName = isRight ? 'Anda' : (msg.sender?.name || 'Agen');
                         }
 
+                        const cleanText = msg.message
+                            .replace(/&lt;/g, "<")
+                            .replace(/&gt;/g, ">")
+                            .replace(/&amp;/g, "&")
+                            .replace(/&#10;/g, "\n")
+                            .replace(/&#13;/g, "\r");
+
+                        const formattedMessage = cleanText ? cleanText.replace(/(?:\r\n|\r|\n)/g, "<br>") : "";
+
+                        let fileHTML = '';
+                        const fileMsgUrl = msg.message_file ? msg.message_file.replace('public/', '/storage/') : '';
+                        if (msg.message_file_type === 'photo' && msg.message_file) {
+                            fileHTML = `
+                                <div class="chat-photo-preview mb-2" style="cursor:pointer;">
+                                    <img src="${fileMsgUrl}"
+                                        style="max-width:200px; border-radius:10px;"
+                                        class="clickable-chat-image" />
+                                </div>
+                            `;
+                        } else if (msg.message_file_type === 'doc' && msg.message_file) {
+                            const fileName = msg.message_file.split('/').pop();
+                            const fileExt = fileName.split('.').pop().toUpperCase();
+
+                            const bubbleBg = isRight ? '#0d6efd' : '#f8f9fa';
+                            const fileNameColor = isRight ? 'text-white' : 'text-dark';
+                            const fileSizeColor = isRight ? 'text-white' : 'text-muted';
+
+                            fileHTML = `
+                                <a href="${fileMsgUrl}" download style="text-decoration:none;">
+                                    <div class="chat-file-preview mb-2 p-2 rounded" style="max-width:100%; display:inline-flex; background:${bubbleBg}">
+                                        <div class="d-flex align-items-center gap-3" style="flex:1; min-width:0;">
+                                            <div class="file-ext-preview fw-bold d-flex align-items-center justify-content-center"
+                                                style="width:45px; height:45px; background:#e6e6e6; border-radius:8px; flex-shrink:0;">
+                                                ${fileExt}
+                                            </div>
+                                            <div style="min-width:0;">
+                                                <div class="fw-semibold ${fileNameColor} text-truncate">${fileName}</div>
+                                                <div class="${fileSizeColor} small">
+                                                    ${msg.message_file_size < 1048576
+                                                        ? (msg.message_file_size / 1024).toFixed(1) + ' KB'
+                                                        : (msg.message_file_size / 1024 / 1024).toFixed(1) + ' MB'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            `;
+                        }
+
                         const messageHTML = `
                             <div class="d-flex ${isRight ? 'justify-content-end' : ''} mb-3">
                                 <div class="${isRight ? 'bg-primary text-white' : 'bg-white border'} rounded-3 p-3 shadow-sm" style="max-width: 70%; position: relative;">
-                                    <strong>${senderName}:</strong><br>
-                                    ${msg.message}
+                                    <strong>${senderName}</strong><br>
+                                    ${fileHTML}
+                                    ${formattedMessage ? `<div class="chat-text mt-1">${formattedMessage}</div>` : ''}
                                     <div class="text-end mt-1" style="font-size: 0.75rem; opacity: 0.7;">${waktu}</div>
                                 </div>
                             </div>
@@ -963,14 +1019,26 @@ document.addEventListener("DOMContentLoaded", function () {
                         chatArea.append(messageHTML);
                     });
 
-
-                    chatArea.scrollTop(chatArea[0].scrollHeight);
+                    if (shouldScroll) {
+                        chatArea.scrollTop(chatArea[0].scrollHeight);
+                    }
                 },
                 error: function () {
                     chatArea.html('<div class="text-center text-danger mt-4">Gagal memuat chat.</div>');
                 }
             });
         }
+
+        $(document).on('click', '.clickable-chat-image', function () {
+            const src = $(this).attr('src');
+            $('#chatImagePreview').attr('src', src);
+            $('#chatImageModal').modal('show');
+        });
+
+        // Tombol close
+        $('#closeChatImage').on('click', function () {
+            $('#chatImageModal').modal('hide');
+        });
 
         loadChat();
         const chatInterval = setInterval(loadChat, 2000);
@@ -979,15 +1047,124 @@ document.addEventListener("DOMContentLoaded", function () {
             clearInterval(chatInterval);
         });
 
-        $('#sendBtn').off('click').on('click', function () {
-            const message = chatInput.val().trim();
-            if (!message) return;
+
+        $('.chat-input').on('keydown', function (e) {
+            if (e.key === "Enter" && e.shiftKey) return;
+
+            if (e.key === "Enter") {
+                e.preventDefault();
+
+                const textarea = $(this);
+
+                let sendBtn;
+                if (textarea.closest('#photoPreviewModal').length) {
+                    sendBtn = $('#sendPhotoBtn');
+                } else {
+                    sendBtn = $('#sendBtn');
+                }
+
+                sendBtn.click();
+            }
+        });
+
+        $('.chat-input').on('input', function () {
+            this.style.height = "38px";
+            this.style.height = this.scrollHeight + "px";
+        });
+
+        // message upload foto
+        $('#uploadPhoto').on('click', function () {
+            $('#photoInput').val('');
+            $('#photoInput').click();
+        });
+
+        // preview file poto upload
+        $('#photoInput').on('change', function () {
+            if (this.files && this.files[0]) {
+                let imgURL = URL.createObjectURL(this.files[0]);
+                let dataMenu = $(this).data("menu")
+
+                if(dataMenu == "upload_foto")
+                {
+                    $('.title-modal-preview').html('Kirim Poto')
+                    $('#previewFile').addClass('d-none');
+                    $('#previewImage').removeClass('d-none');
+                    $('#previewImage').attr('src', imgURL);
+                    // Reset pesan
+                    $('#photoMessageInput').val('');
+
+                    // Tampilkan modal preview
+                    $('#photoPreviewModal').modal('show');
+                } else {
+                    console.log("Ada kesalahan.")
+                }
+
+            }
+        });
+
+        // message upload file
+        $('#uploadFile').on('click', function () {
+            $('#fileInput').val('');
+            $('#fileInput').click();
+        });
+
+        $('#fileInput').on('change', function () {
+            if (this.files && this.files[0]) {
+                let file = this.files[0];
+
+                $('.title-modal-preview').html('Kirim File');
+                $('#previewImage').addClass('d-none');
+                $('#previewFile').removeClass('d-none');
+
+                $('#fileNamePreview').text(file.name);
+                let size = file.size;
+                let sizeDisplay = "";
+
+                if (size < 1048576) {
+                    sizeDisplay = (size / 1024).toFixed(1) + " KB";
+                } else {
+                    sizeDisplay = (size / 1024 / 1024).toFixed(1) + " MB";
+                }
+
+                $('#fileSizePreview').text(sizeDisplay);
+
+                let ext = file.name.split('.').pop().toUpperCase();
+                $('#fileExtPreview').text(ext);
+
+                let imageExt = ['PNG', 'JPG', 'JPEG', 'GIF', 'BMP', 'WEBP'];
+                let icon = imageExt.includes(ext) ? 'fileimg.png' : 'filepoto.png';
+                $('#previewFile img').attr('src', '{{ asset("assets/media/icons/duotune/files/") }}/' + icon);
+
+                $('#photoMessageInput').val('');
+                $('#photoPreviewModal').modal('show');
+            }
+        });
+
+        $('.send-btn').off('click').on('click', function () {
+            const btn = $(this);
+
+            const input = btn.closest('.input-chat-wrapper, #photoPreviewModal').find('.chat-input');
+
+            if (!input.length) {
+                console.error('Textarea terkait tombol send tidak ditemukan!');
+                return;
+            }
+
+            const message = input.val().trim();
+
+            const photoFile = $('#photoInput')[0].files[0] || null;
+            const docFile = $('#fileInput')[0].files[0] || null;
+
+            if (!message && !photoFile && !docFile) return;
 
             const formData = new FormData();
             formData.append('ticket_id', ticketId);
             formData.append('sender_id', userId);
             formData.append('message', message);
             formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+            if (photoFile) formData.append('photo', photoFile);
+            if (docFile) formData.append('file', docFile);
 
             $.ajax({
                 url: `${window.TICKET_DATA_URL}/sendChat`,
@@ -996,15 +1173,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 contentType: false,
                 data: formData,
                 success: function () {
-                    chatInput.val('');
+                    input.val('');
+                    input.css('height', '38px');
+
+                    $('#photoInput').val('');
+                    $('#fileInput').val('');
+
                     loadChat();
                     table.ajax.reload(null, false);
+
+                    $('#photoPreviewModal').modal('hide');
                 },
                 error: function (xhr) {
                     console.error(xhr.responseJSON);
                     alert('Gagal mengirim pesan.');
                 }
             });
+        });
+
+        $('#closePhotoPreview').on('click', function () {
+            $('#photoPreviewModal').modal('hide');
         });
     });
 

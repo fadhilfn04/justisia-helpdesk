@@ -1,6 +1,6 @@
 <x-default-layout>
 <link rel="stylesheet" href="{{ asset('assets/css/custom-css/tiket.css') }}">
-    
+
     @section('title')
         Daftar Tiket
     @endsection
@@ -30,7 +30,7 @@
                         } else if(auth()->user()->role->id != 3) {
                             $col = 4;
                         } else {
-                            $col = 4;   
+                            $col = 4;
                         }
                     @endphp
 
@@ -486,19 +486,41 @@
                         <div id="chatArea" class="flex-grow-1 overflow-auto p-4" style="background: #f8f9fa;"></div>
 
                         <div class="border-top p-3 bg-white d-flex align-items-center justify-content-between gap-2 input-chat-wrapper">
-                            <div class="flex-grow-1"">
-                                <input
-                                    type="text"
+                            <div class="flex-grow-1">
+                                <textarea
                                     id="chatInput"
-                                    class="form-control px-3 py-2"
+                                    class="form-control chat-input"
                                     placeholder="Ketik pesan..."
-                                    style="border-radius: 30px; border: 1px solid #ddd;"
-                                />
+                                    style="border-radius: 20px; border: 1px solid #ddd; resize: none; height: 38px; overflow:hidden;"
+                                ></textarea>
                             </div>
 
+                            <!-- Tombol Upload File -->
+                            <div class="upload-wrapper position-relative">
+                                <button
+                                    id="uploadBtn"
+                                    class="btn d-flex align-items-center justify-content-center"
+                                    style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid #ddd; background: white;">
+                                    <i class="fa-solid fa-paperclip" style="font-size: 1.1rem; color: #555;"></i>
+                                </button>
+
+                                <!-- Popup menu -->
+                                <div class="upload-menu shadow-sm">
+                                    <div class="upload-option" id="uploadPhoto">
+                                        <i class="fa-solid fa-image me-2"></i> Upload Foto
+                                    </div>
+                                    <div class="upload-option" id="uploadFile">
+                                        <i class="fa-solid fa-file me-2"></i> Upload File
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Hidden Inputs -->
+                            <input type="file" id="photoInput" accept="image/*" data-menu="upload_foto" class="d-none">
+                            <input type="file" id="fileInput" accept=".xlsx,.pdf,.docx,.csv" data-menu="upload_file" class="d-none">
                             <button
                                 id="sendBtn"
-                                class="btn btn-chat-send d-flex align-items-center justify-content-center"
+                                class="btn btn-chat-send d-flex align-items-center justify-content-center send-btn"
                                 style="width: 38px; height: 38px; border-radius: 50%; color: white;">
                                 <i class="fa-solid fa-paper-plane" style="font-size: 1.1rem; color: inherit;"></i>
                             </button>
@@ -509,6 +531,76 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Modal Preview Foto -->
+<div class="modal fade" id="photoPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+        <div class="modal-content" style="border-radius: 15px; overflow: hidden; background: #f6f6f6;">
+
+            <!-- Header -->
+            <div class="d-flex align-items-center justify-content-start gap-5 px-3 py-4 border-bottom"
+                 style="background: white;">
+                <i class="fa-solid fa-xmark fs-3" id="closePhotoPreview" style="cursor:pointer;"></i>
+                <span class="fw-semibold title-modal-preview"></span>
+            </div>
+
+            <!-- Body: Image -->
+            <div class="modal-body p-0" style="background: white;">
+
+                {{-- preview poto --}}
+                <img id="previewImage" src="" class="d-none"
+                     style="width: 100%; max-height: 400px; object-fit: contain;">
+
+                {{-- preview file --}}
+                <div id="previewFile" class="d-none p-3">
+                    <div class="d-flex align-items-center justify-content-between p-3 rounded"
+                        style="background:#f2f2f2;">
+
+                        <div class="d-flex align-items-center gap-3">
+                            <div id="fileExtPreview"
+                                class="fw-bold d-flex align-items-center justify-content-center"
+                                style="width:45px; height:45px; background:#e6e6e6; border-radius:8px;">
+                                XLSX
+                            </div>
+                            <div>
+                                <div class="fw-semibold" id="fileNamePreview">Nama_file.xlsx</div>
+                                <div class="text-muted small" id="fileSizePreview">1.3 MB</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="px-3 py-2 d-flex align-items-center justify-content-between"
+                style="background:white; gap:10px;">
+
+                <textarea id="photoMessageInput"
+                    class="form-control border-0 textarea-auto chat-input"
+                    style="box-shadow:none; border-radius:10px; resize:none; min-height:38px; max-height:120px;"
+                    placeholder="Keterangan..."></textarea>
+
+                <button id="sendPhotoBtn" class="btn send-btn"
+                        style="background:#0d6efd; color:white; padding:8px 18px; border-radius:10px; white-space:nowrap;">
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Preview Gambar Fullscreen -->
+<div class="modal fade" id="chatImageModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-dark border-0">
+      <div class="modal-body p-0 text-center position-relative">
+        <i class="fa-solid fa-xmark fs-2 text-white position-absolute top-0 end-0 m-3"
+           style="cursor:pointer;" id="closeChatImage"></i>
+        <img id="chatImagePreview" src="" style="width:100%; max-height:90vh; object-fit:contain; border-radius:10px;">
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>

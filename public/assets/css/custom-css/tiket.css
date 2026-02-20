@@ -276,3 +276,86 @@
         left: 100%;
     }
 }
+
+.upload-wrapper {
+    position: relative;
+}
+
+.upload-menu {
+    position: absolute;
+    bottom: 50px;
+    right: 0;
+    background: white;
+    border-radius: 10px;
+    padding: 5px 0;
+    width: 150px;
+    border: 1px solid #e6e6e6;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.25s ease;
+    z-index: 9999;
+}
+
+.upload-wrapper:hover .upload-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.upload-option {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.upload-option:hover {
+    background: #f5f5f5;
+}
+
+#photoMessageInput:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Smooth hover send button */
+#sendPhotoBtn {
+    transition: 0.2s ease;
+}
+
+#sendPhotoBtn:hover {
+    opacity: 0.85;
+}
+
+/* Close button smooth */
+#closePhotoPreview:hover {
+    color: #777;
+}
+
+#chatInput {
+    resize: none;
+    height: 38px;
+    line-height: 24px;
+    padding: 7px 14px;
+    border-radius: 30px;
+    border: 1px solid #ddd;
+    overflow-y: hidden;
+}
+
+#responModal .card {
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+#chatArea {
+    flex: 1;
+    overflow-y: auto !important;
+    max-height: calc(500px - 90px);
+}
+
+.input-chat-wrapper {
+    flex-shrink: 0;
+}
