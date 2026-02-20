@@ -564,7 +564,10 @@
                                 XLSX
                             </div>
                             <div>
-                                <div class="fw-semibold" id="fileNamePreview">Nama_file.xlsx</div>
+                                <div class="fw-semibold" id="fileNamePreview"
+                                    style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    Nama_file_yang_sangat_panjang_sekali_banget.xlsx
+                                </div>
                                 <div class="text-muted small" id="fileSizePreview">1.3 MB</div>
                             </div>
                         </div>
@@ -595,7 +598,7 @@
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content bg-dark border-0">
       <div class="modal-body p-0 text-center position-relative">
-        <i class="fa-solid fa-xmark fs-2 text-white position-absolute top-0 end-0 m-3"
+        <i class="fa-solid fa-xmark fs-2 text-gray position-absolute top-0 end-0 m-3"
            style="cursor:pointer;" id="closeChatImage"></i>
         <img id="chatImagePreview" src="" style="width:100%; max-height:90vh; object-fit:contain; border-radius:10px;">
       </div>

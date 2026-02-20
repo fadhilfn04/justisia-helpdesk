@@ -1191,6 +1191,15 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
+        // Reset saat modal preview ditutup
+        $('#photoPreviewModal').on('hidden.bs.modal', function () {
+            $('#photoInput').val('');
+            $('#fileInput').val('');
+            $('#previewImage').attr('src', '');
+            $('#fileNamePreview').text('');
+            // console.log("Input dibersihkan agar tidak bentrok.");
+        });
+
         $('#closePhotoPreview').on('click', function () {
             $('#photoPreviewModal').modal('hide');
         });
