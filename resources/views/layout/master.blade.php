@@ -67,7 +67,7 @@
 {{-- chatbot --}}
 
 {{-- sembuyikan jika di halaman login --}}
-@if (!Request::is('login'))
+{{-- @if (!Request::is('login'))
     <div id="chatButton" class="chat-button">
         <i data-lucide="bot-message-square" width="25" height="25"></i>
     </div>
@@ -80,7 +80,6 @@
         </div>
 
         <div class="chat-body">
-            {{-- body isi chatbot --}}
         </div>
 
         <div class="chat-footer d-flex">
@@ -88,7 +87,7 @@
             <button class="btn btn-dark ms-2">Kirim</button>
         </div>
     </div>
-@endif
+@endif --}}
 
 <!--begin::Javascript-->
 <!--begin::Global Javascript Bundle(mandatory for all pages)-->

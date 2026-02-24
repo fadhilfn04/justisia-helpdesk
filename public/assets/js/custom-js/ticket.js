@@ -1086,7 +1086,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if(dataMenu == "upload_foto")
                 {
-                    $('.title-modal-preview').html('Kirim Poto')
+                    $('.title-modal-preview').html('Kirim Foto')
                     $('#previewFile').addClass('d-none');
                     $('#previewImage').removeClass('d-none');
                     $('#previewImage').attr('src', imgURL);

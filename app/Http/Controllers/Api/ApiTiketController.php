@@ -304,10 +304,13 @@ class ApiTiketController extends BaseController
 
                 $dropdown = '
                     <div class="dropdown position-relative">
-                        <button class="btn btn-icon btn-sm btn-hover-primary" data-bs-toggle="dropdown">
+                        <button class="btn btn-icon btn-sm btn-hover-primary"
+                            data-bs-toggle="dropdown"
+                            data-bs-boundary="viewport"
+                            aria-expanded="false">
                             <i data-lucide="ellipsis" class="icon-action"></i>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-fixed">
+                        <div class="dropdown-menu dropdown-menu-end">
                             <a href="javascript:void(0)" class="dropdown-item btn-detail" data-id="'.$row->id.'" data-status="'.$row->status.'" data-role-user="'.$roleUserLogin.'" data-bs-toggle="modal" data-bs-target="#createTiketModal">
                             <i data-lucide="eye" class="me-2 text-warning" width="18" height="18"></i> Detail
                             </a>';
