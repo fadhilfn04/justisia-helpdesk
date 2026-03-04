@@ -1048,7 +1048,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
 
-        $('.chat-input').on('keydown', function (e) {
+        $('.chat-input').off('keydown.chat').on('keydown.chat', function (e) {
             if (e.key === "Enter" && e.shiftKey) return;
 
             if (e.key === "Enter") {
@@ -1067,7 +1067,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        $('.chat-input').on('input', function () {
+        $('.chat-input').off('input.chat').on('input.chat', function () {
             this.style.height = "38px";
             this.style.height = this.scrollHeight + "px";
         });

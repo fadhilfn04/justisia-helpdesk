@@ -80,7 +80,7 @@ Route::prefix('sso')->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::controller(DashboardController::class)->group(function () {
+    Route::controller(DashboardController::class)->middleware(['dashboard.access'])->group(function () {
         Route::get('/', 'index')->name('dashboard');
         Route::get('/dashboard', 'index');
         Route::get('/dashboard/agen-online', 'getAgenOnline')->name('dashboard.agenOnline');
