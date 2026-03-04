@@ -13,6 +13,17 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    public function __construct()
+    {
+        // Only allow Administrators (role_id = 1) to access dashboard
+        $this->middleware(function ($request, $next) {
+            if (auth()->check() && auth()->user()->role_id !== 1) {
+                return redirect()->route('tiket.index');
+            }
+            return $next($request);
+        });
+    }
+
     public function index()
     {
         $totalTickets = Ticket::count();
