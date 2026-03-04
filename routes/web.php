@@ -66,7 +66,9 @@ Route::prefix('sso')->group(function () {
         // $request->authenticate();
 
         $request->session()->regenerate();
-
+	if($user->role_id == 3){
+	   return  redirect('/tiket');
+	}
         return redirect('/dashboard');
         // Return hasil decode, misal seluruh array
         // return response()->json([
@@ -118,7 +120,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::prefix('api')->name('api.')->controller(ApitiketController::class)->group(function () {
             Route::get('/getKategori', 'getKategori')->name('getKategori');
-            Route::get('/getTiket', 'getTiket')->name('getTiket');
+            Route::post('/getTiket', 'getTiket')->name('getTiket');
             Route::get('/getDetailTiket/{id}', 'getDetailTiket')->name('getDetailTiket');
             Route::get('/status-summary', 'statusSummary')->name('statusSummary');
             Route::get('/checkDuplicateTiket/{id}/{title}', 'checkDuplicateTiket')->name('checkDuplicateTiket');

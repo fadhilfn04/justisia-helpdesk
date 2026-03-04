@@ -50,80 +50,6 @@ class TiketController extends Controller
         ]);
     }
 
-    // public function store(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'userPelaporId' => 'required|exists:users,id',
-    //         'title' => 'required|string|max:255',
-    //         'deskripsi' => 'required|string',
-    //         'kategori' => 'required|exists:ticket_categories,id',
-    //         'fileTiket.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
-    //     ]);
-
-    //     $normalizedTitle = strtolower(trim(preg_replace('/\s+/', ' ', $request->title)));
-    //     $isDuplicate = Ticket::where('user_id', $request->userPelaporId)
-    //         ->get()
-    //         ->contains(function ($ticket) use ($normalizedTitle) {
-    //             $dbTitle = strtolower(trim(preg_replace('/\s+/', ' ', $ticket->title)));
-    //             return $dbTitle === $normalizedTitle;
-    //         });
-
-    //     if ($isDuplicate) {
-    //         return response()->json([
-    //             'message' => 'Tiket dengan judul yang sama telah tercatat sebelumnya.',
-    //             'duplicate' => true
-    //         ], 422);
-    //     }
-
-    //     $ticket = Ticket::create([
-    //         'user_id' => $request->userPelaporId,
-    //         'category_id' => $request->kategori,
-    //         'assigned_to' => null,
-    //         'wilayah_id' => null,
-    //         'title' => $request->title,
-    //         'description' => $request->deskripsi,
-    //         'status' => $request->status,
-    //     ]);
-
-    //     $ticketTimeline = TicketTimeline::create([
-    //         'ticket_id' => $ticket->id,
-    //         'actor_id' => $request->userPelaporId,
-    //         'action' => $request->status,
-    //         'description' => 'Tiket baru: ' . $request->title . '',
-    //     ]);
-
-    //     if($request->status != 'draft')
-    //     {
-    //         NotificationService::send(
-    //             $request->userPelaporId,
-    //             'Tiket berhasil diajukan',
-    //             "Tiket Anda dengan ID #{$ticket->id} telah berhasil diajukan. Mohon tunggu, admin akan segera melakukan verifikasi."
-    //         );
-    //     }
-
-    //     $fileUrls = [];
-
-    //     if ($request->hasFile('fileTiket')) {
-    //         foreach ($request->file('fileTiket') as $file) {
-    //             $path = $file->store('fileTickets', 'public');
-    //             $url = Storage::url($path);
-
-    //             TicketFile::create([
-    //                 'ticket_id' => $ticket->id,
-    //                 'file_ticket' => $url,
-    //             ]);
-
-    //             $fileUrls[] = $url;
-    //         }
-    //     }
-
-    //     return response()->json([
-    //         'message' => 'Tiket berhasil disimpan',
-    //         'ticket_id' => $ticket->id,
-    //         'files' => $fileUrls,
-    //     ]);
-    // }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -134,21 +60,19 @@ class TiketController extends Controller
             'fileTiket.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
         ]);
 
-        $user = User::findOrFail($request->userPelaporId);
-        $dataUser = $user->data_user ? json_decode($user->data_user, true) : null;
-
-        $idWilayah = $dataUser['kantor_id'] ?? null;
-        $namaWilayah = $dataUser['nama_kantor'] ?? null;
+        $user = auth()->user();
+        $kantorId = $user->data_user['atrbpn-profile']['kantorid'] ?? null;
+        $namaKantor = $user->data_user['atrbpn-profile']['namakantor'] ?? null;
 
         $regionId = null;
 
-        if ($idWilayah) {
-            $region = Region::where('id', $idWilayah)->first();
+        if ($kantorId) {
+            $region = Region::where('id_wilayah', $kantorId)->first();
 
             if (!$region) {
                 $region = Region::create([
-                    'id' => $idWilayah,
-                    'name' => $namaWilayah ?: 'Wilayah Tanpa Nama',
+                    'id_wilayah' => $kantorId,
+                    'name' => $namaKantor ?: 'Wilayah Tanpa Nama',
                 ]);
             }
 
@@ -188,11 +112,22 @@ class TiketController extends Controller
         ]);
 
         if ($request->status != 'draft') {
+
             NotificationService::send(
                 $request->userPelaporId,
                 'Tiket berhasil diajukan',
                 "Tiket Anda dengan ID #{$ticket->id} telah berhasil diajukan. Mohon tunggu, admin akan segera melakukan verifikasi."
             );
+
+            $adminIds = User::where('role_id', 1)->pluck('id');
+
+            foreach ($adminIds as $adminId) {
+                NotificationService::send(
+                    $adminId,
+                    'Tiket perlu verifikasi',
+                    "Tiket dengan ID #{$ticket->id} harus segera diverifikasi. Silakan pilih tiketnya, lalu klik aksi dan pilih verifikasi."
+                );
+            }
         }
 
         $filePaths = [];
@@ -498,6 +433,16 @@ class TiketController extends Controller
                 "info",
             );
 
+            $adminIds = User::where('role_id', 1)->pluck('id');
+
+            foreach ($adminIds as $adminId) {
+                NotificationService::send(
+                    $adminId,
+                    'Tiket perlu ditindaklanjuti kembali',
+                    "Tiket dengan ID #{$tiket->id} tidak memenuhi kriteria, silahkan dikembalikan ke pengguna."
+                );
+            }
+
             $tiket->save();
         }
 
@@ -511,6 +456,16 @@ class TiketController extends Controller
                 "Tiket #{$tiket->id} telah diterima oleh agen. Silakan klik icon respon pada tabel sesuai id tiket anda untuk memulai diskusi. Proses akan selesai setelah agen menginput penyelesaian tiket.",
                 "info",
             );
+
+            $adminIds = User::where('role_id', 1)->pluck('id');
+
+            foreach ($adminIds as $adminId) {
+                NotificationService::send(
+                    $adminId,
+                    'Tiket sedang diproses oleh agent',
+                    "Tiket dengan ID #{$tiket->id} diterima dan sedang diproses oleh agent."
+                );
+            }
 
             $tiket->save();
         }

@@ -53,4 +53,8 @@ class Ticket extends Model
     {
         return $this->hasMany(TicketFile::class);
     }
+    public function wilayah()
+    {
+        return $this->belongsTo(Region::class, 'wilayah_id');
+    }
 }
