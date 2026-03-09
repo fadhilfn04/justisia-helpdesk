@@ -392,22 +392,7 @@
                                                     Kantor
                                                 </label>
 
-                                                @if (!empty($namaKantor))
-                                                    <input type="text" class="form-control fs-6" value="{{ $namaKantor }}" readonly>
-                                                @else
-                                                    <select id="wilayah" class="form-select fs-6">
-                                                        <option selected disabled>Pilih Kantor</option>
-                                                        <option value="jakarta-pusat">Badan Pertanahan Nasional</option>
-                                                        <option value="jakarta-selatan">Jakarta Selatan</option>
-                                                        <option value="jakarta-timur">Jakarta Timur</option>
-                                                        <option value="jakarta-barat">Jakarta Barat</option>
-                                                        <option value="jakarta-utara">Jakarta Utara</option>
-                                                        <option value="bandung">Bandung</option>
-                                                        <option value="surabaya">Surabaya</option>
-                                                        <option value="medan">Medan</option>
-                                                        <option value="makassar">Makassar</option>
-                                                    </select>
-                                                @endif
+                                                <input type="text" class="form-control fs-6" value="{{ $namaKantor }}">
                                             </div>
                                         </div>
                                     </div>
@@ -434,7 +419,7 @@
 
                                             <div class="col-md-6">
                                                 <label for="no_telepon" class="form-label fw-semibold">No Telepon <span class="text-dark">*</span></label>
-                                                <input id="no_telepon" class="form-control fs-6" value="{{ auth()->user()->phone }}" disabled>
+                                                <input id="no_telepon" class="form-control fs-6" value="{{ auth()->user()->phone }}">
                                             </div>
                                         </div>
                                     </div>
