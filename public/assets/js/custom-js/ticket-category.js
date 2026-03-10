@@ -88,8 +88,12 @@ $(document).ready(function () {
 
         const id = $('#ticket_category_id').val();
         const base = window.TICKET_CATEGORY_DATA_URL;
-        const url = id ? `${base}/${id}` : base;
-        const method = id ? 'PUT' : 'POST';
+
+        const url = id
+            ? `${base}/${id}/update`
+            : base;
+
+        const method = 'POST';
 
         $.ajax({
             url: url,
@@ -104,6 +108,7 @@ $(document).ready(function () {
                     timer: 1500,
                     showConfirmButton: false
                 });
+
                 $('#ticketCategoryModal').modal('hide');
                 table.ajax.reload(null, false);
             },

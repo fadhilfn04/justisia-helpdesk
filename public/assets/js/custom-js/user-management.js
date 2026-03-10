@@ -177,8 +177,12 @@ $(document).ready(function () {
         e.preventDefault();
 
         const id = $('#user_id').val();
-        const url = id ? `${window.USER_DATA_URL}/users/${id}` : `${window.USER_DATA_URL}/users`;
-        const method = id ? 'PUT' : 'POST';
+
+        const url = id
+            ? `${window.USER_DATA_URL}/users/${id}/update`
+            : `${window.USER_DATA_URL}/users`;
+
+        const method = 'POST';
 
         $.ajax({
             url: url,
@@ -193,6 +197,7 @@ $(document).ready(function () {
                     timer: 1500,
                     showConfirmButton: false
                 });
+
                 $('#userModal').modal('hide');
                 table.ajax.reload(null, false);
             },

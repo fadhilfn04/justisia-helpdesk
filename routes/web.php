@@ -143,12 +143,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::prefix('user-management')->name('user-management.')->group(function () {
+
         Route::resource('users', UserManagementController::class);
+
+        Route::post('users/{user}/update', [UserManagementController::class, 'update'])
+            ->name('users.update.post');
     });
 
     Route::prefix('settings')->name('settings.')->group(function () {
+
         Route::resource('faq', FaqController::class);
+        Route::post('faq/{faq}/update', [FaqController::class, 'update'])
+            ->name('faq.update.post');
+
         Route::resource('ticket-category', TicketCategoryController::class);
+        Route::post('ticket-category/{ticket_category}/update', [TicketCategoryController::class, 'update'])
+            ->name('ticket-category.update.post');
+
     });
 });
 
