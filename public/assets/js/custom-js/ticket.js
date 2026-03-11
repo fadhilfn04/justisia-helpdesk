@@ -967,7 +967,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         const formattedMessage = cleanText ? cleanText.replace(/(?:\r\n|\r|\n)/g, "<br>") : "";
 
                         let fileHTML = '';
-                        const fileMsgUrl = msg.message_file ? msg.message_file.replace('public/', '/storage/') : '';
+                        const fileMsgUrl = msg.message_file
+                        ? `${window.APP_BASE}/storage/${msg.message_file.replace('public/', '')}`
+                        : '';
                         if (msg.message_file_type === 'photo' && msg.message_file) {
                             fileHTML = `
                                 <div class="chat-photo-preview mb-2" style="cursor:pointer;">

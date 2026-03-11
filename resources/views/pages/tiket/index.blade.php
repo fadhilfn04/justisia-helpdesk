@@ -595,6 +595,7 @@
     console.log("Nama Kantor:", @json($namaKantor));
     console.log("ID Kantor:", @json($kantorId));
     window.TICKET_DATA_URL = "{{ url('tiket') }}";
+    window.APP_BASE = "{{ url('/') }}";
 </script>
 
 @push('scripts')
