@@ -393,15 +393,22 @@ class TiketController extends Controller
         $fileSize = null;
 
         if ($request->hasFile('photo')) {
+
             $file = $request->file('photo');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = $file->storeAs('public/messageFile', $fileName);
+
+            $filePath = $file->storeAs('messageFile', $fileName, 'public');
+
             $typeFile = "photo";
             $fileSize = $file->getSize();
+
         } elseif ($request->hasFile('file')) {
+
             $file = $request->file('file');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = $file->storeAs('public/messageFile', $fileName);
+
+            $filePath = $file->storeAs('messageFile', $fileName, 'public');
+
             $typeFile = "doc";
             $fileSize = $file->getSize();
         }

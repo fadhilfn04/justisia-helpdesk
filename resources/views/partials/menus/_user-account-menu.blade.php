@@ -38,8 +38,8 @@
 	<!--end::Menu item-->
     <!--begin::Menu item-->
     <div class="menu-item px-5">
-        <a class="button-ajax menu-link px-5" href="#" data-action="{{ route('logout') }}" data-method="post" data-csrf="{{ csrf_token() }}" data-reload="true">
-            Keluar
+        <a class="menu-link px-5" href="https://justisia.atrbpn.go.id/dashboard">
+            Kembali ke Justisia
         </a>
     </div>
     <!--end::Menu item-->
