@@ -7,6 +7,7 @@ use App\Models\Faq;
 use App\Models\Ticket;
 use App\Models\TicketCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class FaqController extends Controller
 {
@@ -89,5 +90,11 @@ class FaqController extends Controller
             'success' => true,
             'message' => 'FAQ berhasil dihapus!'
         ]);
+    }
+
+    public function sync()
+    {
+        $apiUrl = env('CHATBOT_SYNC_URL', 'http://chatbot-justisia-app:8216/sync-kamus');
+        Http::post($apiUrl);
     }
 }

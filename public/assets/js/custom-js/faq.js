@@ -196,4 +196,59 @@ $(document).ready(function () {
             }
         });
     });
+
+    window.syncFaq = function () {
+        Swal.fire({
+            title: 'Sinkronisasi FAQ',
+            text: 'Apakah Anda yakin ingin menyinkronkan FAQ dengan chatbot?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, sinkronkan!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Menyinkronkan...',
+                    text: 'Mohon tunggu sebentar',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $('#syncFaqBtn').prop('disabled', true).html('<i class="bi bi-arrow-clockwise spin-icon"></i> Menyinkronkan...');
+
+                $.ajax({
+                    url: `${window.FAQ_DATA_URL}/sync`,
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': csrf },
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message || 'FAQ berhasil disinkronisasi dengan chatbot!',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+
+                        $('#syncFaqBtn').prop('disabled', false).html('<i class="bi bi-arrow-clockwise"></i> Sinkronisasi FAQ');
+                    },
+                    error: function (xhr) {
+                        const errorMsg = xhr.responseJSON?.message || 'Terjadi kesalahan saat sinkronisasi FAQ.';
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: errorMsg,
+                            confirmButtonText: 'OK'
+                        });
+
+                        $('#syncFaqBtn').prop('disabled', false).html('<i class="bi bi-arrow-clockwise"></i> Sinkronisasi FAQ');
+                    }
+                });
+            }
+        });
+    };
 });

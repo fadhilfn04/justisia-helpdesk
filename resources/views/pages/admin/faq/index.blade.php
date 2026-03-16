@@ -11,7 +11,10 @@
 <div class="content-wrapper">
     <div class="container-fluid">
 
-        <div class="d-flex justify-content-end align-items-center mb-4">
+        <div class="d-flex justify-content-end align-items-center gap-2 mb-4">
+            <button class="btn btn-info" id="syncFaqBtn" onclick="syncFaq()">
+                <i class="bi bi-arrow-clockwise"></i> Sinkronisasi FAQ
+            </button>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#faqModal" onclick="openCreateModal()">
                 <i class="bi bi-plus-lg"></i> Tambah FAQ
             </button>
@@ -68,6 +71,21 @@
 <script>
     window.FAQ_DATA_URL = "{{ url('settings/faq') }}";
 </script>
+
+<style>
+    .spin-icon {
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
 
 @push('scripts')
     <script src="{{ asset('assets/js/custom-js/faq.js') }}"></script>

@@ -157,6 +157,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('faq.update.post');
         Route::post('faq/{faq}/delete', [FaqController::class, 'destroy'])
             ->name('faq.delete');
+        Route::post('faq/sync', [FaqController::class, 'sync'])
+            ->name('faq.sync');
 
         Route::resource('ticket-category', TicketCategoryController::class);
         Route::post('ticket-category/{ticket_category}/update', [TicketCategoryController::class, 'update'])
