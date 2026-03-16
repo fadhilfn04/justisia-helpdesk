@@ -139,7 +139,10 @@ $(document).ready(function () {
             if (result.isConfirmed) {
                 $.ajax({
                     url: `${window.TICKET_CATEGORY_DATA_URL}/${id}`,
-                    method: 'DELETE',
+                    method: 'POST',
+                    data: {
+                        _method: 'DELETE'
+                    },
                     headers: { 'X-CSRF-TOKEN': csrf },
                     success: function () {
                         Swal.fire({

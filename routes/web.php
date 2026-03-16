@@ -155,11 +155,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('faq', FaqController::class);
         Route::post('faq/{faq}/update', [FaqController::class, 'update'])
             ->name('faq.update.post');
+        Route::post('faq/{faq}/delete', [FaqController::class, 'destroy'])
+            ->name('faq.delete');
 
         Route::resource('ticket-category', TicketCategoryController::class);
         Route::post('ticket-category/{ticket_category}/update', [TicketCategoryController::class, 'update'])
             ->name('ticket-category.update.post');
-
+        Route::post('ticket-category/{ticket_category}/delete', [TicketCategoryController::class, 'destroy'])
+            ->name('ticket-category.delete');
+    
     });
 });
 

@@ -169,8 +169,11 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: `${window.FAQ_BASE_URL}/${id}`,
-                    method: 'DELETE',
+                    url: `${window.FAQ_DATA_URL}/${id}`,
+                    method: 'POST',
+                    data: {
+                        _method: 'DELETE'
+                    },
                     headers: { 'X-CSRF-TOKEN': csrf },
                     success: function () {
                         Swal.fire({
