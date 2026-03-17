@@ -114,6 +114,14 @@ $(document).ready(function () {
         });
     });
 
+    function syncFaq() {
+        return $.ajax({
+            url: `${window.FAQ_DATA_URL}/sync`,
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrf }
+        });
+    }
+
     $('#faqForm').on('submit', function (e) {
         e.preventDefault();
 
@@ -124,25 +132,54 @@ $(document).ready(function () {
             ? `${base}/${id}/update`
             : base;
 
-        const method = 'POST';
-
         $.ajax({
             url: url,
-            method: method,
+            method: 'POST',
             data: $(this).serialize(),
             headers: { 'X-CSRF-TOKEN': csrf },
+
             success: function () {
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
                     text: id ? 'FAQ berhasil diperbarui.' : 'FAQ berhasil ditambahkan.',
-                    timer: 1500,
+                    timer: 1200,
                     showConfirmButton: false
                 });
 
                 $('#faqModal').modal('hide');
                 table.ajax.reload(null, false);
+
+                $('#syncFaqBtn')
+                    .prop('disabled', true)
+                    .html('<i class="bi bi-arrow-repeat spin"></i> Sinkronisasi...');
+
+                syncFaq()
+                    .done(function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sinkronisasi Berhasil!',
+                            text: response.message || 'FAQ berhasil disinkronisasi dengan chatbot!',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    })
+                    .fail(function (xhr) {
+                        const errorMsg = xhr.responseJSON?.message || 'Terjadi kesalahan saat sinkronisasi FAQ.';
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Sync Gagal!',
+                            text: errorMsg
+                        });
+                    })
+                    .always(function () {
+                        $('#syncFaqBtn')
+                            .prop('disabled', false)
+                            .html('<i class="bi bi-arrow-clockwise"></i> Sinkronisasi FAQ');
+                    });
             },
+
             error: function () {
                 Swal.fire({
                     icon: 'error',
